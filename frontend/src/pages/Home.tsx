@@ -39,30 +39,21 @@ export default function Home() {
       </Helmet>
 
       {/* Hero Section */}
-      <section className="relative rounded-[40px] overflow-hidden bg-gray-900 px-6 py-20 md:py-32 text-center">
+      <section className="relative rounded-[40px] overflow-hidden bg-gray-900 px-6 py-12 text-center">
         <div className="absolute inset-0 bg-gradient-to-br from-[#ff416c]/40 via-[#ff4b2b]/40 to-black/60 z-0"></div>
         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 pointer-events-none"></div>
         
         <div className="relative z-10 max-w-3xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 text-white text-xs font-bold tracking-widest uppercase mb-4">
-             <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> MỚI CẬP NHẬT TRONG NGÀY
+             <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> CẬP NHẬT TRONG NGÀY
           </div>
           <h1 className="text-4xl md:text-7xl font-black text-white tracking-tighter leading-none mb-6">
             MÃ GIẢM GIÁ <br /> 
-            <span className="gradient-text-hot">SIÊU HOT</span> HÔM NAY
+            <span className="gradient-text-rainbow">SIÊU HOT</span> HÔM NAY
           </h1>
           <p className="text-gray-300 text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed opacity-90">
             Tổng hợp đầy đủ nhất mã Shopee, Lazada, Tiki... Giúp bạn mua sắm không lo về giá. Ưu đãi đến 70% mỗi ngày!
           </p>
-          
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
-            <Link to="/shopee" className="w-full sm:w-auto px-10 py-5 gradient-hot text-white font-black rounded-2xl shadow-2xl shadow-red-500/20 hover:scale-105 active:scale-95 transition-all text-base tracking-tight">
-               XEM MÃ SHOPEE
-            </Link>
-            <Link to="/lazada" className="w-full sm:w-auto px-10 py-5 bg-white/10 backdrop-blur-md text-white font-black rounded-2xl border border-white/20 hover:bg-white/20 transition-all text-base tracking-tight">
-               MÃ LAZADA
-            </Link>
-          </div>
         </div>
       </section>
 
@@ -77,22 +68,27 @@ export default function Home() {
            </div>
            <Link to="/categories" className="text-sm font-black text-primary hover:opacity-80 transition-opacity hidden md:block">XEM TẤT CẢ →</Link>
         </div>
-        
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {BRANDS.map(({ id, path, name, Logo }) => (
             <Link
               key={id}
               to={path}
               title={name}
-              className="group relative bg-white rounded-3xl border border-gray-50 shadow-[0_4px_15px_-4px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 aspect-square flex items-center justify-center p-8 overflow-hidden"
+              className="group relative bg-white rounded-[24px] border border-gray-100 shadow-[0_10px_40px_rgb(0,0,0,0.04)] hover:shadow-[0_25px_60px_rgba(0,0,0,0.15)] hover:-translate-y-3 px-6 md:px-8 py-8 md:py-10 flex items-center justify-center aspect-[3/2] overflow-hidden will-change-[transform,box-shadow] transition-[transform,box-shadow] duration-500 transform-gpu"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              <div className="w-full h-full flex flex-col items-center justify-center gap-4 relative z-10">
-                <div className="w-full h-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-500">
-                  <Logo />
-                </div>
+              {/* Logo in background on hover */}
+              <div className="w-full h-full flex items-center justify-center relative z-10 transition-[opacity,transform] duration-500 group-hover:opacity-10 group-hover:scale-90 ease-out will-change-[opacity,transform] transform-gpu">
+                <Logo />
               </div>
-              <div className="absolute bottom-0 left-0 w-full h-1 gradient-hot opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+              {/* Text overlay on hover */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 opacity-0 group-hover:opacity-100 transition-[opacity,transform] duration-500 translate-y-4 group-hover:translate-y-0 z-20 will-change-[opacity,transform] transform-gpu">
+                <span className="text-red-700 font-bold text-base md:text-xl leading-tight text-center">
+                  Mã Giảm Giá<br />
+                  <span className="text-gray-900">{name}</span>
+                </span>
+              </div>
             </Link>
           ))}
         </div>
@@ -131,7 +127,7 @@ export default function Home() {
                   {promo.type}
                 </div>
               </div>
-              
+
               {/* Text Content */}
               <div className="p-6 md:p-8 flex-1 flex flex-col">
                 <h3 className="text-gray-900 font-extrabold text-xl leading-tight group-hover:text-primary transition-colors duration-300 line-clamp-3">

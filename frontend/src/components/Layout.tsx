@@ -11,13 +11,13 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-[#fafafa] font-sans antialiased flex flex-col text-gray-800">
       {/* Header */}
-      <header className="glass-header">
+      <header className="glass-header transform-gpu shadow-sm">
         <div className="container max-w-7xl mx-auto px-4 lg:px-8 h-18 md:h-22 flex items-center justify-between">
           
           {/* Logo */}
           <Link to="/" className="flex items-center shrink-0 hover:opacity-90 transition-opacity">
             <img src={logo} alt="SanMaHot" className="h-10 md:h-14 w-auto object-contain" />
-            <span className="ml-2 text-xl md:text-2xl font-black tracking-tighter gradient-text-hot hidden sm:block">SANMAHOT</span>
+            <span className="ml-2 text-xl md:text-2xl font-black tracking-tighter gradient-text-rainbow hidden sm:block">SANMAHOT</span>
           </Link>
 
           {/* Nav Menu (Desktop) */}
@@ -63,9 +63,9 @@ export default function Layout() {
 
           {/* Search bar (Desktop) & CTA */}
           <div className="flex items-center gap-4">
-            <div className="hidden md:flex items-center bg-gray-100/80 rounded-full px-4 py-2 border border-transparent focus-within:border-primary/20 focus-within:bg-white transition-all w-48 lg:w-64">
+            <div className="hidden md:flex items-center bg-gray-50 rounded-full px-4 py-2 border border-gray-200 focus-within:border-primary/40 focus-within:bg-white focus-within:shadow-[0_0_0_4px_rgba(239,68,68,0.1)] transition-all w-48 lg:w-80">
               <Search className="w-4 h-4 text-gray-400 shrink-0" />
-              <input type="text" placeholder="Tìm mã giảm giá..." className="bg-transparent border-none focus:ring-0 text-sm ml-2 w-full outline-none" />
+              <input type="text" placeholder="Tìm mã giảm giá..." className="bg-transparent border-none focus:ring-0 text-sm ml-2 w-full outline-none text-gray-700" />
             </div>
             
             <Button variant="ghost" size="icon" className="lg:hidden hover:bg-red-50" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
@@ -90,20 +90,20 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      <footer className="bg-white border-t border-gray-100 mt-auto py-12">
+      <footer className="bg-white border-t border-gray-100 mt-auto py-12" style={{backgroundColor: '#001c38'}}>
         <div className="container max-w-7xl mx-auto px-4 lg:px-8">
            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10 text-center md:text-left">
               <div className="space-y-4">
                  <div className="flex items-center justify-center md:justify-start">
                     <img src={logo} alt="SanMaHot" className="h-10 w-auto" />
-                    <span className="ml-2 text-xl font-black tracking-tighter gradient-text-hot">SANMAHOT</span>
+                    <span className="ml-2 text-xl font-black tracking-tighter gradient-text-rainbow">SANMAHOT</span>
                  </div>
                  <p className="text-gray-500 text-sm leading-relaxed max-w-xs mx-auto md:mx-0">
                     Săn mã giảm giá, voucher và deal hot nhất từ Shopee, Lazada, Tiki. Tiết kiệm tối đa cho mỗi đơn hàng của bạn.
                  </p>
               </div>
               <div>
-                 <h4 className="font-bold text-gray-900 mb-4">Mã Giảm Giá</h4>
+                 <h4 className="font-bold text-white mb-4">Mã Giảm Giá</h4>
                  <ul className="space-y-2 text-sm text-gray-500">
                     <li><Link to="/shopee" className="hover:text-primary">Mã giảm giá Shopee</Link></li>
                     <li><Link to="/lazada" className="hover:text-primary">Mã giảm giá Lazada</Link></li>
@@ -111,7 +111,7 @@ export default function Layout() {
                  </ul>
               </div>
               <div>
-                 <h4 className="font-bold text-gray-900 mb-4">Thông Tin</h4>
+                 <h4 className="font-bold text-white mb-4">Thông Tin</h4>
                  <ul className="space-y-2 text-sm text-gray-500">
                     <li><Link to="/huong-dan" className="hover:text-primary">Hướng dẫn sử dụng</Link></li>
                     <li><Link to="/tin-khuyen-mai" className="hover:text-primary">Tin khuyến mãi</Link></li>

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 @import "tailwindcss";
 @config "../tailwind.config.js";
@@ -34,21 +34,25 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Be Vietnam Pro', 'Inter', sans-serif;
+    letter-spacing: -0.01em;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: -0.03em;
   }
 }
 
 /* Custom Utilities for Premium Look */
 @layer utilities {
   .glass-panel {
-    @apply bg-white/40 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)];
+    @apply bg-white/40 backdrop-blur-lg border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)];
+    transform: translateZ(0); /* Hardware acceleration */
   }
   
   .glass-header {
-    @apply bg-white/70 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-[0_2px_20px_-5px_rgba(0,0,0,0.05)];
+    @apply bg-white/70 backdrop-blur-sm border-b border-white/20 sticky top-0 z-50 shadow-[0_2px_20px_-5px_rgba(0,0,0,0.05)];
+    transform: translateZ(0);
   }
 
   .gradient-hot {
@@ -57,6 +61,22 @@
 
   .gradient-text-hot {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-[#ff416c] to-[#ff4b2b];
+  }
+
+  .gradient-rainbow {
+    background: linear-gradient(45deg, #ff004c, #b91807, #ffde00, #00ff95, #00bfff, #7a00ff, #b1240e);
+    background-size: 200% 200%;
+    animation: rainbow-bg 8s linear infinite; /* Slower for performance */
+    transform: translateZ(0);
+  }
+
+  .gradient-text-rainbow {
+    background: linear-gradient(45deg, #ff004c, #b91807, #ffde00, #00ff95, #00bfff, #7a00ff, #b1240e);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: rainbow-bg 8s linear infinite; /* Slower for performance */
   }
   
   .ticket-cutout {
@@ -74,6 +94,13 @@
     border-radius: 50%;
     z-index: 10;
   }
+
+@keyframes rainbow-bg {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
   
   .ticket-cutout::before { top: -10px; }
   .ticket-cutout::after { bottom: -10px; }
