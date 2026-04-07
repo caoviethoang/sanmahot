@@ -1,6 +1,9 @@
 class Api::V1::CouponsController < Api::V1::BaseController
   def index
-    @coupons = paginate(Coupon.active.order(created_at: :desc))
+    @coupons = Coupon.active.order(created_at: :desc)
+    @coupons = @coupons.where("LOWER(platform) = ?", params[:platform].downcase) if params[:platform].present?
+
+    @coupons = paginate(@coupons)
     render json: @coupons, each_serializer: CouponSerializer, meta: pagination_dict(@coupons)
   end
 

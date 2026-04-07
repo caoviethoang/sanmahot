@@ -65,4 +65,5 @@ group :development, :test do
 
   # Fake data generation
   gem "faker"
+  gem "dotenv-rails"
 end

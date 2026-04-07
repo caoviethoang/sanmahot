@@ -1,5 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { useQuery } from '@tanstack/react-query';
+import api from '../services/api';
+import CouponCard from '../components/CouponCard';
 import {
   ShopeeLogo,
   LazadaLogo,
@@ -16,18 +19,18 @@ import {
 } from '../components/BrandLogos';
 
 const BRANDS = [
-  { id: 'shopee', name: 'Shopee', path: '/shopee', Logo: ShopeeLogo },
-  { id: 'lazada', name: 'Lazada', path: '/lazada', Logo: LazadaLogo },
-  { id: 'tiki', name: 'Tiki', path: '/tiki', Logo: TikiLogo },
-  { id: 'shopeefood', name: 'ShopeeFood', path: '/shopeefood', Logo: ShopeeFoodLogo },
-  { id: 'sendo', name: 'Sendo.vn', path: '/sendo', Logo: SendoLogo },
-  { id: 'nguyenkim', name: 'Nguyễn Kim', path: '/nguyenkim', Logo: NguyenKimLogo },
-  { id: 'dienmayxanh', name: 'Điện Máy Xanh', path: '/dienmayxanh', Logo: DienMayXanhLogo },
-  { id: 'fahasa', name: 'Fahasa', path: '/fahasa', Logo: FahasaLogo },
-  { id: 'grab', name: 'Grab', path: '/grab', Logo: GrabLogo },
-  { id: 'fptshop', name: 'FPT Shop', path: '/fptshop', Logo: FptShopLogo },
-  { id: 'xanhsm', name: 'XanhSM', path: '/xanhsm', Logo: XanhsmLogo },
-  { id: 'vnpay', name: 'VNPAY', path: '/vnpay', Logo: VnpayLogo },
+  { id: 'shopee', name: 'Shopee', path: '/coupons?platform=shopee', Logo: ShopeeLogo },
+  { id: 'lazada', name: 'Lazada', path: '/coupons?platform=lazada', Logo: LazadaLogo },
+  { id: 'tiki', name: 'Tiki', path: '/coupons?platform=tiki', Logo: TikiLogo },
+  { id: 'shopeefood', name: 'ShopeeFood', path: '/coupons?platform=shopeefood', Logo: ShopeeFoodLogo },
+  { id: 'sendo', name: 'Sendo.vn', path: '/coupons?platform=sendo', Logo: SendoLogo },
+  { id: 'nguyenkim', name: 'Nguyễn Kim', path: '/coupons?platform=nguyenkim', Logo: NguyenKimLogo },
+  { id: 'dienmayxanh', name: 'Điện Máy Xanh', path: '/coupons?platform=dienmayxanh', Logo: DienMayXanhLogo },
+  { id: 'fahasa', name: 'Fahasa', path: '/coupons?platform=fahasa', Logo: FahasaLogo },
+  { id: 'grab', name: 'Grab', path: '/coupons?platform=grab', Logo: GrabLogo },
+  { id: 'fptshop', name: 'FPT Shop', path: '/coupons?platform=fptshop', Logo: FptShopLogo },
+  { id: 'xanhsm', name: 'XanhSM', path: '/coupons?platform=xanhsm', Logo: XanhsmLogo },
+  { id: 'vnpay', name: 'VNPAY', path: '/coupons?platform=vnpay', Logo: VnpayLogo },
 ];
 
 const PROMOTIONS = [
@@ -69,7 +72,23 @@ const PROMOTIONS = [
   },
 ];
 
+const formatPrice = (price: number) => {
+  return new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+    maximumFractionDigits: 0,
+  }).format(price);
+};
+
 export default function Home() {
+  const { data: coupons, isLoading } = useQuery({
+    queryKey: ['latest-coupons'],
+    queryFn: async () => {
+      const response = await api.get('/coupons');
+      return response.data?.slice(0, 10); // Lấy 10 mã mới nhất như yêu cầu
+    },
+  });
+
   return (
     <div className="space-y-20">
       <Helmet>
@@ -128,12 +147,10 @@ export default function Home() {
               title={name}
               className="group relative bg-white rounded-[24px] border border-gray-100 shadow-[0_10px_40px_rgb(0,0,0,0.04)] hover:shadow-[0_25px_60px_rgba(0,0,0,0.15)] hover:-translate-y-3 px-6 md:px-8 py-8 md:py-10 flex items-center justify-center aspect-[3/2] overflow-hidden will-change-[transform,box-shadow] transition-[transform,box-shadow] duration-500 transform-gpu"
             >
-              {/* Logo in background on hover */}
               <div className="w-full h-full flex items-center justify-center relative z-10 transition-[opacity,transform] duration-500 group-hover:opacity-10 group-hover:scale-90 ease-out will-change-[opacity,transform] transform-gpu">
                 <Logo />
               </div>
 
-              {/* Text overlay on hover */}
               <div className="absolute inset-0 flex flex-col items-center justify-center p-6 opacity-0 group-hover:opacity-100 transition-[opacity,transform] duration-500 translate-y-4 group-hover:translate-y-0 z-20 will-change-[opacity,transform] transform-gpu">
                 <span className="text-red-700 font-bold text-base md:text-xl leading-tight text-center">
                   Mã Giảm Giá
@@ -144,6 +161,52 @@ export default function Home() {
             </Link>
           ))}
         </div>
+      </section>
+
+      {/* Latest Coupons Section */}
+      <section className="max-w-7xl mx-auto px-4 lg:px-0">
+        <div className="flex items-end justify-between mb-10 pb-4 border-b border-gray-100">
+          <div>
+            <h2 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tighter mb-2 text-primary">
+              MÃ KHUYẾN MÃI MỚI NHẤT
+            </h2>
+            <p className="text-gray-500 font-medium italic">
+              Vừa cập nhật từ các sàn thương mại điện tử
+            </p>
+          </div>
+          <Link
+            to="/coupons"
+            className="text-sm font-black text-primary hover:opacity-80 transition-opacity hidden md:block"
+          >
+            TẤT CẢ MÃ GIẢM GIÁ →
+          </Link>
+        </div>
+
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-40 bg-gray-50 animate-pulse rounded-3xl" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {coupons?.map((coupon: any) => (
+              <CouponCard
+                key={coupon.id}
+                id={coupon.id}
+                platform={coupon.platform?.toLowerCase() as any}
+                discountText={coupon.description || coupon.title}
+                minSpend={coupon.min_order_value ? formatPrice(parseFloat(coupon.min_order_value)) : undefined}
+                code={coupon.code}
+                expiryText={
+                  coupon.end_at
+                    ? new Date(coupon.end_at).toLocaleDateString('vi-VN')
+                    : 'Hết hạn sau'
+                }
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Tin Khuyến Mãi Section */}
@@ -174,7 +237,6 @@ export default function Home() {
               to={`/promo/${promo.id}`}
               className="bg-white rounded-[32px] overflow-hidden shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)] border border-gray-50 group flex flex-col hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] transition-all duration-500 hover:-translate-y-2 h-full"
             >
-              {/* Image Container */}
               <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-100">
                 <img
                   src={promo.image}
@@ -186,7 +248,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Text Content */}
               <div className="p-6 md:p-8 flex-1 flex flex-col">
                 <h3 className="text-gray-900 font-extrabold text-xl leading-tight group-hover:text-primary transition-colors duration-300 line-clamp-3">
                   {promo.title}

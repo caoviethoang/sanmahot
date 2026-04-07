@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_07_072248) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_07_102429) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -64,6 +64,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_072248) do
 
   create_table "coupons", force: :cascade do |t|
     t.string "affiliate_url"
+    t.string "category"
     t.string "code"
     t.datetime "created_at", null: false
     t.text "description"
@@ -75,6 +76,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_072248) do
     t.string "slug"
     t.datetime "start_at"
     t.integer "status"
+    t.string "target_users"
+    t.text "terms"
     t.string "title"
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_coupons_on_slug"

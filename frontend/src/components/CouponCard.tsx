@@ -1,11 +1,16 @@
+import { useState } from 'react';
 import { Button } from './ui/button';
-import { Copy, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, X, Info, CheckCircle2 } from 'lucide-react';
 import { ShopeeIcon, LazadaIcon, TikiIcon } from './PlatformIcons';
 
 interface CouponProps {
   id: number;
-  platform: 'shopee' | 'lazada' | 'tiki';
-  discountText: string;
+  platform: string;
+  title: string;
+  description?: string;
+  category?: string;
+  terms?: string;
+  targetUsers?: string;
   minSpend?: string;
   code: string;
   expiryText: string;
@@ -14,55 +19,63 @@ interface CouponProps {
 export default function CouponCard({
   id,
   platform,
-  discountText,
+  title,
+  description,
+  category,
+  terms,
+  targetUsers,
   minSpend,
   code,
   expiryText,
 }: CouponProps) {
+  const [showDetail, setShowDetail] = useState(false);
+
   const getPlatformDetails = () => {
-    switch (platform) {
+    const normalizedPlatform = platform?.toLowerCase();
+    switch (normalizedPlatform) {
       case 'shopee':
         return {
           icon: <ShopeeIcon className="w-8 h-8" />,
           color: 'text-[#ee4d2d]',
-          bg: 'bg-[#ee4d2d]/10',
+          bg: 'bg-[#ee4d2d]',
+          lightBg: 'bg-[#ee4d2d]/5',
           border: 'border-[#ee4d2d]/20',
-          badge: 'bg-[#ee4d2d]',
         };
       case 'lazada':
         return {
           icon: <LazadaIcon className="w-8 h-8" />,
           color: 'text-[#0f136d]',
-          bg: 'bg-[#0f136d]/10',
+          bg: 'bg-[#0f136d]',
+          lightBg: 'bg-[#0f136d]/5',
           border: 'border-[#0f136d]/20',
-          badge: 'bg-[#0f136d]',
         };
       case 'tiki':
         return {
           icon: <TikiIcon className="w-8 h-8" />,
           color: 'text-[#1a94ff]',
-          bg: 'bg-[#1a94ff]/10',
+          bg: 'bg-[#1a94ff]',
+          lightBg: 'bg-[#1a94ff]/5',
           border: 'border-[#1a94ff]/20',
-          badge: 'bg-[#1a94ff]',
         };
       default:
         return {
-          icon: null,
+          icon: <ArrowUpRight className="w-8 h-8" />,
           color: 'text-primary',
-          bg: 'bg-primary/10',
+          bg: 'bg-primary',
+          lightBg: 'bg-primary/5',
           border: 'border-primary/20',
-          badge: 'bg-primary',
         };
     }
   };
 
-  const { icon, color, bg, border } = getPlatformDetails();
+  const { icon, color, bg, lightBg } = getPlatformDetails();
 
-  const handleCopyCode = () => {
+  const handleCopyCode = (e: React.MouseEvent) => {
+    e.stopPropagation();
     navigator.clipboard.writeText(code);
     const toast = document.createElement('div');
     toast.className =
-      'fixed bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full font-bold text-sm shadow-2xl z-[100] animate-in fade-in slide-in-from-bottom-4 duration-300';
+      'fixed bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full font-bold text-sm shadow-2xl z-[200] animate-in fade-in slide-in-from-bottom-4 duration-300';
     toast.innerText = '🚀 Đã copy mã: ' + code;
     document.body.appendChild(toast);
     setTimeout(() => {
@@ -72,79 +85,145 @@ export default function CouponCard({
   };
 
   return (
-    <div className="relative flex bg-white rounded-3xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.1)] transition-all duration-500 border border-gray-100 group hover:-translate-y-1.5 w-full overflow-hidden">
-      {/* Left Section (Brand & Logo) */}
-      <div
-        className={`relative flex flex-col items-center justify-center p-6 ${bg} w-[100px] md:w-[130px] shrink-0 ticket-cutout`}
+    <>
+      <div 
+        onClick={() => setShowDetail(true)}
+        className="relative flex bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 group w-full cursor-pointer overflow-visible min-h-[160px]"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none"></div>
-        <div className="bg-white p-3 rounded-2xl shadow-sm group-hover:scale-110 transition-transform duration-500 relative z-10">
-          {icon}
-        </div>
+        {/* Left Section (Colored Ticket Band) */}
         <div
-          className={`mt-3 text-[10px] font-black uppercase tracking-widest ${color} opacity-60 relative z-10`}
+          className={`relative flex flex-col items-center justify-center p-4 ${bg} w-[100px] md:w-[130px] shrink-0 rounded-l-2xl border-r border-dashed border-white/30`}
         >
-          {platform}
-        </div>
-      </div>
+          <div className="bg-white p-2.5 rounded-full shadow-lg group-hover:scale-110 transition-transform duration-500 relative z-10 flex items-center justify-center w-14 h-14">
+            {icon}
+          </div>
+          <div className="mt-3 text-[12px] font-black uppercase tracking-tight text-white text-center leading-tight">
+            {category || 'Ưu đãi'}
+          </div>
+          <div className="font-bold mt-auto text-white/90 flex flex-col items-center">
+            <span className="opacity-70 uppercase text-[12px]">HSD</span>
+            <span className="font-black tracking-tighter">{expiryText}</span>
+          </div>
 
-      {/* Main Content */}
-      <div className="flex-1 p-5 md:p-7 flex flex-col justify-between min-w-0 bg-gradient-to-br from-white via-white to-gray-50/30">
-        <div className="space-y-3">
-          <div className="flex items-start justify-between gap-4">
-            <h3 className="font-extrabold text-gray-900 text-lg md:text-xl leading-tight line-clamp-2 transition-colors group-hover:text-primary">
-              {discountText}
-            </h3>
-            {minSpend && (
-              <span className="shrink-0 text-[10px] font-bold bg-gray-100 text-gray-500 px-2 py-1 rounded-lg uppercase tracking-tight">
-                Min {minSpend}
-              </span>
+          {/* Notches (Ticket Cutouts) */}
+          <div className="absolute -top-3 -right-3 w-6 h-6 rounded-full bg-gray-50 border border-gray-100 z-20"></div>
+          <div className="absolute -bottom-3 -right-3 w-6 h-6 rounded-full bg-gray-50 border border-gray-100 z-20"></div>
+        </div>
+
+        {/* Main Content (Right Side) */}
+        <div className="flex-1 p-4 md:p-6 flex flex-col justify-between min-w-0 bg-white rounded-r-2xl">
+          <div className="space-y-1.5">
+            <div className="flex items-start justify-between gap-2">
+              <h3 className="font-black text-gray-900 leading-tight group-hover:text-primary transition-colors line-clamp-2">
+                {title}
+              </h3>
+            </div>
+            <div className="text-[14px] font-bold text-gray-700">
+              {minSpend ? `ĐH tối thiểu: ${minSpend}` : 'ĐH tối thiểu: 0đ'}
+            </div>
+            {targetUsers && (
+              <div className="text-[12px] text-gray-500 font-bold flex items-center gap-1">
+                Đối tượng: <span className="text-gray-700">{targetUsers}</span>
+              </div>
             )}
+            <div className="text-[11px] text-orange-600 font-bold italic opacity-90 underline decoration-orange-200 cursor-pointer hover:text-orange-700">
+              Xem chi tiết
+            </div>
           </div>
 
-          <div className="flex items-center text-[11px] font-bold text-gray-400 gap-2">
-            <span className="w-2 h-2 rounded-full gradient-hot animate-pulse"></span>
-            HSD: {expiryText}
-          </div>
-        </div>
-
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between mt-6 gap-4">
-          {/* Voucher Code Display */}
-          <div
-            className={`flex-1 flex items-center justify-between border-2 border-dashed ${border} ${bg} rounded-2xl px-4 py-3 group/code cursor-pointer transition-all active:scale-[0.98] outline-none hover:border-primary/40`}
-            onClick={handleCopyCode}
-          >
-            <span
-              className={`font-mono text-base md:text-lg font-black uppercase tracking-widest ${color} truncate`}
-            >
-              {code}
-            </span>
-            <Copy
-              className={`w-4 h-4 ml-3 ${color} opacity-40 group-hover/code:opacity-100 transition-opacity`}
-            />
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between mt-5 gap-3">
+            <div className="text-[11px] font-black text-green-700 bg-green-50 px-3 py-1 rounded-lg border border-green-100 italic tracking-tight">
+              #Mã nhập tay
+            </div>
             <Button
-              size="lg"
-              className="gradient-hot text-white font-extrabold px-6 h-12 shadow-lg shadow-red-500/20 rounded-2xl flex-1 sm:flex-none active:scale-95 transition-transform"
+              size="sm"
+              className="bg-green-600 hover:bg-green-700 text-white font-black px-7 h-11 rounded-xl active:scale-95 transition-transform shadow-md"
               onClick={handleCopyCode}
             >
-              COPY MÃ
+              Copy mã
             </Button>
-            <a
-              href={`/api/go/coupon/${id}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-12 h-12 rounded-2xl border border-gray-100 flex items-center justify-center text-gray-400 hover:text-primary hover:bg-red-50 hover:border-red-100 transition-all active:scale-95"
-              title="Đến Shop"
-            >
-              <ArrowUpRight className="w-5 h-5" />
-            </a>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Detail Modal */}
+      {showDetail && (
+        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div 
+            className="bg-white w-full max-w-lg rounded-[32px] overflow-hidden shadow-2xl relative animate-in zoom-in-95 duration-300"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className={`p-8 ${bg} relative overflow-hidden`}>
+              <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+              <button 
+                onClick={() => setShowDetail(false)}
+                className="absolute top-4 right-4 p-2 bg-black/10 hover:bg-black/20 rounded-full text-white transition-colors z-20"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              
+              <div className="relative z-10 flex flex-col items-center text-center space-y-4">
+                <div className="bg-white p-4 rounded-3xl shadow-xl w-24 h-24 flex items-center justify-center">
+                  {icon}
+                </div>
+                <div className="space-y-1">
+                  <div className="text-white/80 font-black uppercase tracking-widest text-xs">
+                    {platform} • {category}
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-black text-white leading-tight">
+                    {title}
+                  </h2>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-8 space-y-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
+              <div className="grid grid-cols-2 gap-4">
+                <div className={`p-4 rounded-2xl ${lightBg} border border-gray-100`}>
+                  <div className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">MÃ GIẢM GIÁ</div>
+                  <div className={`text-xl font-black ${color} tracking-widest uppercase`}>{code}</div>
+                </div>
+                <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+                  <div className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">HẠN SỬ DỤNG</div>
+                  <div className="text-xl font-black text-gray-900">{expiryText}</div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h4 className="flex items-center gap-2 font-black text-gray-900 text-lg">
+                  <Info className="w-5 h-5 text-blue-500" />
+                  Điều kiện & Ghi chú
+                </h4>
+                <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100 space-y-3 text-sm text-gray-600 leading-relaxed">
+                  <div className="flex gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                    <p><span className="font-bold text-gray-900">Đơn hàng tối thiểu:</span> {minSpend || '0đ'}</p>
+                  </div>
+                  <div className="flex gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                    <p><span className="font-bold text-gray-900">Đối tượng:</span> {targetUsers || 'Tất cả khách hàng'}</p>
+                  </div>
+                  <div className="pt-4 border-t border-gray-200 mt-2">
+                    <p className="whitespace-pre-wrap">{terms || description || 'Áp dụng cho các sản phẩm trong danh mục tương ứng.'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-8 pt-0 flex gap-4">
+              <Button 
+                className="flex-1 h-14 rounded-2xl bg-green-600 hover:bg-green-700 text-white font-black text-lg shadow-xl shadow-green-200"
+                onClick={handleCopyCode}
+              >
+                COPY MÃ VÀ ĐẾN SHOP
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
