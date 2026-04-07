@@ -1,12 +1,7 @@
 // Brand logos as accurate image components referencing official assets in /public/logos/
 
 const LogoImage = ({ src, alt }: { src: string; alt: string }) => (
-  <img 
-    src={src} 
-    alt={alt} 
-    className="w-full h-full object-contain" 
-    loading="lazy"
-  />
+  <img src={src} alt={alt} className="w-full h-full object-contain" loading="lazy" />
 );
 
 export const ShopeeLogo = () => <LogoImage src="/logos/shopee.jpg" alt="Shopee" />;
@@ -19,5 +14,5 @@ export const DienMayXanhLogo = () => <LogoImage src="/logos/dienmayxanh.jpg" alt
 export const FahasaLogo = () => <LogoImage src="/logos/fahasa.png" alt="Fahasa" />;
 export const GrabLogo = () => <LogoImage src="/logos/grab.png" alt="Grab" />;
 export const FptShopLogo = () => <LogoImage src="/logos/fptshop.webp" alt="FPT Shop" />;
-export const WatsonsLogo = () => <LogoImage src="/logos/watsons.jpg" alt="Watson's" />;
+export const XanhsmLogo = () => <LogoImage src="/logos/xanhsm.png" alt="XanhSM" />;
 export const VnpayLogo = () => <LogoImage src="/logos/vnpay.webp" alt="VNPAY" />;

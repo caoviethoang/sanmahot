@@ -1,5 +1,5 @@
 class Api::V1::Admin::CouponsController < Api::V1::Admin::BaseController
-  before_action :set_coupon, only: [:show, :update, :destroy]
+  before_action :set_coupon, only: [ :show, :update, :destroy ]
 
   def index
     @coupons = Coupon.all.order(created_at: :desc)
@@ -40,8 +40,8 @@ class Api::V1::Admin::CouponsController < Api::V1::Admin::BaseController
 
   def coupon_params
     params.require(:coupon).permit(
-      :title, :code, :description, :platform, 
-      :discount_type, :discount_value, :min_order_value, 
+      :title, :code, :description, :platform,
+      :discount_type, :discount_value, :min_order_value,
       :affiliate_url, :start_at, :end_at, :status
     )
   end

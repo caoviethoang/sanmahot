@@ -2,7 +2,14 @@ import { useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import api from '../../services/api';
 import { Button } from '../../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '../../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from '../../components/ui/card';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -24,7 +31,7 @@ export default function AdminLogin() {
     try {
       const response = await api.post('/admin/login', { admin: { email, password } });
       const authHeader = response.headers['authorization'];
-      
+
       if (authHeader) {
         const token = authHeader.split(' ')[1];
         localStorage.setItem('admin_token', token);
@@ -43,7 +50,9 @@ export default function AdminLogin() {
     <div className="min-h-screen bg-muted/30 flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-xl border-t-4 border-t-primary">
         <CardHeader className="text-center space-y-2">
-          <CardTitle className="text-3xl font-extrabold tracking-tight text-primary">SanMaHot Admin</CardTitle>
+          <CardTitle className="text-3xl font-extrabold tracking-tight text-primary">
+            SanMaHot Admin
+          </CardTitle>
           <CardDescription>Đăng nhập để quản lý hệ thống</CardDescription>
         </CardHeader>
         <form onSubmit={handleLogin}>

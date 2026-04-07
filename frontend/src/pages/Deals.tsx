@@ -18,7 +18,10 @@ export default function Deals() {
     <div className="space-y-8">
       <Helmet>
         <title>Deal Ngon hôm nay - Tổng hợp khuyến mãi cực sốc | SanMaHot</title>
-        <meta name="description" content="Danh sách deal ngon, giảm giá sốc từ Shopee, Lazada, Tiki. Đừng bỏ lỡ cơ hội mua hàng giá rẻ nhất." />
+        <meta
+          name="description"
+          content="Danh sách deal ngon, giảm giá sốc từ Shopee, Lazada, Tiki. Đừng bỏ lỡ cơ hội mua hàng giá rẻ nhất."
+        />
       </Helmet>
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -27,7 +30,10 @@ export default function Deals() {
           <p className="text-muted-foreground">Tổng hợp deal hot từ các sàn TMĐT hôm nay.</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="rounded-full hover:bg-red-50 hover:text-red-600 transition-colors">
+          <Button
+            variant="outline"
+            className="rounded-full hover:bg-red-50 hover:text-red-600 transition-colors"
+          >
             <Filter className="w-4 h-4 mr-2" /> Lọc
           </Button>
           <select className="bg-background border border-gray-200 rounded-full px-4 text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all">

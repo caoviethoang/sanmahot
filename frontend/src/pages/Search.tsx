@@ -11,7 +11,9 @@ export default function Search() {
     queryKey: ['search', query],
     queryFn: async () => {
       if (!query) return [];
-      const response = await api.get('/search', { params: { 'q[title_or_description_cont]': query } });
+      const response = await api.get('/search', {
+        params: { 'q[title_or_description_cont]': query },
+      });
       return response.data;
     },
     enabled: !!query,

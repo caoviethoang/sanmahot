@@ -23,12 +23,17 @@ export default function Coupons() {
     <div className="space-y-8">
       <Helmet>
         <title>Mã giảm giá Shopee, Lazada, Tiki hot nhất hôm nay | SanMaHot</title>
-        <meta name="description" content="Tổng hợp mã giảm giá Shopee, voucher Lazada, Tiki mới nhất. Lấy mã ngay để nhận ưu đãi cực khủng khi mua sắm online." />
+        <meta
+          name="description"
+          content="Tổng hợp mã giảm giá Shopee, voucher Lazada, Tiki mới nhất. Lấy mã ngay để nhận ưu đãi cực khủng khi mua sắm online."
+        />
       </Helmet>
 
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-red-600">Mã Giảm Giá</h1>
-        <p className="text-muted-foreground">Lấy mã giảm giá Shopee, Lazada, TikTok Shop mới nhất.</p>
+        <p className="text-muted-foreground">
+          Lấy mã giảm giá Shopee, Lazada, TikTok Shop mới nhất.
+        </p>
       </div>
 
       {isLoading ? (
@@ -40,14 +45,18 @@ export default function Coupons() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {coupons?.map((coupon: any) => (
-            <CouponCard 
+            <CouponCard
               key={coupon.id}
               id={coupon.id}
               platform={coupon.platform.toLowerCase() as any}
               discountText={coupon.title}
               minSpend={coupon.min_order_value ? formatPrice(coupon.min_order_value) : undefined}
               code={coupon.code}
-              expiryText={coupon.end_at ? `HSD: ${new Date(coupon.end_at).toLocaleDateString('vi-VN')}` : 'Không hết hạn'}
+              expiryText={
+                coupon.end_at
+                  ? `HSD: ${new Date(coupon.end_at).toLocaleDateString('vi-VN')}`
+                  : 'Không hết hạn'
+              }
             />
           ))}
         </div>

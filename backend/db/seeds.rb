@@ -2,14 +2,14 @@
 Admin.create!(email: 'admin@sanmahot.com', password: 'password123', password_confirmation: 'password123')
 
 # Create Categories
-categories = ['Electronics', 'Home & Kitchen', 'Beauty', 'Fashion', 'Toys'].map do |name|
+categories = [ 'Electronics', 'Home & Kitchen', 'Beauty', 'Fashion', 'Toys' ].map do |name|
   Category.find_or_create_by!(name: name) do |c|
     c.description = "Best deals for #{name}"
   end
 end
 
 # Create Tags
-tags = ['Hot Deal', 'Limited Offer', 'Freeship', 'Flash Sale'].map do |name|
+tags = [ 'Hot Deal', 'Limited Offer', 'Freeship', 'Flash Sale' ].map do |name|
   Tag.find_or_create_by!(name: name)
 end
 
@@ -28,8 +28,8 @@ end
     discount_percent: discount,
     affiliate_url: 'https://shope.ee/example',
     image_url: "https://picsum.photos/seed/#{rand(1000)}/400/300",
-    merchant_name: ['Shopee', 'Lazada', 'TikTok Shop'].sample,
-    source_platform: ['Shopee', 'Lazada'].sample,
+    merchant_name: [ 'Shopee', 'Lazada', 'TikTok Shop' ].sample,
+    source_platform: [ 'Shopee', 'Lazada' ].sample,
     status: :active,
     start_at: Time.current,
     expired_at: 1.week.from_now,
@@ -46,8 +46,8 @@ end
     description: "Giảm trực tiếp vào đơn hàng Shopee",
     platform: 'Shopee',
     discount_type: 'amount',
-    discount_value: [10000, 20000, 50000].sample,
-    min_order_value: [0, 50000, 100000, 200000].sample,
+    discount_value: [ 10000, 20000, 50000 ].sample,
+    min_order_value: [ 0, 50000, 100000, 200000 ].sample,
     affiliate_url: 'https://shope.ee/coupon-example',
     status: :active,
     start_at: Time.current,

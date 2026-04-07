@@ -433,6 +433,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 8.1.2, >= 8.1.2.1)
   ransack
+  rubocop
   rubocop-rails-omakase
   solid_cable
   solid_cache

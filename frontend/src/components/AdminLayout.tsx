@@ -14,7 +14,7 @@ export default function AdminLayout() {
   const handleLogout = async () => {
     try {
       await api.delete('/admin/logout', {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
     } catch (e) {
       console.error(e);
@@ -33,25 +33,44 @@ export default function AdminLayout() {
             SanMaHot Admin
           </Link>
           <nav className="space-y-1">
-             <Link to="/admin" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground text-sm font-medium">
-               <LayoutDashboard className="w-4 h-4" /> Tổng quan
-             </Link>
-             <Link to="/admin/deals" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground text-sm font-medium">
-               <ShoppingBag className="w-4 h-4" /> Quản lý Deal
-             </Link>
-             <Link to="/admin/coupons" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground text-sm font-medium">
-               <Ticket className="w-4 h-4" /> Mã Giảm Giá
-             </Link>
-             <Link to="/admin/categories" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground text-sm font-medium">
-               <Tags className="w-4 h-4" /> Danh mục
-             </Link>
-             <Link to="/admin/articles" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground text-sm font-medium">
-               <FileText className="w-4 h-4" /> Bài Viết SEO
-             </Link>
+            <Link
+              to="/admin"
+              className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground text-sm font-medium"
+            >
+              <LayoutDashboard className="w-4 h-4" /> Tổng quan
+            </Link>
+            <Link
+              to="/admin/deals"
+              className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground text-sm font-medium"
+            >
+              <ShoppingBag className="w-4 h-4" /> Quản lý Deal
+            </Link>
+            <Link
+              to="/admin/coupons"
+              className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground text-sm font-medium"
+            >
+              <Ticket className="w-4 h-4" /> Mã Giảm Giá
+            </Link>
+            <Link
+              to="/admin/categories"
+              className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground text-sm font-medium"
+            >
+              <Tags className="w-4 h-4" /> Danh mục
+            </Link>
+            <Link
+              to="/admin/articles"
+              className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground text-sm font-medium"
+            >
+              <FileText className="w-4 h-4" /> Bài Viết SEO
+            </Link>
           </nav>
         </div>
         <div>
-          <Button variant="ghost" onClick={handleLogout} className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10">
+          <Button
+            variant="ghost"
+            onClick={handleLogout}
+            className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
+          >
             <LogOut className="w-4 h-4 mr-2" /> Đăng xuất
           </Button>
         </div>

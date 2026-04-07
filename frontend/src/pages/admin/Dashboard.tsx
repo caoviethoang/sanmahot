@@ -10,7 +10,7 @@ export default function AdminDashboard() {
     queryKey: ['admin_stats'],
     queryFn: async () => {
       const response = await api.get('/admin/dashboard/stats', {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     },
@@ -33,10 +33,12 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats?.deals_count || 0}</div>
-            <p className="text-xs text-muted-foreground">{stats?.active_deals_count || 0} đang active</p>
+            <p className="text-xs text-muted-foreground">
+              {stats?.active_deals_count || 0} đang active
+            </p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Mã Giảm Giá</CardTitle>
@@ -44,7 +46,9 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats?.coupons_count || 0}</div>
-            <p className="text-xs text-muted-foreground">{stats?.active_coupons_count || 0} đang active</p>
+            <p className="text-xs text-muted-foreground">
+              {stats?.active_coupons_count || 0} đang active
+            </p>
           </CardContent>
         </Card>
 

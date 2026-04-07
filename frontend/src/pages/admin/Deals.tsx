@@ -16,7 +16,7 @@ export default function AdminDeals() {
     queryKey: ['admin_deals'],
     queryFn: async () => {
       const response = await api.get('/admin/deals', {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     },
@@ -25,7 +25,7 @@ export default function AdminDeals() {
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
       await api.delete(`/admin/deals/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
     },
     onSuccess: () => {
@@ -42,7 +42,12 @@ export default function AdminDeals() {
           <h1 className="text-3xl font-bold tracking-tight">Quản lý Deal</h1>
           <p className="text-muted-foreground">Thêm, sửa, xóa các deal khuyến mãi trên hệ thống.</p>
         </div>
-        <Button onClick={() => { setEditingDeal({}); setIsEditing(true); }}>
+        <Button
+          onClick={() => {
+            setEditingDeal({});
+            setIsEditing(true);
+          }}
+        >
           <Plus className="w-4 h-4 mr-2" /> Thêm Deal Mới
         </Button>
       </div>
@@ -70,11 +75,19 @@ export default function AdminDeals() {
                     <td className="px-4 py-3 font-mono">{deal.id}</td>
                     <td className="px-4 py-3 font-medium">
                       <div className="flex items-center gap-3">
-                        {deal.image_url && <img src={deal.image_url} alt="" className="w-8 h-8 rounded object-cover" />}
+                        {deal.image_url && (
+                          <img
+                            src={deal.image_url}
+                            alt=""
+                            className="w-8 h-8 rounded object-cover"
+                          />
+                        )}
                         <span className="line-clamp-1">{deal.title}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 uppercase text-[10px] font-bold">{deal.source_platform}</td>
+                    <td className="px-4 py-3 uppercase text-[10px] font-bold">
+                      {deal.source_platform}
+                    </td>
                     <td className="px-4 py-3">
                       <span className="text-red-600 font-bold">-{deal.discount_percent}%</span>
                     </td>
@@ -85,21 +98,30 @@ export default function AdminDeals() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex justify-end gap-2">
-                        <Button variant="ghost" size="icon" onClick={() => { setEditingDeal(deal); setIsEditing(true); }}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            setEditingDeal(deal);
+                            setIsEditing(true);
+                          }}
+                        >
                           <Edit className="w-4 h-4" />
                         </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                          onClick={() => { if(confirm('Chắc chắn xóa?')) deleteMutation.mutate(deal.id); }}
+                          onClick={() => {
+                            if (confirm('Chắc chắn xóa?')) deleteMutation.mutate(deal.id);
+                          }}
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
                         <a href={`/deals/${deal.slug}`} target="_blank" rel="noreferrer">
-                           <Button variant="ghost" size="icon">
-                              <ExternalLink className="w-4 h-4" />
-                           </Button>
+                          <Button variant="ghost" size="icon">
+                            <ExternalLink className="w-4 h-4" />
+                          </Button>
                         </a>
                       </div>
                     </td>
@@ -116,16 +138,24 @@ export default function AdminDeals() {
         <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">
           <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <CardHeader>
-               <CardTitle>{editingDeal?.id ? 'Sửa Deal' : 'Thêm Deal Mới'}</CardTitle>
+              <CardTitle>{editingDeal?.id ? 'Sửa Deal' : 'Thêm Deal Mới'}</CardTitle>
             </CardHeader>
             <CardContent>
-               <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); /* form logic */ setIsEditing(false); }}>
-                  <p className="text-muted-foreground italic text-sm">Form logic: coming soon...</p>
-                  <div className="flex justify-end gap-3 pt-4">
-                    <Button variant="outline" onClick={() => setIsEditing(false)}>Hủy</Button>
-                    <Button type="submit">Lưu lại</Button>
-                  </div>
-               </form>
+              <form
+                className="space-y-4"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  /* form logic */ setIsEditing(false);
+                }}
+              >
+                <p className="text-muted-foreground italic text-sm">Form logic: coming soon...</p>
+                <div className="flex justify-end gap-3 pt-4">
+                  <Button variant="outline" onClick={() => setIsEditing(false)}>
+                    Hủy
+                  </Button>
+                  <Button type="submit">Lưu lại</Button>
+                </div>
+              </form>
             </CardContent>
           </Card>
         </div>

@@ -5,7 +5,7 @@ import DealCard from '../components/DealCard';
 
 export default function CategoryDetail() {
   const { slug } = useParams();
-  
+
   const { data: category, isLoading: isCatLoading } = useQuery({
     queryKey: ['categories', slug],
     queryFn: async () => {
@@ -23,7 +23,13 @@ export default function CategoryDetail() {
     enabled: !!category,
   });
 
-  if (isCatLoading) return <div className="animate-pulse space-y-4"><div className="h-10 w-48 bg-muted rounded"></div><div className="h-4 w-full bg-muted rounded"></div></div>;
+  if (isCatLoading)
+    return (
+      <div className="animate-pulse space-y-4">
+        <div className="h-10 w-48 bg-muted rounded"></div>
+        <div className="h-4 w-full bg-muted rounded"></div>
+      </div>
+    );
 
   return (
     <div className="space-y-8">

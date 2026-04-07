@@ -32,7 +32,7 @@ function App() {
               <Route path="categories/:slug" element={<CategoryDetail />} />
               <Route path="search" element={<Search />} />
             </Route>
-            
+
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />

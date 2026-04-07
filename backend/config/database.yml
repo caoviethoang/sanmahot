@@ -19,7 +19,6 @@ default: &default
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
-
 development:
   <<: *default
   database: sanmahot_development
@@ -39,7 +38,7 @@ development:
   host: db
   port: 5432
   username: postgres
-  password: '123456'
+  password: "123456"
 
   # Schema search path. The server defaults to $user,public
   #schema_search_path: myapp,sharedapp,public

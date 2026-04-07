@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prettier": "prettier --write ."
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.4",
@@ -33,6 +34,7 @@
     "globals": "^17.4.0",
     "lucide-react": "^1.7.0",
     "postcss": "^8.5.8",
+    "prettier": "^3.8.1",
     "react-hook-form": "^7.72.1",
     "react-router-dom": "^7.14.0",
     "tailwind-merge": "^3.5.0",

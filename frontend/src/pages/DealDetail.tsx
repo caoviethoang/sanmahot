@@ -28,29 +28,39 @@ export default function DealDetail() {
         </div>
         <div className="space-y-6">
           <div className="space-y-2">
-             <div className="flex items-center gap-2 text-sm text-muted-foreground uppercase tracking-wider font-semibold">
-                <span>{deal.merchant_name}</span>
-                <span>•</span>
-                <span>{deal.category_name}</span>
-             </div>
-             <h1 className="text-3xl font-extrabold leading-tight">{deal.title}</h1>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground uppercase tracking-wider font-semibold">
+              <span>{deal.merchant_name}</span>
+              <span>•</span>
+              <span>{deal.category_name}</span>
+            </div>
+            <h1 className="text-3xl font-extrabold leading-tight">{deal.title}</h1>
           </div>
-          
+
           <div className="flex items-center gap-4 bg-muted/50 p-4 rounded-xl">
             <div className="space-y-1">
-              <span className="text-3xl font-bold text-red-600">{formatCurrency(deal.sale_price)}</span>
+              <span className="text-3xl font-bold text-red-600">
+                {formatCurrency(deal.sale_price)}
+              </span>
               <div className="flex items-center gap-2">
-                <span className="text-muted-foreground line-through">{formatCurrency(deal.original_price)}</span>
-                <span className="bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded">-{deal.discount_percent}%</span>
+                <span className="text-muted-foreground line-through">
+                  {formatCurrency(deal.original_price)}
+                </span>
+                <span className="bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded">
+                  -{deal.discount_percent}%
+                </span>
               </div>
             </div>
           </div>
 
           <div className="space-y-4">
-             <Button size="lg" className="w-full h-14 text-lg font-bold rounded-full" asChild>
-               <a href={`/api/go/deal/${deal.id}`} target="_blank" rel="noopener noreferrer">Đến Nơi Bán</a>
-             </Button>
-             <p className="text-center text-xs text-muted-foreground">Bạn sẽ được chuyển hướng đến {deal.merchant_name} qua link affiliate của chúng tôi.</p>
+            <Button size="lg" className="w-full h-14 text-lg font-bold rounded-full" asChild>
+              <a href={`/api/go/deal/${deal.id}`} target="_blank" rel="noopener noreferrer">
+                Đến Nơi Bán
+              </a>
+            </Button>
+            <p className="text-center text-xs text-muted-foreground">
+              Bạn sẽ được chuyển hướng đến {deal.merchant_name} qua link affiliate của chúng tôi.
+            </p>
           </div>
 
           <div className="prose prose-sm max-w-none border-t pt-6">

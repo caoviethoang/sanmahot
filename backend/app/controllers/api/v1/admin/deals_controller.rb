@@ -1,5 +1,5 @@
 class Api::V1::Admin::DealsController < Api::V1::Admin::BaseController
-  before_action :set_deal, only: [:show, :update, :destroy]
+  before_action :set_deal, only: [ :show, :update, :destroy ]
 
   def index
     @deals = Deal.all.order(created_at: :desc)
@@ -40,9 +40,9 @@ class Api::V1::Admin::DealsController < Api::V1::Admin::BaseController
 
   def deal_params
     params.require(:deal).permit(
-      :title, :description, :original_price, :sale_price, 
-      :discount_percent, :affiliate_url, :image_url, 
-      :merchant_name, :source_platform, :coupon_code, 
+      :title, :description, :original_price, :sale_price,
+      :discount_percent, :affiliate_url, :image_url,
+      :merchant_name, :source_platform, :coupon_code,
       :status, :start_at, :expired_at, :category_id,
       tag_ids: []
     )

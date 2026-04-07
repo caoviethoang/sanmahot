@@ -33,7 +33,9 @@ export default function Categories() {
               <Card className="hover:border-primary transition-colors group">
                 <CardContent className="p-6 flex items-center justify-between">
                   <div>
-                    <h3 className="font-bold text-lg group-hover:text-primary transition-colors">{category.name}</h3>
+                    <h3 className="font-bold text-lg group-hover:text-primary transition-colors">
+                      {category.name}
+                    </h3>
                     <p className="text-sm text-muted-foreground">{category.description}</p>
                   </div>
                   <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />

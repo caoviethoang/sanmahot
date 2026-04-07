@@ -1,5 +1,5 @@
 class Api::V1::Admin::ArticlesController < Api::V1::Admin::BaseController
-  before_action :set_article, only: [:show, :update, :destroy]
+  before_action :set_article, only: [ :show, :update, :destroy ]
 
   def index
     @articles = Article.all.order(created_at: :desc)
@@ -40,7 +40,7 @@ class Api::V1::Admin::ArticlesController < Api::V1::Admin::BaseController
 
   def article_params
     params.require(:article).permit(
-      :title, :content, :excerpt, :meta_title, 
+      :title, :content, :excerpt, :meta_title,
       :meta_description, :published_at, :status
     )
   end

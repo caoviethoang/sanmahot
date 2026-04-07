@@ -4,9 +4,9 @@ class Api::V1::BaseController < ApplicationController
   private
 
   def not_found
-    render json: { error: 'Not found' }, status: :not_found
+    render json: { error: "Not found" }, status: :not_found
   end
-  
+
   def paginate(scope)
     scope.page(params[:page]).per(params[:per_page] || 20)
   end

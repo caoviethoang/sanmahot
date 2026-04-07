@@ -1,5 +1,5 @@
 class Api::V1::Admin::CategoriesController < Api::V1::Admin::BaseController
-  before_action :set_category, only: [:show, :update, :destroy]
+  before_action :set_category, only: [ :show, :update, :destroy ]
 
   def index
     @categories = Category.all
