@@ -1,0 +1,57 @@
+services:
+  db:
+    image: postgres:16
+    container_name: sanmahot-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: sanmahot_development
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  web:
+    build:
+      context: ./backend
+    container_name: sanmahot-rails
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -b 0.0.0.0"
+    volumes:
+      - ./backend:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:123456@db:5432/sanmahot_development
+      RAILS_ENV: development
+      POSTGRES_PASSWORD: 123456
+
+  # worker:
+  #   build:
+  #     context: ./backend
+  #   container_name: sanmahot-jobs
+  #   command: bundle exec rake solid_queue:start
+  #   volumes:
+  #     - ./backend:/app
+  #   depends_on:
+  #     - db
+  #   environment:
+  #     DATABASE_URL: postgresql://postgres:123456@db:5432/sanmahot_development
+  #     RAILS_ENV: development
+  #     POSTGRES_PASSWORD: 123456
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: sanmahot-frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    command: npm run dev -- --host
+
+volumes:
+  pg_data:
