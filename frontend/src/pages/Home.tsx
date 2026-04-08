@@ -192,10 +192,11 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {coupons?.map((coupon: any) => (
               <CouponCard
+                title={coupon.title}
                 key={coupon.id}
                 id={coupon.id}
                 platform={coupon.platform?.toLowerCase() as any}
-                discountText={coupon.description || coupon.title}
+                description={coupon.description || coupon.title}
                 minSpend={coupon.min_order_value ? formatPrice(parseFloat(coupon.min_order_value)) : undefined}
                 code={coupon.code}
                 expiryText={

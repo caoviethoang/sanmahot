@@ -48,7 +48,7 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen bg-muted/30 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md shadow-xl border-t-4 border-t-primary">
+      <Card className="w-full max-w-md shadow-xl border-orange-500">
         <CardHeader className="text-center space-y-2">
           <CardTitle className="text-3xl font-extrabold tracking-tight text-primary">
             SanMaHot Admin

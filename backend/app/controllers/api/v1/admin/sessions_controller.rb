@@ -6,7 +6,7 @@ class Api::V1::Admin::SessionsController < Devise::SessionsController
   def respond_with(resource, _opts = {})
     render json: {
       status: { code: 200, message: "Logged in successfully." },
-      data: AdminSerializer.new(resource).serializable_hash[:data][:attributes]
+      data: AdminSerializer.new(resource)
     }, status: :ok
   end
 

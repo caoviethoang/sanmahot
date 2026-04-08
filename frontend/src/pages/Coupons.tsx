@@ -12,6 +12,7 @@ import {
   FahasaLogo,
   GrabLogo,
 } from '../components/BrandLogos';
+import { Timer } from 'lucide-react';
 
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat('vi-VN', {
@@ -60,6 +61,9 @@ export default function Coupons() {
 
   const { logo, name } = getBrandDetails();
 
+  const now = new Date();
+  const timeNow = `${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-10">
       <Helmet>
@@ -81,16 +85,13 @@ export default function Coupons() {
         </div>
         <div className="flex-1 space-y-4 text-center md:text-left">
           <h1 className="text-3xl md:text-5xl font-black text-orange-500 tracking-tight">
-            Mã Giảm Giá {name} Tháng 4/2026
+            Mã Giảm Giá {name} Tháng {timeNow}
           </h1>
           <p className="text-gray-500 font-medium leading-relaxed max-w-3xl italic text-lg">
-            Mã giảm giá {name} mới nhất tháng 4/2026, coupon {name} App để mua hàng trên ứng dụng,
+            Mã giảm giá {name} mới nhất tháng {timeNow}, coupon {name} App để mua hàng trên ứng dụng,
             các deal khuyến mãi, {name} Flash Sale được cập nhật liên tục, mỗi ngày tại danh mục
             coupon bên dưới.
           </p>
-          <div className="text-xs font-bold text-gray-400">
-            Hãy đăng ký nhận tin mã giảm giá {name} gửi qua <span className="text-xs text-blue-500">Facebook Messenger</span> để không bỏ lỡ những Coupon {name} mới nhất nhé.
-          </div>
         </div>
       </section>
 
@@ -133,23 +134,21 @@ export default function Coupons() {
 
         {/* Sidebar: Popular Brands */}
         <aside className="lg:col-span-4 space-y-6 sticky top-24 hidden lg:block">
-          <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-            <h2 className="text-xl font-black text-gray-900 mb-6 border-b pb-4">SÀN NỔI BẬT</h2>
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100">
             <div className="space-y-4">
               {SIDEBAR_BRANDS.map((brand) => (
                 <Link
                   key={brand.id}
                   to={`/coupons?platform=${brand.id}`}
-                  className={`flex items-center gap-4 p-4 rounded-2xl border transition-all hover:shadow-md hover:-translate-y-1 ${
+                  className={`flex items-center gap-4 p-4 rounded-2xl border transition-all hover:shadow-md hover:-translate-y-1 justify-center ${
                     platformFilter === brand.id
                       ? 'border-orange-500 bg-orange-50/50'
                       : 'border-gray-50 bg-white hover:border-gray-200'
                   }`}
                 >
-                  <div className="w-16 h-16 shrink-0 flex items-center justify-center p-2 bg-white rounded-xl shadow-sm">
+                  <div className="w-40 h-40 shrink-0 flex items-center justify-center p-2 bg-white rounded-xl shadow-sm">
                     <brand.Logo />
                   </div>
-                  <span className="font-extrabold text-gray-700 text-lg">{brand.name}</span>
                 </Link>
               ))}
             </div>

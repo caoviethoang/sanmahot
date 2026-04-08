@@ -86,7 +86,7 @@ export default function CouponCard({
 
   return (
     <>
-      <div 
+      <div
         onClick={() => setShowDetail(true)}
         className="relative flex bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 group w-full cursor-pointer overflow-visible min-h-[160px]"
       >
@@ -126,15 +126,12 @@ export default function CouponCard({
                 Đối tượng: <span className="text-gray-700">{targetUsers}</span>
               </div>
             )}
-            <div className="text-[11px] text-orange-600 font-bold italic opacity-90 underline decoration-orange-200 cursor-pointer hover:text-orange-700">
+            <div className="text-[14px] text-orange-600 font-bold italic opacity-90 underline decoration-orange-200 cursor-pointer hover:text-orange-700">
               Xem chi tiết
             </div>
           </div>
 
           <div className="flex items-center justify-between mt-5 gap-3">
-            <div className="text-[11px] font-black text-green-700 bg-green-50 px-3 py-1 rounded-lg border border-green-100 italic tracking-tight">
-              #Mã nhập tay
-            </div>
             <Button
               size="sm"
               className="bg-green-600 hover:bg-green-700 text-white font-black px-7 h-11 rounded-xl active:scale-95 transition-transform shadow-md"
@@ -149,20 +146,20 @@ export default function CouponCard({
       {/* Detail Modal */}
       {showDetail && (
         <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-          <div 
+          <div
             className="bg-white w-full max-w-lg rounded-[32px] overflow-hidden shadow-2xl relative animate-in zoom-in-95 duration-300"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
             <div className={`p-8 ${bg} relative overflow-hidden`}>
               <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-              <button 
+              <button
                 onClick={() => setShowDetail(false)}
                 className="absolute top-4 right-4 p-2 bg-black/10 hover:bg-black/20 rounded-full text-white transition-colors z-20"
               >
                 <X className="w-6 h-6" />
               </button>
-              
+
               <div className="relative z-10 flex flex-col items-center text-center space-y-4">
                 <div className="bg-white p-4 rounded-3xl shadow-xl w-24 h-24 flex items-center justify-center">
                   {icon}
@@ -214,7 +211,7 @@ export default function CouponCard({
 
             {/* Modal Footer */}
             <div className="p-8 pt-0 flex gap-4">
-              <Button 
+              <Button
                 className="flex-1 h-14 rounded-2xl bg-green-600 hover:bg-green-700 text-white font-black text-lg shadow-xl shadow-green-200"
                 onClick={handleCopyCode}
               >
