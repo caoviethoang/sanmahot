@@ -12,7 +12,9 @@ Rails.application.routes.draw do
         resources :deals
         resources :coupons
         resources :categories
-        resources :articles
+        resources :articles do
+          post :generate, on: :collection
+        end
         get "dashboard/stats", to: "dashboard#stats"
       end
 

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import api from '../services/api';
@@ -6,13 +7,17 @@ import { Button } from '../components/ui/button';
 import { Filter } from 'lucide-react';
 
 export default function Deals() {
-  const { data: deals, isLoading } = useQuery({
-    queryKey: ['deals'],
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useQuery({
+    queryKey: ['deals', page],
     queryFn: async () => {
-      const response = await api.get('/deals');
+      const response = await api.get(`/deals?page=${page}&per_page=12`);
       return response.data;
     },
   });
+
+  const deals = data?.deals;
+  const pagination = data?.pagination;
 
   return (
     <div className="space-y-8">
@@ -55,6 +60,30 @@ export default function Deals() {
           {deals?.map((deal: any) => (
             <DealCard key={deal.id} deal={deal} />
           ))}
+        </div>
+      )}
+
+      {pagination && pagination.total_pages > 1 && (
+        <div className="flex justify-center items-center gap-4 mt-12 pb-8">
+          <Button
+            variant="outline"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="border-red-200 hover:bg-red-50 text-red-600"
+          >
+            Trang trước
+          </Button>
+          <div className="text-sm font-medium text-muted-foreground bg-red-50 px-4 py-2 rounded-full border border-red-100">
+            Trang <span className="text-red-600">{page}</span> / {pagination.total_pages}
+          </div>
+          <Button
+            variant="outline"
+            onClick={() => setPage((p) => Math.min(pagination.total_pages, p + 1))}
+            disabled={page === pagination.total_pages}
+            className="border-red-200 hover:bg-red-50 text-red-600"
+          >
+            Trang sau
+          </Button>
         </div>
       )}
     </div>

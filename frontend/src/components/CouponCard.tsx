@@ -179,11 +179,17 @@ export default function CouponCard({
             <div className="p-8 space-y-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
               <div className="grid grid-cols-2 gap-4">
                 <div className={`p-4 rounded-2xl ${lightBg} border border-gray-100`}>
-                  <div className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">MÃ GIẢM GIÁ</div>
-                  <div className={`text-xl font-black ${color} tracking-widest uppercase`}>{code}</div>
+                  <div className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">
+                    MÃ GIẢM GIÁ
+                  </div>
+                  <div className={`text-xl font-black ${color} tracking-widest uppercase`}>
+                    {code}
+                  </div>
                 </div>
                 <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
-                  <div className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">HẠN SỬ DỤNG</div>
+                  <div className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">
+                    HẠN SỬ DỤNG
+                  </div>
                   <div className="text-xl font-black text-gray-900">{expiryText}</div>
                 </div>
               </div>
@@ -196,14 +202,22 @@ export default function CouponCard({
                 <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100 space-y-3 text-sm text-gray-600 leading-relaxed">
                   <div className="flex gap-3">
                     <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                    <p><span className="font-bold text-gray-900">Đơn hàng tối thiểu:</span> {minSpend || '0đ'}</p>
+                    <p>
+                      <span className="font-bold text-gray-900">Đơn hàng tối thiểu:</span>{' '}
+                      {minSpend || '0đ'}
+                    </p>
                   </div>
                   <div className="flex gap-3">
                     <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                    <p><span className="font-bold text-gray-900">Đối tượng:</span> {targetUsers || 'Tất cả khách hàng'}</p>
+                    <p>
+                      <span className="font-bold text-gray-900">Đối tượng:</span>{' '}
+                      {targetUsers || 'Tất cả khách hàng'}
+                    </p>
                   </div>
                   <div className="pt-4 border-t border-gray-200 mt-2">
-                    <p className="whitespace-pre-wrap">{terms || description || 'Áp dụng cho các sản phẩm trong danh mục tương ứng.'}</p>
+                    <p className="whitespace-pre-wrap">
+                      {terms || description || 'Áp dụng cho các sản phẩm trong danh mục tương ứng.'}
+                    </p>
                   </div>
                 </div>
               </div>

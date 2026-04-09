@@ -9,11 +9,16 @@ import Categories from './pages/Categories';
 import CategoryDetail from './pages/CategoryDetail';
 import DealDetail from './pages/DealDetail';
 import Search from './pages/Search';
+import Articles from './pages/Articles';
+import ArticleDetail from './pages/ArticleDetail';
+import Guides from './pages/Guides';
+import GuideDetail from './pages/GuideDetail';
 import AdminLayout from './components/AdminLayout';
 import AdminLogin from './pages/admin/Login';
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminDeals from './pages/admin/Deals';
 import AdminCoupons from './pages/admin/Coupons';
+import AdminArticles from './pages/admin/Articles';
 
 const queryClient = new QueryClient();
 
@@ -31,6 +36,10 @@ function App() {
               <Route path="categories" element={<Categories />} />
               <Route path="categories/:slug" element={<CategoryDetail />} />
               <Route path="search" element={<Search />} />
+              <Route path="tin-khuyen-mai" element={<Articles />} />
+              <Route path="tin-khuyen-mai/:slug" element={<ArticleDetail />} />
+              <Route path="huong-dan" element={<Guides />} />
+              <Route path="huong-dan/:slug" element={<GuideDetail />} />
             </Route>
 
             <Route path="/admin/login" element={<AdminLogin />} />
@@ -38,6 +47,7 @@ function App() {
               <Route index element={<AdminDashboard />} />
               <Route path="deals" element={<AdminDeals />} />
               <Route path="coupons" element={<AdminCoupons />} />
+              <Route path="articles" element={<AdminArticles />} />
               {/* Future admin routes like categories, articles management will go here */}
             </Route>
           </Routes>

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
@@ -13,6 +14,7 @@ import {
   GrabLogo,
 } from '../components/BrandLogos';
 import { Timer } from 'lucide-react';
+import { Button } from '../components/ui/button';
 
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat('vi-VN', {
@@ -36,15 +38,19 @@ export default function Coupons() {
   const [searchParams] = useSearchParams();
   const platformFilter = searchParams.get('platform');
 
-  const { data: coupons, isLoading } = useQuery({
-    queryKey: ['coupons', platformFilter],
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useQuery({
+    queryKey: ['coupons', platformFilter, page],
     queryFn: async () => {
       const response = await api.get('/coupons', {
-        params: { platform: platformFilter },
+        params: { platform: platformFilter, page, per_page: 20 },
       });
       return response.data;
     },
   });
+
+  const coupons = data?.coupons;
+  const pagination = data?.pagination;
 
   const getBrandDetails = () => {
     switch (platformFilter?.toLowerCase()) {
@@ -88,9 +94,9 @@ export default function Coupons() {
             Mã Giảm Giá {name} Tháng {timeNow}
           </h1>
           <p className="text-gray-500 font-medium leading-relaxed max-w-3xl italic text-lg">
-            Mã giảm giá {name} mới nhất tháng {timeNow}, coupon {name} App để mua hàng trên ứng dụng,
-            các deal khuyến mãi, {name} Flash Sale được cập nhật liên tục, mỗi ngày tại danh mục
-            coupon bên dưới.
+            Mã giảm giá {name} mới nhất tháng {timeNow}, coupon {name} App để mua hàng trên ứng
+            dụng, các deal khuyến mãi, {name} Flash Sale được cập nhật liên tục, mỗi ngày tại danh
+            mục coupon bên dưới.
           </p>
         </div>
       </section>
@@ -116,7 +122,11 @@ export default function Coupons() {
                   category={coupon.category}
                   terms={coupon.terms}
                   targetUsers={coupon.target_users}
-                  minSpend={coupon.min_order_value ? formatPrice(parseFloat(coupon.min_order_value)) : undefined}
+                  minSpend={
+                    coupon.min_order_value
+                      ? formatPrice(parseFloat(coupon.min_order_value))
+                      : undefined
+                  }
                   code={coupon.code}
                   expiryText={
                     coupon.end_at
@@ -128,6 +138,30 @@ export default function Coupons() {
                   }
                 />
               ))}
+            </div>
+          )}
+
+          {pagination && pagination.total_pages > 1 && (
+            <div className="flex justify-center items-center gap-4 mt-12 pb-8">
+              <Button
+                variant="outline"
+                onClick={() => setPage((p: number) => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="border-orange-200 hover:bg-orange-50 text-orange-600"
+              >
+                Trang trước
+              </Button>
+              <div className="text-sm font-medium text-muted-foreground bg-orange-50 px-4 py-2 rounded-full border border-orange-100">
+                Trang <span className="text-orange-600">{page}</span> / {pagination.total_pages}
+              </div>
+              <Button
+                variant="outline"
+                onClick={() => setPage((p: number) => Math.min(pagination.total_pages, p + 1))}
+                disabled={page === pagination.total_pages}
+                className="border-orange-200 hover:bg-orange-50 text-orange-600"
+              >
+                Trang sau
+              </Button>
             </div>
           )}
         </div>

@@ -4,7 +4,10 @@ class Api::V1::CouponsController < Api::V1::BaseController
     @coupons = @coupons.where("LOWER(platform) = ?", params[:platform].downcase) if params[:platform].present?
 
     @coupons = paginate(@coupons)
-    render json: @coupons, each_serializer: CouponSerializer, meta: pagination_dict(@coupons)
+    render json: {
+      coupons: ActiveModelSerializers::SerializableResource.new(@coupons, each_serializer: CouponSerializer),
+      pagination: pagination_dict(@coupons)
+    }
   end
 
   private

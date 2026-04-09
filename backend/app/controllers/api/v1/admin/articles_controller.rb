@@ -6,6 +6,17 @@ class Api::V1::Admin::ArticlesController < Api::V1::Admin::BaseController
     render json: @articles
   end
 
+  def generate
+    prompt = params[:prompt] || params[:deals_data]
+    content = AiContentGeneratorService.new.generate(prompt)
+
+    if content.present?
+      render json: { content: content }
+    else
+      render json: { errors: [ "Failed to generate AI content" ] }, status: :unprocessable_entity
+    end
+  end
+
   def show
     render json: @article
   end

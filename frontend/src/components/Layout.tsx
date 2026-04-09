@@ -39,21 +39,21 @@ export default function Layout() {
 
               <div className="absolute top-full left-0 mt-1 bg-white/95 backdrop-blur-xl border border-gray-100 shadow-2xl rounded-2xl min-w-[240px] opacity-0 translate-y-2 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible transition-all duration-300 z-50 py-3 overflow-hidden">
                 <Link
-                  to="/shopee"
+                  to="/coupons?platform=shopee"
                   className="flex items-center px-6 py-3 hover:bg-red-50 text-gray-600 hover:text-primary transition-colors text-sm"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mr-3"></span> Mã Giảm Giá
                   Shopee
                 </Link>
                 <Link
-                  to="/lazada"
+                  to="/coupons?platform=lazada"
                   className="flex items-center px-6 py-3 hover:bg-red-50 text-gray-600 hover:text-primary transition-colors text-sm"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-700 mr-3"></span> Mã Giảm Giá
                   Lazada
                 </Link>
                 <Link
-                  to="/tiki"
+                  to="/coupons?platform=tiki"
                   className="flex items-center px-6 py-3 hover:bg-red-50 text-gray-600 hover:text-primary transition-colors text-sm"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-sky-500 mr-3"></span> Mã Giảm Giá
@@ -61,13 +61,13 @@ export default function Layout() {
                 </Link>
                 <div className="h-px bg-gray-50 my-1"></div>
                 <Link
-                  to="/shopeefood"
+                  to="/coupons?platform=shopeefood"
                   className="flex items-center px-6 py-3 hover:bg-red-50 text-gray-600 hover:text-primary transition-colors text-sm"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-red-500 mr-3"></span> ShopeeFood
                 </Link>
                 <Link
-                  to="/nguyenkim"
+                  to="/coupons?platform=nguyenkim"
                   className="flex items-center px-6 py-3 hover:bg-red-50 text-gray-600 hover:text-primary transition-colors text-sm"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-red-600 mr-3"></span> Nguyễn Kim
@@ -123,7 +123,7 @@ export default function Layout() {
               Trang Chủ
             </Link>
             <Link
-              to="/shopee"
+              to="/coupons"
               className="block text-lg font-bold text-primary"
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -166,25 +166,25 @@ export default function Layout() {
                 </span>
               </div>
               <p className="text-gray-500 text-sm leading-relaxed max-w-xs mx-auto md:mx-0">
-                Săn mã giảm giá, voucher và deal hot nhất từ Shopee, Lazada, Tiki,... Tiết kiệm tối đa
-                cho mỗi đơn hàng của bạn.
+                Săn mã giảm giá, voucher và deal hot nhất từ Shopee, Lazada, Tiki,... Tiết kiệm tối
+                đa cho mỗi đơn hàng của bạn.
               </p>
             </div>
             <div>
               <h4 className="font-bold text-white mb-4">Mã Giảm Giá</h4>
               <ul className="space-y-2 text-sm text-gray-500">
                 <li>
-                  <Link to="/shopee" className="hover:text-primary">
+                  <Link to="/coupons?platform=shopee" className="hover:text-primary">
                     Mã giảm giá Shopee
                   </Link>
                 </li>
                 <li>
-                  <Link to="/lazada" className="hover:text-primary">
+                  <Link to="/coupons?platform=lazada" className="hover:text-primary">
                     Mã giảm giá Lazada
                   </Link>
                 </li>
                 <li>
-                  <Link to="/tiki" className="hover:text-primary">
+                  <Link to="/coupons?platform=tiki" className="hover:text-primary">
                     Mã giảm giá Tiki
                   </Link>
                 </li>

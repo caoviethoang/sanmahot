@@ -22,10 +22,20 @@ const BRANDS = [
   { id: 'shopee', name: 'Shopee', path: '/coupons?platform=shopee', Logo: ShopeeLogo },
   { id: 'lazada', name: 'Lazada', path: '/coupons?platform=lazada', Logo: LazadaLogo },
   { id: 'tiki', name: 'Tiki', path: '/coupons?platform=tiki', Logo: TikiLogo },
-  { id: 'shopeefood', name: 'ShopeeFood', path: '/coupons?platform=shopeefood', Logo: ShopeeFoodLogo },
+  {
+    id: 'shopeefood',
+    name: 'ShopeeFood',
+    path: '/coupons?platform=shopeefood',
+    Logo: ShopeeFoodLogo,
+  },
   { id: 'sendo', name: 'Sendo.vn', path: '/coupons?platform=sendo', Logo: SendoLogo },
   { id: 'nguyenkim', name: 'Nguyễn Kim', path: '/coupons?platform=nguyenkim', Logo: NguyenKimLogo },
-  { id: 'dienmayxanh', name: 'Điện Máy Xanh', path: '/coupons?platform=dienmayxanh', Logo: DienMayXanhLogo },
+  {
+    id: 'dienmayxanh',
+    name: 'Điện Máy Xanh',
+    path: '/coupons?platform=dienmayxanh',
+    Logo: DienMayXanhLogo,
+  },
   { id: 'fahasa', name: 'Fahasa', path: '/coupons?platform=fahasa', Logo: FahasaLogo },
   { id: 'grab', name: 'Grab', path: '/coupons?platform=grab', Logo: GrabLogo },
   { id: 'fptshop', name: 'FPT Shop', path: '/coupons?platform=fptshop', Logo: FptShopLogo },
@@ -33,44 +43,7 @@ const BRANDS = [
   { id: 'vnpay', name: 'VNPAY', path: '/coupons?platform=vnpay', Logo: VnpayLogo },
 ];
 
-const PROMOTIONS = [
-  {
-    id: 1,
-    title: 'Mã giảm giá K Coffee – Tháng 4/2026',
-    type: 'TIN KHUYẾN MÃI',
-    image: 'https://placehold.co/600x300/3e2723/ffffff?text=VOUCHER+K-COFFEE',
-  },
-  {
-    id: 2,
-    title: 'Mã giảm giá Long Châu – Cập nhật tháng 4/2026',
-    type: 'TIN KHUYẾN MÃI',
-    image: 'https://placehold.co/600x300/00bcd4/ffffff?text=Nhà+thuốc+FPT+Long+Châu',
-  },
-  {
-    id: 3,
-    title: 'Mã giảm giá CellphoneS, voucher Cellphone S tháng 4.2026',
-    type: 'TIN KHUYẾN MÃI',
-    image: 'https://placehold.co/600x300/e0e0e0/dd2c00?text=Cellphone+S',
-  },
-  {
-    id: 4,
-    title: 'Mã giảm giá Fado – Mua hàng quốc tế cao cấp',
-    type: 'TIN KHUYẾN MÃI',
-    image: 'https://placehold.co/600x300/81d4fa/ffffff?text=FADO',
-  },
-  {
-    id: 5,
-    title: 'VNPAY Khuyến Mãi Khủng',
-    type: 'TIN KHUYẾN MÃI',
-    image: 'https://placehold.co/600x300/e53935/ffffff?text=VNPAY',
-  },
-  {
-    id: 6,
-    title: 'Khuyến mãi khủng Shopee',
-    type: 'TIN KHUYẾN MÃI',
-    image: 'https://placehold.co/600x300/ff5722/ffffff?text=SHOPEE',
-  },
-];
+// Xóa PROMOTIONS cứng, sẽ gọi API từ backend
 
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat('vi-VN', {
@@ -81,13 +54,24 @@ const formatPrice = (price: number) => {
 };
 
 export default function Home() {
-  const { data: coupons, isLoading } = useQuery({
+  const { data: couponsData, isLoading: couponsLoading } = useQuery({
     queryKey: ['latest-coupons'],
     queryFn: async () => {
-      const response = await api.get('/coupons');
-      return response.data?.slice(0, 10); // Lấy 10 mã mới nhất như yêu cầu
+      const response = await api.get('/coupons?per_page=10');
+      return response.data;
     },
   });
+
+  const { data: articlesData, isLoading: articlesLoading } = useQuery({
+    queryKey: ['latest-articles'],
+    queryFn: async () => {
+      const response = await api.get('/articles?per_page=6');
+      return response.data;
+    },
+  });
+
+  const coupons = couponsData?.coupons;
+  const articles = articlesData?.articles;
 
   return (
     <div className="space-y-20">
@@ -182,7 +166,7 @@ export default function Home() {
           </Link>
         </div>
 
-        {isLoading ? (
+        {couponsLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="h-40 bg-gray-50 animate-pulse rounded-3xl" />
@@ -197,7 +181,11 @@ export default function Home() {
                 id={coupon.id}
                 platform={coupon.platform?.toLowerCase() as any}
                 description={coupon.description || coupon.title}
-                minSpend={coupon.min_order_value ? formatPrice(parseFloat(coupon.min_order_value)) : undefined}
+                minSpend={
+                  coupon.min_order_value
+                    ? formatPrice(parseFloat(coupon.min_order_value))
+                    : undefined
+                }
                 code={coupon.code}
                 expiryText={
                   coupon.end_at
@@ -221,48 +209,67 @@ export default function Home() {
               Cập nhật tin tức flash sale và sự kiện mua sắm mới nhất
             </p>
           </div>
-          <div className="flex gap-2">
-            <span className="px-5 py-2.5 rounded-full bg-red-50 text-primary font-black text-xs cursor-pointer">
-              TIN HOT
-            </span>
-            <span className="px-5 py-2.5 rounded-full bg-gray-50 text-gray-400 font-black text-xs cursor-pointer border border-transparent hover:border-gray-100 transition-all">
-              HƯỚNG DẪN
-            </span>
+          <div className="flex items-center gap-4">
+            <div className="flex gap-2">
+              <span className="px-5 py-2.5 rounded-full bg-red-50 text-primary font-black text-xs cursor-pointer">
+                TIN HOT
+              </span>
+              <span className="px-5 py-2.5 rounded-full bg-gray-50 text-gray-400 font-black text-xs cursor-pointer border border-transparent hover:border-gray-100 transition-all">
+                HƯỚNG DẪN
+              </span>
+            </div>
+            <Link
+              to="/tin-khuyen-mai"
+              className="text-sm font-black text-primary hover:opacity-80 transition-opacity hidden md:block"
+            >
+              XEM TẤT CẢ →
+            </Link>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {PROMOTIONS.map((promo) => (
-            <Link
-              key={promo.id}
-              to={`/promo/${promo.id}`}
-              className="bg-white rounded-[32px] overflow-hidden shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)] border border-gray-50 group flex flex-col hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] transition-all duration-500 hover:-translate-y-2 h-full"
-            >
-              <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-100">
-                <img
-                  src={promo.image}
-                  alt={promo.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
-                />
-                <div className="absolute top-4 right-4 gradient-hot text-white text-[10px] font-black px-4 py-2 rounded-full shadow-xl shadow-red-500/20 tracking-widest uppercase">
-                  {promo.type}
+        {articlesLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-80 bg-gray-100 animate-pulse rounded-[32px]" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {articles?.map((article: any) => (
+              <Link
+                key={article.id}
+                to={`/tin-khuyen-mai/${article.slug}`}
+                className="bg-white rounded-[32px] overflow-hidden shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)] border border-gray-50 group flex flex-col hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] transition-all duration-500 hover:-translate-y-2 h-full"
+              >
+                <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-100">
+                  <img
+                    src={
+                      article.image_url ||
+                      'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=2070'
+                    }
+                    alt={article.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
+                  />
+                  <div className="absolute top-4 right-4 gradient-hot text-white text-[10px] font-black px-4 py-2 rounded-full shadow-xl shadow-red-500/20 tracking-widest uppercase">
+                    {article.category || 'TIN KHUYẾN MÃI'}
+                  </div>
                 </div>
-              </div>
 
-              <div className="p-6 md:p-8 flex-1 flex flex-col">
-                <h3 className="text-gray-900 font-extrabold text-xl leading-tight group-hover:text-primary transition-colors duration-300 line-clamp-3">
-                  {promo.title}
-                </h3>
-                <div className="mt-auto pt-6 flex items-center justify-between text-xs font-bold text-gray-400">
-                  <span className="flex items-center gap-1.5 hover:text-gray-600 transition-colors">
-                    ĐỌC THÊM →
-                  </span>
-                  <span className="opacity-50">#SanMaHot</span>
+                <div className="p-6 md:p-8 flex-1 flex flex-col">
+                  <h3 className="text-gray-900 font-extrabold text-xl leading-tight group-hover:text-primary transition-colors duration-300 line-clamp-3">
+                    {article.title}
+                  </h3>
+                  <div className="mt-auto pt-6 flex items-center justify-between text-xs font-bold text-gray-400">
+                    <span className="flex items-center gap-1.5 hover:text-gray-600 transition-colors">
+                      ĐỌC THÊM →
+                    </span>
+                    <span className="opacity-50">#SanMaHot</span>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );
