@@ -3,15 +3,34 @@ import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import api from '../services/api';
 import DealCard from '../components/DealCard';
+import FilterSidebar from '../components/FilterSidebar';
 import { Button } from '../components/ui/button';
-import { Filter } from 'lucide-react';
+import { SlidersHorizontal } from 'lucide-react';
 
 export default function Deals() {
   const [page, setPage] = useState(1);
+  const [merchant, setMerchant] = useState('');
+  const [category, setCategory] = useState('');
+  const [sort, setSort] = useState('');
+  const [showMobileFilter, setShowMobileFilter] = useState(false);
+
+  const handleFilterChange = (fn: () => void) => {
+    fn();
+    setPage(1); // Reset to page 1 when filters change
+  };
+
   const { data, isLoading } = useQuery({
-    queryKey: ['deals', page],
+    queryKey: ['deals', page, merchant, category, sort],
     queryFn: async () => {
-      const response = await api.get(`/deals?page=${page}&per_page=12`);
+      const response = await api.get('/deals', {
+        params: {
+          page,
+          per_page: 12,
+          ...(merchant && { merchant }),
+          ...(category && { category }),
+          ...(sort && { sort }),
+        },
+      });
       return response.data;
     },
   });
@@ -20,7 +39,7 @@ export default function Deals() {
   const pagination = data?.pagination;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <Helmet>
         <title>Deal Ngon hôm nay - Tổng hợp khuyến mãi cực sốc | SanMaHot</title>
         <meta
@@ -32,60 +51,113 @@ export default function Deals() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-red-600">Tất cả Deal Ngon</h1>
-          <p className="text-muted-foreground">Tổng hợp deal hot từ các sàn TMĐT hôm nay.</p>
+          <p className="text-muted-foreground">
+            Tổng hợp deal hot từ các sàn TMĐT hôm nay.
+            {pagination && (
+              <span className="ml-2 font-semibold text-red-500">
+                ({pagination.total_count} deal)
+              </span>
+            )}
+          </p>
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            className="rounded-full hover:bg-red-50 hover:text-red-600 transition-colors"
-          >
-            <Filter className="w-4 h-4 mr-2" /> Lọc
-          </Button>
-          <select className="bg-background border border-gray-200 rounded-full px-4 text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all">
-            <option>Mới nhất</option>
-            <option>Giá thấp nhất</option>
-            <option>Giảm nhiều nhất</option>
-          </select>
-        </div>
+        <Button
+          variant="outline"
+          className="lg:hidden rounded-full hover:bg-red-50 hover:text-red-600 transition-colors"
+          onClick={() => setShowMobileFilter(!showMobileFilter)}
+        >
+          <SlidersHorizontal className="w-4 h-4 mr-2" />
+          Bộ lọc {(merchant || category || sort) && '•'}
+        </Button>
       </div>
 
-      {isLoading ? (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[...Array(12)].map((_, i) => (
-            <div key={i} className="h-64 bg-muted animate-pulse rounded-2xl" />
-          ))}
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {deals?.map((deal: any) => (
-            <DealCard key={deal.id} deal={deal} />
-          ))}
+      {/* Mobile filter panel */}
+      {showMobileFilter && (
+        <div className="lg:hidden bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+          <FilterSidebar
+            type="deals"
+            merchant={merchant}
+            category={category}
+            sort={sort}
+            onMerchantChange={(v) => handleFilterChange(() => setMerchant(v))}
+            onCategoryChange={(v) => handleFilterChange(() => setCategory(v))}
+            onSortChange={(v) => handleFilterChange(() => setSort(v))}
+          />
         </div>
       )}
 
-      {pagination && pagination.total_pages > 1 && (
-        <div className="flex justify-center items-center gap-4 mt-12 pb-8">
-          <Button
-            variant="outline"
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
-            className="border-red-200 hover:bg-red-50 text-red-600"
-          >
-            Trang trước
-          </Button>
-          <div className="text-sm font-medium text-muted-foreground bg-red-50 px-4 py-2 rounded-full border border-red-100">
-            Trang <span className="text-red-600">{page}</span> / {pagination.total_pages}
-          </div>
-          <Button
-            variant="outline"
-            onClick={() => setPage((p) => Math.min(pagination.total_pages, p + 1))}
-            disabled={page === pagination.total_pages}
-            className="border-red-200 hover:bg-red-50 text-red-600"
-          >
-            Trang sau
-          </Button>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Desktop Sidebar */}
+        <div className="hidden lg:block lg:col-span-3 sticky top-24 self-start">
+          <FilterSidebar
+            type="deals"
+            merchant={merchant}
+            category={category}
+            sort={sort}
+            onMerchantChange={(v) => handleFilterChange(() => setMerchant(v))}
+            onCategoryChange={(v) => handleFilterChange(() => setCategory(v))}
+            onSortChange={(v) => handleFilterChange(() => setSort(v))}
+          />
         </div>
-      )}
+
+        {/* Main Content */}
+        <div className="lg:col-span-9">
+          {isLoading ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+              {[...Array(12)].map((_, i) => (
+                <div key={i} className="h-64 bg-muted animate-pulse rounded-2xl" />
+              ))}
+            </div>
+          ) : deals?.length === 0 ? (
+            <div className="text-center py-20 text-gray-400">
+              <p className="text-5xl mb-4">🔍</p>
+              <p className="font-bold text-lg">Không tìm thấy deal nào phù hợp</p>
+              <p className="text-sm mt-2">Thử thay đổi bộ lọc hoặc tìm kiếm từ khóa khác</p>
+              <Button
+                variant="outline"
+                className="mt-6 border-red-200 text-red-600 hover:bg-red-50"
+                onClick={() => {
+                  setMerchant('');
+                  setCategory('');
+                  setSort('');
+                  setPage(1);
+                }}
+              >
+                Xóa bộ lọc
+              </Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+              {deals?.map((deal: any) => (
+                <DealCard key={deal.id} deal={deal} />
+              ))}
+            </div>
+          )}
+
+          {pagination && pagination.total_pages > 1 && (
+            <div className="flex justify-center items-center gap-4 mt-12 pb-8">
+              <Button
+                variant="outline"
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="border-red-200 hover:bg-red-50 text-red-600"
+              >
+                Trang trước
+              </Button>
+              <div className="text-sm font-medium text-muted-foreground bg-red-50 px-4 py-2 rounded-full border border-red-100">
+                Trang <span className="text-red-600">{page}</span> / {pagination.total_pages}
+              </div>
+              <Button
+                variant="outline"
+                onClick={() => setPage((p) => Math.min(pagination.total_pages, p + 1))}
+                disabled={page === pagination.total_pages}
+                className="border-red-200 hover:bg-red-50 text-red-600"
+              >
+                Trang sau
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

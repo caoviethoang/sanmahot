@@ -1,8 +1,6 @@
 module Api
   module V1
     class RedirectsController < BaseController
-      skip_before_action :authenticate_admin!
-
       def deal
         @deal = Deal.friendly.find(params[:id])
         track_click(@deal)

@@ -1,5 +1,5 @@
-import { Outlet, Link } from 'react-router-dom';
-import { Search, Home, Tag, List, ShoppingCart, ChevronDown, Menu } from 'lucide-react';
+import { Outlet, Link, useNavigate } from 'react-router-dom';
+import { Search, Home, Tag, List, ShoppingCart, ChevronDown, Menu, Flame } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from './ui/button';
 
@@ -7,9 +7,18 @@ import logo from '../assets/sanmahot.png';
 
 export default function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery('');
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#fafafa] font-sans antialiased flex flex-col text-gray-800">
+    <div className="min-h-screen font-sans antialiased flex flex-col text-gray-800">
       {/* Header */}
       <header className="glass-header transform-gpu shadow-sm">
         <div className="container max-w-7xl mx-auto px-4 lg:px-8 h-18 md:h-22 flex items-center justify-between">
@@ -22,17 +31,24 @@ export default function Layout() {
           </Link>
 
           {/* Nav Menu (Desktop) */}
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-2 text-gray-500 font-semibold text-[14px]">
+          <nav className="hidden lg:flex items-center gap-2 xl:gap-4 text-gray-500 font-semibold text-[14px]">
             <Link
               to="/"
-              className="px-4 py-2 rounded-xl hover:bg-red-50 hover:text-primary transition-all flex items-center gap-2"
+              className="px-4 py-2 rounded-xl hover:bg-red-50 hover:text-primary transition-all flex items-center gap-2 whitespace-nowrap"
             >
               <Home className="w-4 h-4" /> Trang Chủ
             </Link>
 
+            <Link
+              to="/deals"
+              className="px-4 py-2 rounded-xl hover:bg-red-50 hover:text-primary transition-all flex items-center gap-2 whitespace-nowrap"
+            >
+              <Flame className="w-4 h-4 text-orange-500" /> Deal Ngon
+            </Link>
+
             {/* Dropdown Menu */}
             <div className="relative group">
-              <button className="px-4 py-2 rounded-xl hover:bg-red-50 hover:text-primary transition-all flex items-center gap-2">
+              <button className="px-4 py-2 rounded-xl hover:bg-red-50 hover:text-primary transition-all flex items-center gap-2 whitespace-nowrap">
                 <Tag className="w-4 h-4" /> Mã Giảm Giá{' '}
                 <ChevronDown className="w-3.5 h-3.5 opacity-60 ml-0.5 group-hover:rotate-180 transition-transform" />
               </button>
@@ -77,14 +93,14 @@ export default function Layout() {
 
             <Link
               to="/huong-dan"
-              className="px-4 py-2 rounded-xl hover:bg-red-50 hover:text-primary transition-all flex items-center gap-2"
+              className="px-4 py-2 rounded-xl hover:bg-red-50 hover:text-primary transition-all flex items-center gap-2 whitespace-nowrap"
             >
               <List className="w-4 h-4" /> Hướng Dẫn
             </Link>
 
             <Link
               to="/tin-khuyen-mai"
-              className="px-4 py-2 rounded-xl hover:bg-red-50 hover:text-primary transition-all flex items-center gap-2"
+              className="px-4 py-2 rounded-xl hover:bg-red-50 hover:text-primary transition-all flex items-center gap-2 whitespace-nowrap"
             >
               <ShoppingCart className="w-4 h-4" /> Tin Khuyến Mãi
             </Link>
@@ -97,6 +113,9 @@ export default function Layout() {
               <input
                 type="text"
                 placeholder="Tìm mã giảm giá..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleSearch}
                 className="bg-transparent border-none focus:ring-0 text-sm ml-2 w-full outline-none text-gray-700"
               />
             </div>
@@ -121,6 +140,13 @@ export default function Layout() {
               onClick={() => setMobileMenuOpen(false)}
             >
               Trang Chủ
+            </Link>
+            <Link
+              to="/deals"
+              className="block text-lg font-bold text-gray-800"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Deal Ngon
             </Link>
             <Link
               to="/coupons"

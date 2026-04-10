@@ -1,20 +1,17 @@
-import { useState } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useState, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import api from '../services/api';
 import CouponCard from '../components/CouponCard';
+import FilterSidebar from '../components/FilterSidebar';
 import {
   ShopeeLogo,
   LazadaLogo,
   TikiLogo,
-  SendoLogo,
-  NguyenKimLogo,
-  FahasaLogo,
-  GrabLogo,
 } from '../components/BrandLogos';
-import { Timer } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import { SlidersHorizontal, ChevronLeft, ChevronRight, Gift } from 'lucide-react';
 
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat('vi-VN', {
@@ -24,26 +21,47 @@ const formatPrice = (price: number) => {
   }).format(price);
 };
 
-const SIDEBAR_BRANDS = [
-  { id: 'lazada', name: 'Lazada', Logo: LazadaLogo },
-  { id: 'shopee', name: 'Shopee', Logo: ShopeeLogo },
-  { id: 'tiki', name: 'Tiki', Logo: TikiLogo },
-  { id: 'sendo', name: 'Sendo.vn', Logo: SendoLogo },
-  { id: 'nguyenkim', name: 'Nguyễn Kim', Logo: NguyenKimLogo },
-  { id: 'fahasa', name: 'Fahasa', Logo: FahasaLogo },
-  { id: 'grab', name: 'Grab', Logo: GrabLogo },
-];
-
 export default function Coupons() {
   const [searchParams] = useSearchParams();
-  const platformFilter = searchParams.get('platform');
+  const initialPlatform = searchParams.get('platform') || '';
 
   const [page, setPage] = useState(1);
+  const [merchant, setMerchant] = useState(initialPlatform);
+  const [category, setCategory] = useState('');
+  const [sort, setSort] = useState('newest');
+  const [showMobileFilter, setShowMobileFilter] = useState(false);
+  const tabsRef = useRef<HTMLDivElement>(null);
+
+  const handleFilterChange = (fn: () => void) => {
+    fn();
+    setPage(1);
+  };
+
+  const { data: categoriesData } = useQuery({
+    queryKey: ['coupon-categories'],
+    queryFn: async () => {
+      const response = await api.get('/coupons/categories');
+      return response.data as string[];
+    },
+  });
+
+  const scrollTabs = (dir: 'left' | 'right') => {
+    if (tabsRef.current) {
+      tabsRef.current.scrollBy({ left: dir === 'left' ? -200 : 200, behavior: 'smooth' });
+    }
+  };
+
   const { data, isLoading } = useQuery({
-    queryKey: ['coupons', platformFilter, page],
+    queryKey: ['coupons', merchant, category, sort, page],
     queryFn: async () => {
       const response = await api.get('/coupons', {
-        params: { platform: platformFilter, page, per_page: 20 },
+        params: {
+          platform: merchant || undefined,
+          category: category || undefined,
+          sort: sort || undefined,
+          page,
+          per_page: 20,
+        },
       });
       return response.data;
     },
@@ -53,7 +71,7 @@ export default function Coupons() {
   const pagination = data?.pagination;
 
   const getBrandDetails = () => {
-    switch (platformFilter?.toLowerCase()) {
+    switch (merchant?.toLowerCase()) {
       case 'shopee':
         return { logo: <ShopeeLogo />, name: 'Shopee' };
       case 'lazada':
@@ -61,12 +79,11 @@ export default function Coupons() {
       case 'tiki':
         return { logo: <TikiLogo />, name: 'Tiki' };
       default:
-        return { logo: <TikiLogo />, name: 'Tất cả các sàn' };
+        return { logo: <ShopeeLogo />, name: 'Tất cả các sàn' };
     }
   };
 
   const { logo, name } = getBrandDetails();
-
   const now = new Date();
   const timeNow = `${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
 
@@ -74,7 +91,7 @@ export default function Coupons() {
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-10">
       <Helmet>
         <title>
-          {platformFilter
+          {merchant
             ? `Mã giảm giá ${name} hot nhất hôm nay | SanMaHot`
             : 'Mã giảm giá Shopee, Lazada, Tiki hot nhất hôm nay | SanMaHot'}
         </title>
@@ -98,17 +115,120 @@ export default function Coupons() {
             dụng, các deal khuyến mãi, {name} Flash Sale được cập nhật liên tục, mỗi ngày tại danh
             mục coupon bên dưới.
           </p>
+          {pagination && (
+            <p className="text-sm font-bold text-orange-500">
+              {pagination.total_count} mã giảm giá đang hoạt động
+            </p>
+          )}
         </div>
       </section>
 
+      {/* Horizontal Category Tab Bar */}
+      <div className="relative group/tabs">
+        <button
+          onClick={() => scrollTabs('left')}
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 shadow-md border border-gray-100 rounded-full p-1.5 opacity-0 group-hover/tabs:opacity-100 transition-opacity"
+        >
+          <ChevronLeft className="w-4 h-4 text-gray-600" />
+        </button>
+
+        <div
+          ref={tabsRef}
+          className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 scroll-smooth"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {/* Tất cả tab */}
+          <button
+            onClick={() => handleFilterChange(() => setCategory(''))}
+            className={`flex items-center gap-2 whitespace-nowrap px-4 py-2.5 rounded-full text-sm font-bold border transition-all shrink-0 ${
+              !category
+                ? 'bg-orange-500 text-white border-orange-500 shadow-md shadow-orange-200'
+                : 'bg-white text-gray-600 border-gray-200 hover:border-orange-300 hover:text-orange-500'
+            }`}
+          >
+            <Gift className="w-4 h-4" /> Tất cả
+          </button>
+
+          {/* Dynamic category tabs */}
+          {categoriesData?.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => handleFilterChange(() => setCategory(category === cat ? '' : cat))}
+              className={`whitespace-nowrap px-4 py-2.5 rounded-full text-sm font-bold border transition-all shrink-0 ${
+                category === cat
+                  ? 'bg-orange-500 text-white border-orange-500 shadow-md shadow-orange-200'
+                  : 'bg-white text-gray-600 border-gray-200 hover:border-orange-300 hover:text-orange-500'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+
+          {/* Extra useful categories */}
+          {['Freeship', 'Flash Sale', 'Mới nhất'].map((extra) => (
+            <button
+              key={extra}
+              onClick={() => handleFilterChange(() => setSort(extra === 'Mới nhất' ? 'newest' : extra === 'Freeship' ? '' : 'newest'))}
+              className="whitespace-nowrap px-4 py-2.5 rounded-full text-sm font-bold border bg-white text-gray-600 border-gray-200 hover:border-orange-300 hover:text-orange-500 transition-all shrink-0"
+            >
+              {extra}
+            </button>
+          ))}
+        </div>
+
+        <button
+          onClick={() => scrollTabs('right')}
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 shadow-md border border-gray-100 rounded-full p-1.5 opacity-0 group-hover/tabs:opacity-100 transition-opacity"
+        >
+          <ChevronRight className="w-4 h-4 text-gray-600" />
+        </button>
+      </div>
+
+      <div className="lg:hidden flex justify-end">
+        <Button
+          variant="outline"
+          className="rounded-full hover:bg-orange-50 hover:text-orange-600 border-orange-200 transition-colors"
+          onClick={() => setShowMobileFilter(!showMobileFilter)}
+        >
+          <SlidersHorizontal className="w-4 h-4 mr-2" />
+          Bộ lọc {(merchant || category || sort !== 'newest') && '•'}
+        </Button>
+      </div>
+
+      {showMobileFilter && (
+        <div className="lg:hidden">
+          <FilterSidebar
+            type="coupons"
+            merchant={merchant}
+            category={category}
+            sort={sort}
+            onMerchantChange={(v) => handleFilterChange(() => setMerchant(v))}
+            onCategoryChange={(v) => handleFilterChange(() => setCategory(v))}
+            onSortChange={(v) => handleFilterChange(() => setSort(v))}
+          />
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-        {/* Main Content: Coupon Grid */}
+        {/* Main Content */}
         <div className="lg:col-span-8 space-y-8">
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[...Array(6)].map((_, i) => (
                 <div key={i} className="h-44 bg-gray-100 animate-pulse rounded-2xl" />
               ))}
+            </div>
+          ) : coupons?.length === 0 ? (
+            <div className="text-center py-16 text-gray-400">
+              <p className="text-5xl mb-4">🔍</p>
+              <p className="font-bold text-lg">Không tìm thấy mã giảm giá phù hợp</p>
+              <Button
+                variant="outline"
+                className="mt-6 border-orange-200 text-orange-600 hover:bg-orange-50"
+                onClick={() => { setMerchant(''); setCategory(''); setSort('newest'); setPage(1); }}
+              >
+                Xóa bộ lọc
+              </Button>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -166,27 +286,17 @@ export default function Coupons() {
           )}
         </div>
 
-        {/* Sidebar: Popular Brands */}
-        <aside className="lg:col-span-4 space-y-6 sticky top-24 hidden lg:block">
-          <div className="bg-white rounded-3xl shadow-sm border border-gray-100">
-            <div className="space-y-4">
-              {SIDEBAR_BRANDS.map((brand) => (
-                <Link
-                  key={brand.id}
-                  to={`/coupons?platform=${brand.id}`}
-                  className={`flex items-center gap-4 p-4 rounded-2xl border transition-all hover:shadow-md hover:-translate-y-1 justify-center ${
-                    platformFilter === brand.id
-                      ? 'border-orange-500 bg-orange-50/50'
-                      : 'border-gray-50 bg-white hover:border-gray-200'
-                  }`}
-                >
-                  <div className="w-40 h-40 shrink-0 flex items-center justify-center p-2 bg-white rounded-xl shadow-sm">
-                    <brand.Logo />
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
+        {/* Desktop Sidebar */}
+        <aside className="hidden lg:block lg:col-span-4 sticky top-24 self-start">
+          <FilterSidebar
+            type="coupons"
+            merchant={merchant}
+            category={category}
+            sort={sort}
+            onMerchantChange={(v) => handleFilterChange(() => setMerchant(v))}
+            onCategoryChange={(v) => handleFilterChange(() => setCategory(v))}
+            onSortChange={(v) => handleFilterChange(() => setSort(v))}
+          />
         </aside>
       </div>
     </div>

@@ -1,3 +1,4 @@
+version: '3'
 services:
   db:
     image: postgres:16
@@ -27,20 +28,8 @@ services:
       DATABASE_URL: postgresql://postgres:123456@db:5432/sanmahot_development
       RAILS_ENV: development
       POSTGRES_PASSWORD: 123456
-
-  # worker:
-  #   build:
-  #     context: ./backend
-  #   container_name: sanmahot-jobs
-  #   command: bundle exec rake solid_queue:start
-  #   volumes:
-  #     - ./backend:/app
-  #   depends_on:
-  #     - db
-  #   environment:
-  #     DATABASE_URL: postgresql://postgres:123456@db:5432/sanmahot_development
-  #     RAILS_ENV: development
-  #     POSTGRES_PASSWORD: 123456
+    env_file:
+      - ./backend/.env
 
   frontend:
     build:

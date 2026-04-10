@@ -7,18 +7,29 @@ interface DealProps {
     title: string;
     description: string;
     original_price: number | null;
-    discounted_price: number | null;
-    discount_percentage: number | null;
-    url: string;
+    sale_price: number | null;
+    discount_percent: number | null;
+    affiliate_url: string;
     image_url: string;
+    merchant_name: string;
+    expired_at: string | null;
   };
 }
 
 const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-  }).format(price);
+  return new Intl.NumberFormat('vi-VN').format(price) + ' đ';
+};
+
+const formatTimeRemaining = (dateString: string | null) => {
+  if (!dateString) return null;
+  const now = new Date();
+  const end = new Date(dateString);
+  const diffTime = end.getTime() - now.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0) return 'Đã hết hạn';
+  if (diffDays === 0) return 'Hết hạn hôm nay';
+  return `Còn ${diffDays} ngày`;
 };
 
 export default function DealCard({ deal }: DealProps) {
@@ -46,9 +57,15 @@ export default function DealCard({ deal }: DealProps) {
             </div>
           )}
 
-          {deal.discount_percentage && (
+          {deal.discount_percent && (
             <div className="absolute top-4 right-4 gradient-hot text-white font-black text-[12px] px-3 py-1.5 rounded-xl shadow-lg shadow-red-500/30 z-20 animate-in zoom-in duration-500">
-              -{Math.round(deal.discount_percentage)}%
+              -{Math.round(deal.discount_percent)}%
+            </div>
+          )}
+
+          {deal.expired_at && (
+            <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm text-gray-800 font-bold text-[10px] px-2 py-1 rounded-lg border border-gray-100 z-20">
+              {formatTimeRemaining(deal.expired_at)}
             </div>
           )}
         </div>
@@ -59,12 +76,12 @@ export default function DealCard({ deal }: DealProps) {
           </h3>
 
           <div className="mt-auto pt-4 border-t border-gray-50 flex items-center justify-between">
-            {deal.discounted_price ? (
+            {deal.sale_price ? (
               <div className="flex flex-col">
                 <span className="text-xl font-black text-red-600 tracking-tighter">
-                  {formatPrice(deal.discounted_price)}
+                  {formatPrice(deal.sale_price)}
                 </span>
-                {deal.original_price && deal.original_price > deal.discounted_price && (
+                {deal.original_price && deal.original_price > deal.sale_price && (
                   <span className="text-xs font-bold text-gray-400 line-through">
                     {formatPrice(deal.original_price)}
                   </span>

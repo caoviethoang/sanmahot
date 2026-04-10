@@ -2,6 +2,19 @@
 
 @import 'tailwindcss';
 @config "../tailwind.config.js";
+@source "../src";
+
+@theme {
+  --spacing-18: 4.5rem;
+  --spacing-22: 5.5rem;
+}
+
+@layer utilities {
+  .mx-auto {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
 
 @layer base {
   :root {
@@ -33,7 +46,14 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background-color: #f1f3f5;
+    background-image:
+      radial-gradient(at 0% 0%, rgba(255, 65, 108, 0.2) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(255, 179, 71, 0.2) 0px, transparent 50%),
+      radial-gradient(at 50% 100%, rgba(255, 75, 43, 0.15) 0px, transparent 60%);
+    background-attachment: fixed;
+    min-height: 100vh;
     font-family: 'Be Vietnam Pro', 'Inter', sans-serif;
     letter-spacing: -0.01em;
   }
@@ -56,7 +76,7 @@
   }
 
   .glass-header {
-    @apply bg-white/70 backdrop-blur-sm border-b border-white/20 sticky top-0 z-50 shadow-[0_2px_20px_-5px_rgba(0,0,0,0.05)];
+    @apply bg-white/95 backdrop-blur-xl border-b border-gray-100 border-t-2 border-t-primary sticky top-0 z-50 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)];
     transform: translateZ(0);
   }
 

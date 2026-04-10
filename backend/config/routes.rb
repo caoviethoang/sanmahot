@@ -19,7 +19,9 @@ Rails.application.routes.draw do
       end
 
       resources :deals, only: [ :index, :show ], param: :slug
-      resources :coupons, only: [ :index ], param: :slug
+      resources :coupons, only: [ :index ], param: :slug do
+        collection { get :categories }
+      end
       resources :categories, only: [ :index, :show ], param: :slug do
         member do
           get :deals

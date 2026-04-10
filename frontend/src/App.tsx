@@ -19,6 +19,7 @@ import AdminDashboard from './pages/admin/Dashboard';
 import AdminDeals from './pages/admin/Deals';
 import AdminCoupons from './pages/admin/Coupons';
 import AdminArticles from './pages/admin/Articles';
+import ScrollToTop from './components/ScrollToTop';
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <HelmetProvider>
         <Router>
+          <ScrollToTop />
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />} />
