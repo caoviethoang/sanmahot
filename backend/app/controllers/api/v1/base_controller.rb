@@ -8,7 +8,7 @@ class Api::V1::BaseController < ApplicationController
   end
 
   def paginate(scope)
-    scope.page(params[:page]).per(params[:per_page] || 20)
+    scope.page(params[:page]).per(params[:per_page] || 25)
   end
 
   def pagination_dict(object)

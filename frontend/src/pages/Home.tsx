@@ -57,7 +57,7 @@ export default function Home() {
   const { data: couponsData, isLoading: couponsLoading } = useQuery({
     queryKey: ['latest-coupons'],
     queryFn: async () => {
-      const response = await api.get('/coupons?per_page=10');
+      const response = await api.get('/coupons?per_page=9');
       return response.data;
     },
   });
@@ -167,13 +167,13 @@ export default function Home() {
         </div>
 
         {couponsLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="h-40 bg-gray-50 animate-pulse rounded-3xl" />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {coupons?.map((coupon: any) => (
               <CouponCard
                 title={coupon.title}
@@ -228,13 +228,13 @@ export default function Home() {
         </div>
 
         {articlesLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8">
             {[...Array(3)].map((_, i) => (
               <div key={i} className="h-80 bg-gray-100 animate-pulse rounded-[32px]" />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8">
             {articles?.map((article: any) => (
               <Link
                 key={article.id}

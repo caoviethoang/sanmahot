@@ -1,4 +1,4 @@
-version: '3'
+version: "3.3"
 services:
   db:
     image: postgres:16
@@ -24,10 +24,12 @@ services:
       - "3000:3000"
     depends_on:
       - db
+      - redis
     environment:
       DATABASE_URL: postgresql://postgres:123456@db:5432/sanmahot_development
       RAILS_ENV: development
       POSTGRES_PASSWORD: 123456
+      REDIS_URL: redis://redis:6379/1
     env_file:
       - ./backend/.env
 
@@ -42,5 +44,32 @@ services:
       - "5173:5173"
     command: npm run dev -- --host
 
+  redis:
+    image: redis:7-alpine
+    container_name: sanmahot-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  worker:
+    build:
+      context: ./backend
+    container_name: sanmahot-worker
+    command: bundle exec sidekiq
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - db
+      - redis
+    environment:
+      DATABASE_URL: postgresql://postgres:123456@db:5432/sanmahot_development
+      RAILS_ENV: development
+      REDIS_URL: redis://redis:6379/1
+      POSTGRES_PASSWORD: 123456
+    env_file:
+      - ./backend/.env
+
 volumes:
   pg_data:
+  redis_data:

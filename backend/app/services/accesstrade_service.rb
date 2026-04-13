@@ -21,18 +21,26 @@ class AccesstradeService
     "xanhsmbike" => "xanhsm",
     "vnpay" => "vnpay",
     "lazada_malay" => "lazada",
-    "lazada_sing" => "lazada"
+    "lazada_sing" => "lazada",
+    "aeoneshop" => "aeon",
+    "concung" => "concung",
+    "bibomart" => "bibomart",
+    "klook" => "klook",
+    "kkday" => "kkday",
+    "agoda" => "agoda",
+    "traveloka" => "traveloka",
+    "tours" => "trip"
   }.freeze
 
   def initialize
     @api_key = ENV["ACCESSTRADE_API_KEY"]
   end
 
-  def sync_coupons(max_pages = 10)
+  def sync_coupons(max_pages = 50)
     sync_data(max_pages, coupon_flag: 1)
   end
 
-  def sync_deals(max_pages = 10)
+  def sync_deals(max_pages = 50)
     sync_data(max_pages, coupon_flag: 0)
   end
 

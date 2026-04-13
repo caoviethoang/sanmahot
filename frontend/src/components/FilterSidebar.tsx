@@ -25,10 +25,11 @@ const COUPON_MERCHANTS = [
 ];
 
 const DEAL_CATEGORIES = [
-  'Fashion',
-  'Beauty',
   'Electronics',
   'Home & Kitchen',
+  'Fashion',
+  'Beauty',
+  'Ưu đãi',
   'Freeship',
 ];
 
@@ -60,13 +61,13 @@ export default function FilterSidebar({
     <aside className="space-y-6">
       {/* Sàn thương mại */}
       <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-        <h3 className="font-extrabold text-sm text-gray-700 uppercase tracking-widest mb-4">
+        <h3 className="font-extrabold text-lg text-gray-700 uppercase tracking-widest mb-4">
           🏪 Sàn TMĐT
         </h3>
         <div className="space-y-2">
           <button
             onClick={() => onMerchantChange('')}
-            className={`w-full text-left px-3 py-2 rounded-xl text-sm font-semibold transition-all ${
+            className={`w-full text-left px-3 py-2 rounded-xl text-lg font-semibold transition-all ${
               !merchant
                 ? 'bg-red-50 text-red-600 border border-red-100'
                 : 'text-gray-600 hover:bg-gray-50'
@@ -78,7 +79,7 @@ export default function FilterSidebar({
             <button
               key={id}
               onClick={() => onMerchantChange(merchant === id ? '' : id)}
-              className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-semibold transition-all ${
+              className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-lg font-semibold transition-all ${
                 merchant === id
                   ? 'bg-red-50 text-red-600 border border-red-100'
                   : 'text-gray-600 hover:bg-gray-50'
@@ -95,7 +96,7 @@ export default function FilterSidebar({
 
       {/* Sắp xếp */}
       <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-        <h3 className="font-extrabold text-sm text-gray-700 uppercase tracking-widest mb-4">
+        <h3 className="font-extrabold text-lg text-gray-700 uppercase tracking-widest mb-4">
           🔀 Sắp xếp theo
         </h3>
         <div className="space-y-2">
@@ -103,7 +104,7 @@ export default function FilterSidebar({
             <button
               key={value}
               onClick={() => onSortChange(value)}
-              className={`w-full text-left px-3 py-2 rounded-xl text-sm font-semibold transition-all ${
+              className={`w-full text-left px-3 py-2 rounded-xl text-lg font-semibold transition-all ${
                 sort === value
                   ? 'bg-red-50 text-red-600 border border-red-100'
                   : 'text-gray-600 hover:bg-gray-50'
@@ -118,13 +119,13 @@ export default function FilterSidebar({
       {/* Danh mục (chỉ hiển thị với deals) */}
       {type === 'deals' && (
         <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-          <h3 className="font-extrabold text-sm text-gray-700 uppercase tracking-widest mb-4">
+          <h3 className="font-extrabold text-lg text-gray-700 uppercase tracking-widest mb-4">
             🏷️ Danh mục
           </h3>
           <div className="space-y-2">
             <button
               onClick={() => onCategoryChange('')}
-              className={`w-full text-left px-3 py-2 rounded-xl text-sm font-semibold transition-all ${
+              className={`w-full text-left px-3 py-2 rounded-xl text-lg font-semibold transition-all ${
                 !category
                   ? 'bg-red-50 text-red-600 border border-red-100'
                   : 'text-gray-600 hover:bg-gray-50'
@@ -136,7 +137,7 @@ export default function FilterSidebar({
               <button
                 key={cat}
                 onClick={() => onCategoryChange(category === cat ? '' : cat)}
-                className={`w-full text-left px-3 py-2 rounded-xl text-sm font-semibold transition-all ${
+                className={`w-full text-left px-3 py-2 rounded-xl text-lg font-semibold transition-all ${
                   category === cat
                     ? 'bg-red-50 text-red-600 border border-red-100'
                     : 'text-gray-600 hover:bg-gray-50'

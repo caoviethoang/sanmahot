@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
-import { ArrowUpRight, X, Info, CheckCircle2 } from 'lucide-react';
-import { ShopeeIcon, LazadaIcon, TikiIcon } from './PlatformIcons';
+import { X, Info, CheckCircle2 } from 'lucide-react';
 
 interface CouponProps {
   id: number;
@@ -30,12 +29,24 @@ export default function CouponCard({
 }: CouponProps) {
   const [showDetail, setShowDetail] = useState(false);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && showDetail) {
+        setShowDetail(false);
+      }
+    };
+    if (showDetail) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showDetail]);
+
   const getPlatformDetails = () => {
     const normalizedPlatform = platform?.toLowerCase();
     switch (normalizedPlatform) {
       case 'shopee':
         return {
-          icon: <ShopeeIcon className="w-8 h-8" />,
+          logo: '/logos/shopee.jpg',
           color: 'text-[#ee4d2d]',
           bg: 'bg-[#ee4d2d]',
           lightBg: 'bg-[#ee4d2d]/5',
@@ -43,7 +54,7 @@ export default function CouponCard({
         };
       case 'lazada':
         return {
-          icon: <LazadaIcon className="w-8 h-8" />,
+          logo: '/logos/lazada.jpg',
           color: 'text-[#0f136d]',
           bg: 'bg-[#0f136d]',
           lightBg: 'bg-[#0f136d]/5',
@@ -51,7 +62,7 @@ export default function CouponCard({
         };
       case 'tiki':
         return {
-          icon: <TikiIcon className="w-8 h-8" />,
+          logo: '/logos/tiki.jpg',
           color: 'text-[#1a94ff]',
           bg: 'bg-[#1a94ff]',
           lightBg: 'bg-[#1a94ff]/5',
@@ -59,7 +70,7 @@ export default function CouponCard({
         };
       default:
         return {
-          icon: <ArrowUpRight className="w-8 h-8" />,
+          logo: `/logos/${normalizedPlatform}.jpg`,
           color: 'text-primary',
           bg: 'bg-primary',
           lightBg: 'bg-primary/5',
@@ -68,15 +79,19 @@ export default function CouponCard({
     }
   };
 
-  const { icon, color, bg, lightBg } = getPlatformDetails();
+  const { logo, color, bg, lightBg } = getPlatformDetails();
 
   const handleCopyCode = (e: React.MouseEvent) => {
     e.stopPropagation();
     navigator.clipboard.writeText(code);
+
+    // Open affiliate link in new tab
+    window.open(`/api/go/coupon/${id}`, '_blank');
+
     const toast = document.createElement('div');
     toast.className =
       'fixed bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full font-bold text-sm shadow-2xl z-[200] animate-in fade-in slide-in-from-bottom-4 duration-300';
-    toast.innerText = '🚀 Đã copy mã: ' + code;
+    toast.innerText = '🚀 Đã copy mã & Đang chuyển đến cửa hàng';
     document.body.appendChild(toast);
     setTimeout(() => {
       toast.classList.add('animate-out', 'fade-out', 'slide-out-to-bottom-4');
@@ -92,10 +107,17 @@ export default function CouponCard({
       >
         {/* Left Section (Colored Ticket Band) */}
         <div
-          className={`relative flex flex-col items-center justify-center p-4 ${bg} w-[100px] md:w-[130px] shrink-0 rounded-l-2xl border-r border-dashed border-white/30`}
+          className={`relative flex flex-col items-center justify-center p-3 sm:p-4 ${bg} w-[90px] sm:w-[110px] shrink-0 rounded-l-2xl border-r border-dashed border-white/30`}
         >
-          <div className="bg-white p-2.5 rounded-full shadow-lg group-hover:scale-110 transition-transform duration-500 relative z-10 flex items-center justify-center w-14 h-14">
-            {icon}
+          <div className="bg-white rounded-full shadow-lg group-hover:scale-110 transition-transform duration-500 relative z-10 flex items-center justify-center w-14 h-14 overflow-hidden border border-gray-100 p-2">
+            <img
+              src={logo}
+              alt={platform}
+              className="w-full h-full object-contain scale-[1.3] mix-blend-multiply"
+              onError={(e) => {
+                e.currentTarget.src = '/logos/shopee.jpg';
+              }}
+            />
           </div>
           <div className="mt-3 text-[12px] font-black uppercase tracking-tight text-white text-center leading-tight">
             {category || 'Ưu đãi'}
@@ -111,30 +133,30 @@ export default function CouponCard({
         </div>
 
         {/* Main Content (Right Side) */}
-        <div className="flex-1 p-4 md:p-6 flex flex-col justify-between min-w-0 bg-white rounded-r-2xl">
+        <div className="flex-1 p-3 sm:p-4 flex flex-col justify-between min-w-0 bg-white rounded-r-2xl">
           <div className="space-y-1.5">
-            <div className="flex items-start justify-between gap-2">
-              <h3 className="font-black text-gray-900 leading-tight group-hover:text-primary transition-colors line-clamp-2">
+            <div className="flex items-start justify-between gap-1">
+              <h3 className="font-black text-gray-900 leading-tight group-hover:text-primary transition-colors line-clamp-2 text-sm">
                 {title}
               </h3>
             </div>
-            <div className="text-[14px] font-bold text-gray-700">
+            <div className="text-[12px] font-bold text-gray-700 truncate">
               {minSpend ? `ĐH tối thiểu: ${minSpend}` : 'ĐH tối thiểu: 0đ'}
             </div>
             {targetUsers && (
-              <div className="text-[12px] text-gray-500 font-bold flex items-center gap-1">
+              <div className="text-[11px] text-gray-500 font-bold flex flex-wrap items-center gap-1 line-clamp-2 leading-tight">
                 Đối tượng: <span className="text-gray-700">{targetUsers}</span>
               </div>
             )}
-            <div className="text-[14px] text-orange-600 font-bold italic opacity-90 underline decoration-orange-200 cursor-pointer hover:text-orange-700">
+            <div className="text-[12px] text-orange-600 font-bold italic opacity-90 underline decoration-orange-200 cursor-pointer hover:text-orange-700 pt-1">
               Xem chi tiết
             </div>
           </div>
 
-          <div className="flex items-center justify-between mt-5 gap-3">
+          <div className="flex items-center justify-end mt-4">
             <Button
               size="sm"
-              className="bg-green-600 hover:bg-green-700 text-white font-black px-7 h-11 rounded-xl active:scale-95 transition-transform shadow-md"
+              className="bg-green-600 hover:bg-green-700 text-white font-black px-4 h-9 text-xs rounded-xl active:scale-95 transition-transform shadow-md w-full sm:w-auto"
               onClick={handleCopyCode}
             >
               Copy mã
@@ -145,7 +167,10 @@ export default function CouponCard({
 
       {/* Detail Modal */}
       {showDetail && (
-        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+        <div
+          className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
+          onClick={() => setShowDetail(false)}
+        >
           <div
             className="bg-white w-full max-w-lg rounded-[32px] overflow-hidden shadow-2xl relative animate-in zoom-in-95 duration-300"
             onClick={(e) => e.stopPropagation()}
@@ -161,8 +186,15 @@ export default function CouponCard({
               </button>
 
               <div className="relative z-10 flex flex-col items-center text-center space-y-4">
-                <div className="bg-white p-4 rounded-3xl shadow-xl w-24 h-24 flex items-center justify-center">
-                  {icon}
+                <div className="bg-white rounded-3xl shadow-xl w-24 h-24 flex items-center justify-center overflow-hidden border-4 border-white/20 p-2">
+                  <img
+                    src={logo}
+                    alt={platform}
+                    className="w-full h-full object-contain scale-[1.25] mix-blend-multiply"
+                    onError={(e) => {
+                      e.currentTarget.src = '/logos/shopee.jpg';
+                    }}
+                  />
                 </div>
                 <div className="space-y-1">
                   <div className="text-white/80 font-black uppercase tracking-widest text-xs">

@@ -5,11 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import api from '../services/api';
 import CouponCard from '../components/CouponCard';
 import FilterSidebar from '../components/FilterSidebar';
-import {
-  ShopeeLogo,
-  LazadaLogo,
-  TikiLogo,
-} from '../components/BrandLogos';
+import { ShopeeLogo, LazadaLogo, TikiLogo } from '../components/BrandLogos';
 import { Button } from '../components/ui/button';
 import { SlidersHorizontal, ChevronLeft, ChevronRight, Gift } from 'lucide-react';
 
@@ -124,63 +120,82 @@ export default function Coupons() {
       </section>
 
       {/* Horizontal Category Tab Bar */}
-      <div className="relative group/tabs">
+      <div className="relative group/tabs flex items-center bg-white px-2 py-4 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100">
         <button
           onClick={() => scrollTabs('left')}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 shadow-md border border-gray-100 rounded-full p-1.5 opacity-0 group-hover/tabs:opacity-100 transition-opacity"
+          className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-white/80 backdrop-blur shadow-[0_4px_15px_rgba(0,0,0,0.06)] border border-gray-100 rounded-full opacity-0 translate-x-2 group-hover/tabs:translate-x-0 group-hover/tabs:opacity-100 transition-all duration-300 hover:bg-orange-50 hover:text-orange-500 cursor-pointer"
         >
-          <ChevronLeft className="w-4 h-4 text-gray-600" />
+          <ChevronLeft className="w-5 h-5" />
         </button>
 
         <div
           ref={tabsRef}
-          className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 scroll-smooth"
+          className="flex gap-3 overflow-x-auto scrollbar-hide px-14 scroll-smooth w-full"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {/* Tất cả tab */}
           <button
-            onClick={() => handleFilterChange(() => setCategory(''))}
-            className={`flex items-center gap-2 whitespace-nowrap px-4 py-2.5 rounded-full text-sm font-bold border transition-all shrink-0 ${
-              !category
-                ? 'bg-orange-500 text-white border-orange-500 shadow-md shadow-orange-200'
-                : 'bg-white text-gray-600 border-gray-200 hover:border-orange-300 hover:text-orange-500'
+            onClick={() =>
+              handleFilterChange(() => {
+                setCategory('');
+                setSort('newest');
+              })
+            }
+            className={`relative flex items-center justify-center whitespace-nowrap px-6 py-2.5 rounded-full text-[15px] font-bold transition-all duration-300 ease-out hover:-translate-y-0.5 shrink-0 cursor-pointer border ${
+              !category && sort === 'newest'
+                ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-[0_8px_20px_rgba(249,115,22,0.3)] border-transparent'
+                : 'text-gray-600 bg-white border-gray-200 hover:border-orange-400 hover:text-orange-600'
             }`}
           >
-            <Gift className="w-4 h-4" /> Tất cả
+            <span className="relative z-10 flex items-center gap-2">
+              <Gift className="w-4 h-4" /> Tất cả
+            </span>
           </button>
 
           {/* Dynamic category tabs */}
-          {categoriesData?.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => handleFilterChange(() => setCategory(category === cat ? '' : cat))}
-              className={`whitespace-nowrap px-4 py-2.5 rounded-full text-sm font-bold border transition-all shrink-0 ${
-                category === cat
-                  ? 'bg-orange-500 text-white border-orange-500 shadow-md shadow-orange-200'
-                  : 'bg-white text-gray-600 border-gray-200 hover:border-orange-300 hover:text-orange-500'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+          {Array.from(new Set([...(categoriesData || []), 'Freeship'])).map((cat) => {
+            const isActive = category === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => handleFilterChange(() => setCategory(isActive ? '' : cat))}
+                className={`relative flex items-center justify-center whitespace-nowrap px-6 py-2.5 rounded-full text-[15px] font-bold transition-all duration-300 ease-out hover:-translate-y-0.5 shrink-0 cursor-pointer border ${
+                  isActive
+                    ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-[0_8px_20px_rgba(249,115,22,0.3)] border-transparent'
+                    : 'text-gray-600 bg-white border-gray-200 hover:border-orange-400 hover:text-orange-600'
+                }`}
+              >
+                <span className="relative z-10">{cat}</span>
+              </button>
+            );
+          })}
 
-          {/* Extra useful categories */}
-          {['Freeship', 'Flash Sale', 'Mới nhất'].map((extra) => (
-            <button
-              key={extra}
-              onClick={() => handleFilterChange(() => setSort(extra === 'Mới nhất' ? 'newest' : extra === 'Freeship' ? '' : 'newest'))}
-              className="whitespace-nowrap px-4 py-2.5 rounded-full text-sm font-bold border bg-white text-gray-600 border-gray-200 hover:border-orange-300 hover:text-orange-500 transition-all shrink-0"
-            >
-              {extra}
-            </button>
-          ))}
+          <div className="w-px h-6 bg-gray-200 self-center mx-2 shrink-0 rounded-full"></div>
+
+          {/* Sort Tabs */}
+          {[{ id: 'expiring', label: 'Sắp hết hạn ⏳' }].map((sortItem) => {
+            const isActive = sort === sortItem.id;
+            return (
+              <button
+                key={sortItem.id}
+                onClick={() => handleFilterChange(() => setSort(isActive ? 'newest' : sortItem.id))}
+                className={`relative flex items-center justify-center whitespace-nowrap px-6 py-2.5 rounded-full text-[15px] font-bold transition-all duration-300 ease-out hover:-translate-y-0.5 shrink-0 cursor-pointer border ${
+                  isActive
+                    ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-[0_8px_20px_rgba(249,115,22,0.3)] border-transparent'
+                    : 'text-gray-600 bg-white border-gray-200 hover:border-orange-400 hover:text-orange-600'
+                }`}
+              >
+                <span className="relative z-10">{sortItem.label}</span>
+              </button>
+            );
+          })}
         </div>
 
         <button
           onClick={() => scrollTabs('right')}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 shadow-md border border-gray-100 rounded-full p-1.5 opacity-0 group-hover/tabs:opacity-100 transition-opacity"
+          className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-white/80 backdrop-blur shadow-[0_4px_15px_rgba(0,0,0,0.06)] border border-gray-100 rounded-full opacity-0 -translate-x-2 group-hover/tabs:translate-x-0 group-hover/tabs:opacity-100 transition-all duration-300 hover:bg-orange-50 hover:text-orange-500 cursor-pointer"
         >
-          <ChevronRight className="w-4 h-4 text-gray-600" />
+          <ChevronRight className="w-5 h-5" />
         </button>
       </div>
 
@@ -213,7 +228,7 @@ export default function Coupons() {
         {/* Main Content */}
         <div className="lg:col-span-8 space-y-8">
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
                 <div key={i} className="h-44 bg-gray-100 animate-pulse rounded-2xl" />
               ))}
@@ -225,13 +240,18 @@ export default function Coupons() {
               <Button
                 variant="outline"
                 className="mt-6 border-orange-200 text-orange-600 hover:bg-orange-50"
-                onClick={() => { setMerchant(''); setCategory(''); setSort('newest'); setPage(1); }}
+                onClick={() => {
+                  setMerchant('');
+                  setCategory('');
+                  setSort('newest');
+                  setPage(1);
+                }}
               >
                 Xóa bộ lọc
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {coupons?.map((coupon: any) => (
                 <CouponCard
                   key={coupon.id}

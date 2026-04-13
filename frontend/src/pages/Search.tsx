@@ -8,7 +8,11 @@ import { Button } from '../components/ui/button';
 import { Search as SearchIcon } from 'lucide-react';
 
 const formatPrice = (price: number) =>
-  new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(price);
+  new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+    maximumFractionDigits: 0,
+  }).format(price);
 
 export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -73,7 +77,10 @@ export default function Search() {
               className="flex-1 ml-3 bg-transparent outline-none text-gray-700 font-medium"
             />
           </div>
-          <Button type="submit" className="bg-red-600 hover:bg-red-700 text-white rounded-2xl px-6 font-bold">
+          <Button
+            type="submit"
+            className="bg-red-600 hover:bg-red-700 text-white rounded-2xl px-6 font-bold"
+          >
             Tìm kiếm
           </Button>
         </form>
@@ -84,24 +91,32 @@ export default function Search() {
           {/* Tab Switcher */}
           <div className="flex gap-2 border-b border-gray-100 pb-1">
             <button
-              onClick={() => { setActiveTab('deals'); setPage(1); }}
+              onClick={() => {
+                setActiveTab('deals');
+                setPage(1);
+              }}
               className={`px-5 py-2 rounded-full font-bold text-sm transition-all ${
                 activeTab === 'deals'
                   ? 'bg-red-600 text-white shadow-sm'
                   : 'text-gray-500 hover:bg-gray-50'
               }`}
             >
-              Deal {dealsPagination?.total_count !== undefined && `(${dealsPagination.total_count})`}
+              Deal{' '}
+              {dealsPagination?.total_count !== undefined && `(${dealsPagination.total_count})`}
             </button>
             <button
-              onClick={() => { setActiveTab('coupons'); setPage(1); }}
+              onClick={() => {
+                setActiveTab('coupons');
+                setPage(1);
+              }}
               className={`px-5 py-2 rounded-full font-bold text-sm transition-all ${
                 activeTab === 'coupons'
                   ? 'bg-red-600 text-white shadow-sm'
                   : 'text-gray-500 hover:bg-gray-50'
               }`}
             >
-              Mã giảm giá {couponsPagination?.total_count !== undefined && `(${couponsPagination.total_count})`}
+              Mã giảm giá{' '}
+              {couponsPagination?.total_count !== undefined && `(${couponsPagination.total_count})`}
             </button>
           </div>
 
@@ -142,8 +157,19 @@ export default function Search() {
                       title={coupon.title}
                       description={coupon.description}
                       code={coupon.code}
-                      minSpend={coupon.min_order_value ? formatPrice(parseFloat(coupon.min_order_value)) : undefined}
-                      expiryText={coupon.end_at ? new Date(coupon.end_at).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }) : '30/04'}
+                      minSpend={
+                        coupon.min_order_value
+                          ? formatPrice(parseFloat(coupon.min_order_value))
+                          : undefined
+                      }
+                      expiryText={
+                        coupon.end_at
+                          ? new Date(coupon.end_at).toLocaleDateString('vi-VN', {
+                              day: '2-digit',
+                              month: '2-digit',
+                            })
+                          : '30/04'
+                      }
                     />
                   ))}
                 </div>
@@ -162,7 +188,8 @@ export default function Search() {
                 Trang trước
               </Button>
               <span className="text-sm font-medium text-gray-500 bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
-                Trang <span className="text-gray-900 font-bold">{page}</span> / {pagination.total_pages}
+                Trang <span className="text-gray-900 font-bold">{page}</span> /{' '}
+                {pagination.total_pages}
               </span>
               <Button
                 variant="outline"
