@@ -5,8 +5,6 @@ import Layout from './components/Layout';
 import Home from './pages/Home';
 import Deals from './pages/Deals';
 import Coupons from './pages/Coupons';
-import Categories from './pages/Categories';
-import CategoryDetail from './pages/CategoryDetail';
 import DealDetail from './pages/DealDetail';
 import Search from './pages/Search';
 import Articles from './pages/Articles';
@@ -35,8 +33,6 @@ function App() {
               <Route path="deals" element={<Deals />} />
               <Route path="deals/:slug" element={<DealDetail />} />
               <Route path="coupons" element={<Coupons />} />
-              <Route path="categories" element={<Categories />} />
-              <Route path="categories/:slug" element={<CategoryDetail />} />
               <Route path="search" element={<Search />} />
               <Route path="tin-khuyen-mai" element={<Articles />} />
               <Route path="tin-khuyen-mai/:slug" element={<ArticleDetail />} />

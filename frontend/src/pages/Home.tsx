@@ -115,12 +115,6 @@ export default function Home() {
               Lựa chọn mã giảm giá từ các sàn thương mại điện tử hàng đầu
             </p>
           </div>
-          <Link
-            to="/categories"
-            className="text-sm font-black text-primary hover:opacity-80 transition-opacity hidden md:block"
-          >
-            XEM TẤT CẢ →
-          </Link>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_09_015704) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_13_155900) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -53,8 +53,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_09_015704) do
     t.integer "status"
     t.string "title"
     t.datetime "updated_at", null: false
+    t.index "lower((category)::text)", name: "idx_articles_lower_category"
+    t.index "lower((platform)::text)", name: "idx_articles_lower_platform"
     t.index ["platform"], name: "index_articles_on_platform"
+    t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["slug"], name: "index_articles_on_slug"
+    t.index ["status"], name: "index_articles_on_status"
   end
 
   create_table "categories", force: :cascade do |t|
@@ -84,7 +88,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_09_015704) do
     t.text "terms"
     t.string "title"
     t.datetime "updated_at", null: false
+    t.index "lower((category)::text)", name: "idx_coupons_lower_category"
+    t.index "lower((platform)::text)", name: "idx_coupons_lower_platform"
+    t.index ["created_at"], name: "index_coupons_on_created_at"
+    t.index ["end_at"], name: "index_coupons_on_end_at"
     t.index ["slug"], name: "index_coupons_on_slug"
+    t.index ["status"], name: "index_coupons_on_status"
   end
 
   create_table "deal_tags", force: :cascade do |t|
@@ -114,8 +123,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_09_015704) do
     t.integer "status"
     t.string "title"
     t.datetime "updated_at", null: false
+    t.index "lower((source_platform)::text)", name: "idx_deals_lower_source_platform"
     t.index ["category_id"], name: "index_deals_on_category_id"
+    t.index ["discount_percent"], name: "index_deals_on_discount_percent"
+    t.index ["sale_price"], name: "index_deals_on_sale_price"
     t.index ["slug"], name: "index_deals_on_slug"
+    t.index ["status"], name: "index_deals_on_status"
   end
 
   create_table "friendly_id_slugs", force: :cascade do |t|

@@ -52,12 +52,6 @@ export default function AdminLayout() {
               <Ticket className="w-4 h-4" /> Mã Giảm Giá
             </Link>
             <Link
-              to="/admin/categories"
-              className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground text-sm font-medium"
-            >
-              <Tags className="w-4 h-4" /> Danh mục
-            </Link>
-            <Link
               to="/admin/articles"
               className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground text-sm font-medium"
             >
