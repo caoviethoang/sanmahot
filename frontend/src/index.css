@@ -66,6 +66,10 @@
     font-family: 'Plus Jakarta Sans', sans-serif;
     letter-spacing: -0.03em;
   }
+  button,
+  [role="button"] {
+    @apply cursor-pointer;
+  }
 }
 
 /* Custom Utilities for Premium Look */

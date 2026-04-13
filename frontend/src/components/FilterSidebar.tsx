@@ -1,4 +1,4 @@
-import { ShopeeLogo, LazadaLogo, TikiLogo, SendoLogo } from './BrandLogos';
+import { ShopeeLogo, LazadaLogo, TikiLogo, SendoLogo, NguyenKimLogo } from './BrandLogos';
 
 interface FilterSidebarProps {
   type: 'deals' | 'coupons';
@@ -15,6 +15,7 @@ const DEAL_MERCHANTS = [
   { id: 'lazada', name: 'Lazada', Logo: LazadaLogo },
   { id: 'tiki', name: 'Tiki', Logo: TikiLogo },
   { id: 'sendo', name: 'Sendo', Logo: SendoLogo },
+  { id: 'nguyenkim', name: 'Nguyenkim', Logo: NguyenKimLogo },
 ];
 
 const COUPON_MERCHANTS = [
@@ -22,13 +23,14 @@ const COUPON_MERCHANTS = [
   { id: 'lazada', name: 'Lazada', Logo: LazadaLogo },
   { id: 'tiki', name: 'Tiki', Logo: TikiLogo },
   { id: 'sendo', name: 'Sendo', Logo: SendoLogo },
+  { id: 'nguyenkim', name: 'Nguyenkim', Logo: NguyenKimLogo },
 ];
 
 const DEAL_CATEGORIES = [
-  'Electronics',
-  'Home & Kitchen',
-  'Fashion',
-  'Beauty',
+  'Điện tử',
+  'Nhà cửa & Đời sống',
+  'Thời trang',
+  'Làm đẹp',
   'Ưu đãi',
   'Freeship',
 ];
@@ -85,7 +87,7 @@ export default function FilterSidebar({
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
             >
-              <span className="w-6 h-6 shrink-0">
+              <span className="w-14 h-14 shrink-0">
                 <Logo />
               </span>
               {name}

@@ -228,7 +228,7 @@ export default function Coupons() {
         {/* Main Content */}
         <div className="lg:col-span-8 space-y-8">
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[...Array(6)].map((_, i) => (
                 <div key={i} className="h-44 bg-gray-100 animate-pulse rounded-2xl" />
               ))}
@@ -251,7 +251,7 @@ export default function Coupons() {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {coupons?.map((coupon: any) => (
                 <CouponCard
                   key={coupon.id}

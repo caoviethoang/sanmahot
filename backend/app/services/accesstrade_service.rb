@@ -184,10 +184,10 @@ class AccesstradeService
   def detect_category_name(text)
     category = "Ưu đãi"
     category = "Freeship" if text.include?("freeship") || text.include?("vận chuyển")
-    category = "Electronics" if text.include?("điện tử") || text.include?("laptop") || text.include?("điện thoại") || text.include?("tablet")
-    category = "Home & Kitchen" if text.include?("gia dụng") || text.include?("bếp") || text.include?("nội thất")
-    category = "Fashion" if text.include?("thời trang") || text.include?("quần áo") || text.include?("giày")
-    category = "Beauty" if text.include?("làm đẹp") || text.include?("mỹ phẩm") || text.include?("skincare") || text.include?("beauty")
+    category = "Điện tử" if text.include?("điện tử") || text.include?("laptop") || text.include?("điện thoại") || text.include?("tablet")
+    category = "Nhà cửa & Đời sống" if text.include?("gia dụng") || text.include?("bếp") || text.include?("nội thất")
+    category = "Thời trang" if text.include?("thời trang") || text.include?("quần áo") || text.include?("giày")
+    category = "Làm đẹp" if text.include?("làm đẹp") || text.include?("mỹ phẩm") || text.include?("skincare") || text.include?("beauty")
     category
   end
 

@@ -42,7 +42,7 @@ export default function Layout() {
                     className="h-8 md:h-11 w-auto object-contain relative z-10 group-hover:scale-105 transition-transform duration-500 ease-out"
                   />
                 </div>
-                <span className="font-black tracking-tighter text-white hidden sm:block drop-shadow-lg">
+                <span className="font-black tracking-tighter text-white hidden sm:block drop-shadow-lg gradient-text-rainbow">
                   SANMAHOT
                 </span>
               </Link>
