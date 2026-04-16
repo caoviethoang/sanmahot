@@ -18,7 +18,22 @@ class DailyCrawlJob < ApplicationJob
       Rails.logger.error "Lỗi khi SyncDealsJob: #{e.message}"
     end
 
-    # 3. Crawl Articles
+    # 3. Sync Hot Coupons / Deals (API)
+    begin
+      SyncHotCouponsJob.perform_now
+    rescue => e
+      Rails.logger.error "Lỗi khi SyncHotCouponsJob: #{e.message}"
+    end
+
+    # 4. Scrape Hot Deal Calendar (Bot Trình Duyệt)
+    begin
+      Rails.logger.info "Bắt đầu chạy Bot cào lịch Hot Deal..."
+      AtScraperService.new.scrape_calendar
+    rescue => e
+      Rails.logger.error "Lỗi khi chạy AtScraperService: #{e.message}"
+    end
+
+    # 5. Crawl Articles
     begin
       Rails.logger.info "Bắt đầu crawl bài viết từ ArticleCrawlerService..."
       ArticleCrawlerService.new.crawl_all

@@ -67,7 +67,7 @@
     letter-spacing: -0.03em;
   }
   button,
-  [role="button"] {
+  [role='button'] {
     @apply cursor-pointer;
   }
 }

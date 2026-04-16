@@ -27,7 +27,6 @@ gem "ransack"
 gem "active_model_serializers", "~> 0.10.0"
 gem "httparty"
 gem "ruby-openai"
-gem "kaminari"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
@@ -70,3 +69,6 @@ group :development, :test do
   gem "faker"
   gem "dotenv-rails"
 end
+
+# Web Scraping / Browser Automation
+gem "ferrum"
