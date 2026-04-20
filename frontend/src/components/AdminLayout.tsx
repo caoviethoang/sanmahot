@@ -1,6 +1,6 @@
 import { Outlet, Navigate, Link, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
-import { LayoutDashboard, LogOut, Tags, ShoppingBag, Ticket, FileText } from 'lucide-react';
+import { LayoutDashboard, LogOut, ShoppingBag, Ticket, FileText } from 'lucide-react';
 import api from '../services/api';
 
 export default function AdminLayout() {
