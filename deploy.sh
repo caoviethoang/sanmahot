@@ -78,6 +78,9 @@ echo "  Website: https://$DOMAIN"
 echo "=========================================="
 
 # Auto-renew SSL bằng cron job (chạy 2 lần/ngày)
-CRON_JOB="0 */12 * * * certbot renew --quiet && docker compose -f $(pwd)/docker-compose.prod.yml restart nginx"
-(crontab -l 2>/dev/null | grep -v certbot; echo "$CRON_JOB") | crontab -
-echo "SSL auto-renewal cron job configured."
+CRON_RENEW="0 */12 * * * certbot renew --quiet && docker compose -f $(pwd)/docker-compose.prod.yml restart nginx"
+# Daily Crawl Job (chạy lúc 0:00 hàng ngày) - sử dụng docker exec để chạy trong container
+CRON_CRAWL="0 0 * * * docker exec sanmahot-rails bundle exec rake crawl:daily >> $(pwd)/backend/log/cron.log 2>&1"
+
+(crontab -l 2>/dev/null | grep -v "certbot\|crawl:daily" ; echo "$CRON_RENEW" ; echo "$CRON_CRAWL") | crontab -
+echo "Cron jobs (SSL renewal & Daily Crawl) configured."

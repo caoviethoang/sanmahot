@@ -2,10 +2,13 @@ class DailyCrawlJob < ApplicationJob
   queue_as :default
 
   def perform
-    Rails.logger.info "--- [#{Time.current}] Bắt đầu quy trình Crawl định kỳ hàng ngày ---"
+    msg = "--- [#{Time.current}] Bắt đầu quy trình Crawl định kỳ hàng ngày ---"
+    Rails.logger.info msg
+    puts msg
 
     # 1. Sync Coupons
     begin
+      puts "1. Đang đồng bộ Coupons..."
       SyncCouponsJob.perform_now
     rescue => e
       Rails.logger.error "Lỗi khi SyncCouponsJob: #{e.message}"
@@ -13,6 +16,7 @@ class DailyCrawlJob < ApplicationJob
 
     # 2. Sync Deals
     begin
+      puts "2. Đang đồng bộ Deals..."
       SyncDealsJob.perform_now
     rescue => e
       Rails.logger.error "Lỗi khi SyncDealsJob: #{e.message}"
@@ -20,6 +24,7 @@ class DailyCrawlJob < ApplicationJob
 
     # 3. Sync Hot Coupons / Deals (API)
     begin
+      puts "3. Đang đồng bộ Hot Coupons (API)..."
       SyncHotCouponsJob.perform_now
     rescue => e
       Rails.logger.error "Lỗi khi SyncHotCouponsJob: #{e.message}"
@@ -27,7 +32,7 @@ class DailyCrawlJob < ApplicationJob
 
     # 4. Scrape Hot Deal Calendar (Bot Trình Duyệt)
     begin
-      Rails.logger.info "Bắt đầu chạy Bot cào lịch Hot Deal..."
+      puts "4. Đang chạy Bot cào lịch Hot Deal (Cái này có thể mất vài phút)..."
       AtScraperService.new.scrape_calendar
     rescue => e
       Rails.logger.error "Lỗi khi chạy AtScraperService: #{e.message}"
@@ -35,13 +40,15 @@ class DailyCrawlJob < ApplicationJob
 
     # 5. Crawl Articles
     begin
-      Rails.logger.info "Bắt đầu crawl bài viết từ ArticleCrawlerService..."
+      puts "5. Đang crawl bài viết từ magiamgia.com..."
       ArticleCrawlerService.new.crawl_all
-      Rails.logger.info "Hoàn tất crawl bài viết!"
+      puts "   Hoàn tất crawl bài viết!"
     rescue => e
       Rails.logger.error "Lỗi khi ArticleCrawlerService: #{e.message}"
     end
 
-    Rails.logger.info "--- [#{Time.current}] Hoàn tất quy trình Crawl định kỳ ---"
+    msg_end = "--- [#{Time.current}] Hoàn tất quy trình Crawl định kỳ ---"
+    Rails.logger.info msg_end
+    puts msg_end
   end
 end
