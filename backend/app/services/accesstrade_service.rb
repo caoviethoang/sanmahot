@@ -36,12 +36,94 @@ class AccesstradeService
     @api_key = ENV["ACCESSTRADE_API_KEY"]
   end
 
-  def sync_coupons(max_pages = 50)
+  def sync_coupons(max_pages = 100)
     sync_data(max_pages, coupon_flag: 1)
   end
 
-  def sync_deals(max_pages = 50)
+  def sync_deals(max_pages = 100)
     sync_data(max_pages, coupon_flag: 0)
+  end
+
+  def sync_campaigns
+    total_saved = 0
+    uri = URI("https://api.accesstrade.vn/v1/campaigns")
+    params = { page: 1, limit: 100, scope: "mine" }
+
+    (1..10).each do |page|
+      params[:page] = page
+      uri.query = URI.encode_www_form(params)
+
+      req = Net::HTTP::Get.new(uri)
+      req["Authorization"] = "Token #{@api_key}"
+
+      res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+        http.request(req)
+      end
+
+      if res.is_a?(Net::HTTPSuccess)
+        data = JSON.parse(res.body)["data"]
+        break if data.blank?
+
+        data.each do |offer|
+          # Lưu Campaign thành một Deal cơ bản (để lấy link affiliate)
+          merchant = offer["name"]
+          category = Category.find_or_create_by!(name: "Ưu đãi")
+
+          deal = Deal.find_or_initialize_by(source_platform: "Accesstrade", merchant_name: merchant)
+          deal.assign_attributes(
+            title: merchant,
+            affiliate_url: offer["aff_link"] || offer["link"],
+            category: category,
+            status: :active,
+            description: "Chiến dịch Affiliate #{merchant} từ AccessTrade"
+          )
+          total_saved += 1 if deal.save
+        end
+        break if data.size < 100
+      else
+        break
+      end
+    end
+    total_saved
+  end
+
+  def sync_hot_coupons(max_pages = 10, date_filter = 1)
+    # date: 1 (theo tuần), 2 (theo tháng)
+    total_saved = 0
+    type_name = "Hot Coupon/Deal"
+
+    (1..max_pages).each do |page|
+      Rails.logger.info "Đang crawl AccessTrade #{type_name} trang #{page}..."
+
+      params = { page: page, limit: 50, date: date_filter }
+      uri = URI("https://api.accesstrade.vn/v1/offers_informations/coupon_hot")
+      uri.query = URI.encode_www_form(params)
+
+      req = Net::HTTP::Get.new(uri)
+      req["Authorization"] = "Token #{@api_key}"
+      req["Content-Type"] = "application/json"
+
+      res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+        http.request(req)
+      end
+
+      if res.is_a?(Net::HTTPSuccess)
+        data = JSON.parse(res.body)
+        offers = data["data"]
+        break if offers.blank?
+
+        saved_in_page = process_offers(offers, is_hot: true)
+        total_saved += saved_in_page
+
+        break if offers.size < 50
+      else
+        Rails.logger.error "AccessTrade API Error trang #{page}: #{res.code} - #{res.body}"
+        break
+      end
+    end
+
+    Rails.logger.info "HOÀN TẤT: Tổng cộng đã đồng bộ thành công #{total_saved} #{type_name} mới/cập nhật."
+    total_saved
   end
 
   private
@@ -90,7 +172,7 @@ class AccesstradeService
 
   private
 
-  def process_offers(offers_data)
+  def process_offers(offers_data, is_hot: false)
     saved_count = 0
     offers_data.each do |item|
       raw_merchant = item["merchant"]&.downcase
@@ -116,7 +198,8 @@ class AccesstradeService
             category: category_name,
             terms: c_item["coupon_desc"] || item["content"],
             target_users: full_text.include?("mới") ? "Khách hàng mới" : "Tất cả khách hàng",
-            status: :active
+            status: :active,
+            is_hot: is_hot
           )
 
           # Convert end_at string to Time for comparison
