@@ -204,7 +204,11 @@ export default function Layout() {
                 className="flex items-center gap-3 p-4 rounded-2xl text-gray-700 font-bold hover:bg-orange-50 hover:text-orange-600 transition-all active:scale-95"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                {link.to === '/' ? <Home className="w-5 h-5" /> : <Flame className="w-5 h-5 text-orange-500" />}
+                {link.to === '/' ? (
+                  <Home className="w-5 h-5" />
+                ) : (
+                  <Flame className="w-5 h-5 text-orange-500" />
+                )}
                 {link.label}
               </Link>
             ))}
@@ -219,9 +223,11 @@ export default function Layout() {
                     key={idx}
                     to={`/coupons${item.to}`}
                     className={`p-3 rounded-xl font-semibold text-sm text-center border transition-colors ${
-                      item.name === 'Shopee' ? 'bg-orange-50 border-orange-100 text-orange-600' : 
-                      item.name === 'Lazada' ? 'bg-blue-50 border-blue-100 text-blue-600' :
-                      'bg-sky-50 border-sky-100 text-sky-600'
+                      item.name === 'Shopee'
+                        ? 'bg-orange-50 border-orange-100 text-orange-600'
+                        : item.name === 'Lazada'
+                          ? 'bg-blue-50 border-blue-100 text-blue-600'
+                          : 'bg-sky-50 border-sky-100 text-sky-600'
                     }`}
                     onClick={() => setMobileMenuOpen(false)}
                   >
@@ -245,7 +251,11 @@ export default function Layout() {
                 className="flex items-center gap-3 p-4 rounded-2xl text-gray-700 font-bold hover:bg-orange-50 hover:text-orange-600 transition-all active:scale-95 mt-4"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                {link.to === '/tin-khuyen-mai' ? <ShoppingCart className="w-5 h-5" /> : <FileText className="w-5 h-5" />}
+                {link.to === '/tin-khuyen-mai' ? (
+                  <ShoppingCart className="w-5 h-5" />
+                ) : (
+                  <FileText className="w-5 h-5" />
+                )}
                 {link.label}
               </Link>
             ))}
@@ -258,9 +268,7 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      <footer
-        className="bg-zinc-950 border-t border-white/5 mt-auto py-12"
-      >
+      <footer className="bg-zinc-950 border-t border-white/5 mt-auto py-12">
         <div className="container max-w-7xl mx-auto px-4 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10 text-center md:text-left">
             <div className="space-y-4">

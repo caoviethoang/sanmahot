@@ -61,9 +61,7 @@ export default function CouponCardDetail({
               <div className="text-white/80 font-black uppercase tracking-widest text-xs">
                 {brand.name}
               </div>
-              <h2 className="text-2xl md:text-3xl font-black text-white leading-tight">
-                {title}
-              </h2>
+              <h2 className="text-2xl md:text-3xl font-black text-white leading-tight">{title}</h2>
             </div>
           </div>
         </div>
