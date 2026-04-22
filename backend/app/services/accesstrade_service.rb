@@ -317,7 +317,7 @@ class AccesstradeService
     req = Net::HTTP::Post.new(uri)
     req["Authorization"] = "Token #{@api_key}"
     req["Content-Type"] = "application/json"
-    req.body = { urls: [url] }.to_json
+    req.body = { urls: [ url ] }.to_json
 
     res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
       http.request(req)
