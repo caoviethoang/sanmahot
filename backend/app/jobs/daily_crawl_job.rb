@@ -47,6 +47,14 @@ class DailyCrawlJob < ApplicationJob
       Rails.logger.error "Lỗi khi ArticleCrawlerService: #{e.message}"
     end
 
+    # 6. Scrape Platform Coupons (Lazada, Sendo, FPT Shop, Nguyenkim, Fahasa...)
+    begin
+      puts "6. Đang scrape coupon từ các sàn thương mại điện tử..."
+      PlatformCouponScraperService.new.run
+    rescue => e
+      Rails.logger.error "Lỗi khi PlatformCouponScraperService: #{e.message}"
+    end
+
     msg_end = "--- [#{Time.current}] Hoàn tất quy trình Crawl định kỳ ---"
     Rails.logger.info msg_end
     puts msg_end
