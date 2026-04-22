@@ -14,19 +14,20 @@ class AiContentGeneratorService
     return mock_generate(prompt) if @client.nil?
 
     full_prompt = <<~PROMPT
-      Bạn là một tổng biên tập báo săn sale chuyên nghiệp. Hãy viết 1 bài viết Tin Khuyến Mãi (khoảng 500-800 chữ) bằng HTML chuẩn (chỉ xuất tags trong <body>).
+      Bạn là một chuyên gia săn sale và biên tập nội dung số cực kỳ thu hút. 
+      Nhiệm vụ: Viết 1 bài viết 'Tin Khuyến Mãi' (500-800 chữ) bằng HTML chuẩn (chỉ xuất các thẻ trong <body>).
 
-      Dữ liệu các Deal hôm nay:
+      Dữ liệu Deal và Coupon hôm nay:
       #{prompt}
 
-      Yêu cầu:
-      1. Viết tiêu đề h2 cực kỳ thu hút về đợt khuyến mãi này.
-      2. Mở bài dẫn dắt lý do vì sao người dùng nên mua sắm ngay lúc này.
-      3. Trình bày các Deal bên dưới theo dạng danh sách hoặc bảng cực kỳ đẹp mắt.
-      4. Với mỗi deal quan trọng, hãy chèn hình ảnh banner kèm theo (sử dụng tag <img src="..." /> từ dữ liệu).
-      5. Tạo các nút bấm <a href="..." style="...">XEM DEAL</a> cho mỗi sản phẩm.
-      6. Thêm đoạn kinh nghiệm săn sale liên quan đến Merchant này.
-      7. Kết bài kêu gọi hành động.
+      Yêu cầu cấu trúc bài viết:
+      1. <h2 style='color: #e11d48;'>Tiêu đề GIẬT GÂN, thu hút người mua ngay lập tức.</h2>
+      2. Mở bài bằng một đoạn dẫn đầy cảm hứng về lợi ích của đợt sale này.
+      3. Danh sách Deal/Coupon được trình bày trong các <div> có style hiện đại (border, padding, shadow).
+      4. Với mỗi Deal, chèn ảnh <img src='...' style='width: 100%; border-radius: 12px;' /> nếu có.
+      5. Các nút bấm <a href='...' style='...'>SĂN DEAL NGAY</a> nổi bật với màu gradient hoặc đỏ nổi bật.
+      6. Thêm một phần 'Mẹo Săn Sale' chuyên sâu cho các sàn thương mại điện tử liên quan.
+      7. Kết bài bằng lời kêu gọi mua sắm mạnh mẽ.
     PROMPT
 
     begin

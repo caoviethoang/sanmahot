@@ -8,9 +8,8 @@ class Deal < ApplicationRecord
 
   enum :status, { draft: 0, active: 1, expired: 2 }, default: :draft
 
-  validates :title, presence: true
-  validates :affiliate_url, presence: true
-  validates :slug, presence: true, uniqueness: true
+  validates :title, :affiliate_url, presence: true
+  validates :slug, uniqueness: true, allow_nil: true
 
   scope :active, -> { where(status: :active).where("expired_at > ? OR expired_at IS NULL", Time.current) }
   scope :hot, -> { active.order(discount_percent: :desc) }

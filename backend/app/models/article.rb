@@ -5,7 +5,7 @@ class Article < ApplicationRecord
   enum :status, { draft: 0, published: 1 }, default: :draft
 
   validates :title, :content, presence: true
-  validates :slug, presence: true, uniqueness: true
+  validates :slug, uniqueness: true, allow_nil: true
 
   scope :published, -> { where(status: :published).where("published_at <= ?", Time.current) }
 end

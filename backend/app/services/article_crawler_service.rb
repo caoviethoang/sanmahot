@@ -107,35 +107,27 @@ class ArticleCrawlerService
 
       raw_content = content_node.inner_html.strip
 
-      # Use thumbnail from list as featured image if not found in article
+      # Sanitize content and metadata
+      sanitized_title = replace_brand_keywords(title)
       image_url = extract_featured_image(article_doc) || item[:thumbnail]
 
-      # Sanitize title
-      title = title.gsub(/magiamgia\.com/i, "sanmahot.com")
-                   .gsub(/\bmagiamgia\b/i, "sanmahot")
-                   .gsub("Mã Giảm Giá", "Săn Mã Hot")
-                   .gsub("Mã giảm giá", "Săn mã hot")
-                   .gsub("mã giảm giá", "săn mã hot")
-                   .gsub("Magiamgia", "Sanmahot")
-
       article = Article.find_or_initialize_by(slug: slug)
-      article.title = title
-      article.content = raw_content
-      article.image_url = image_url
-      article.category = cat_name
-      article.status = :published
+      article.assign_attributes(
+        title:      sanitized_title,
+        content:    raw_content,
+        image_url:  image_url,
+        category:   cat_name,
+        status:     :published
+      )
 
-      detect_platform(article, title, raw_content)
-
-      # Priority for date: 1. JSON-LD, 2. List date, 3. Current
+      detect_platform(article, sanitized_title, raw_content)
       parse_published_at(article, article_doc, item[:date])
-
-      generate_meta_and_excerpt(article, title, raw_content)
+      generate_meta_and_excerpt(article, sanitized_title, raw_content)
 
       if article.save
-        Rails.logger.info "Success: Saved [#{article.title}] [#{article.published_at}]"
+        Rails.logger.info "✅ Success: Saved [#{article.title}] [#{article.published_at}]"
       else
-        Rails.logger.error "Failed to save: #{article.errors.full_messages}"
+        Rails.logger.error "❌ Failed to save: #{article.errors.full_messages}"
       end
 
       sleep 1
@@ -198,17 +190,10 @@ class ArticleCrawlerService
   def replace_brand_mentions(content_node)
     content_node.xpath(".//text()").each do |text_node|
       next if %w[script style].include?(text_node.parent.name)
-
       original_text = text_node.content
       next if original_text.blank?
 
-      new_text = original_text.gsub(/magiamgia\.com/i, "sanmahot.com")
-                              .gsub(/\bmagiamgia\b/i, "sanmahot")
-                              .gsub("Mã Giảm Giá", "Săn Mã Hot")
-                              .gsub("Mã giảm giá", "Săn mã hot")
-                              .gsub("mã giảm giá", "săn mã hot")
-                              .gsub("Magiamgia", "Sanmahot")
-
+      new_text = replace_brand_keywords(original_text)
       text_node.content = new_text if new_text != original_text
     end
 
@@ -273,5 +258,15 @@ class ArticleCrawlerService
     article.excerpt = excerpt_text[0..200] + "..."
     article.meta_title = title
     article.meta_description = excerpt_text[0..155]
+  end
+
+  def replace_brand_keywords(text)
+    return text if text.blank?
+    text.gsub(/magiamgia\.com/i, "sanmahot.com")
+        .gsub(/\bmagiamgia\b/i, "sanmahot")
+        .gsub("Mã Giảm Giá", "Săn Mã Hot")
+        .gsub("Mã giảm giá", "Săn mã hot")
+        .gsub("mã giảm giá", "săn mã hot")
+        .gsub("Magiamgia", "Sanmahot")
   end
 end

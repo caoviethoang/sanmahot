@@ -81,7 +81,7 @@ class AtScraperService
   end
 
   def process_badges(browser, count)
-    category = Category.find_by(id: 6) || Category.find_by(name: "Ưu đãi") || Category.first
+    category = Category.where("name ILIKE ?", "%Ưu đãi%").first || Category.first
 
     (0...count).each do |index|
       begin
