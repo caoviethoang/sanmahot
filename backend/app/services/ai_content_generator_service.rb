@@ -14,7 +14,7 @@ class AiContentGeneratorService
     return mock_generate(prompt) if @client.nil?
 
     full_prompt = <<~PROMPT
-      Bạn là một chuyên gia săn sale và biên tập nội dung số cực kỳ thu hút. 
+      Bạn là một chuyên gia săn sale và biên tập nội dung số cực kỳ thu hút.#{' '}
       Nhiệm vụ: Viết 1 bài viết 'Tin Khuyến Mãi' (500-800 chữ) bằng HTML chuẩn (chỉ xuất các thẻ trong <body>).
 
       Dữ liệu Deal và Coupon hôm nay:

@@ -7,56 +7,38 @@ class DailyCrawlJob < ApplicationJob
     puts msg
 
     # 1. Sync Coupons
-    begin
-      puts "1. Đang đồng bộ Coupons..."
-      SyncCouponsJob.perform_now
-    rescue => e
-      Rails.logger.error "Lỗi khi SyncCouponsJob: #{e.message}"
-    end
+    run_step("Đồng bộ Coupons") { SyncCouponsJob.perform_now }
 
     # 2. Sync Deals
-    begin
-      puts "2. Đang đồng bộ Deals..."
-      SyncDealsJob.perform_now
-    rescue => e
-      Rails.logger.error "Lỗi khi SyncDealsJob: #{e.message}"
-    end
+    run_step("Đồng bộ Deals") { SyncDealsJob.perform_now }
 
     # 3. Sync Hot Coupons / Deals (API)
-    begin
-      puts "3. Đang đồng bộ Hot Coupons (API)..."
-      SyncHotCouponsJob.perform_now
-    rescue => e
-      Rails.logger.error "Lỗi khi SyncHotCouponsJob: #{e.message}"
-    end
+    run_step("Đồng bộ Hot Coupons (API)") { SyncHotCouponsJob.perform_now }
 
     # 4. Scrape Hot Deal Calendar (Bot Trình Duyệt)
-    begin
-      puts "4. Đang chạy Bot cào lịch Hot Deal (Cái này có thể mất vài phút)..."
-      AtScraperService.new.scrape_calendar
-    rescue => e
-      Rails.logger.error "Lỗi khi chạy AtScraperService: #{e.message}"
-    end
+    run_step("Bot cào lịch Hot Deal") { AtScraperService.new.scrape_calendar }
 
     # 5. Crawl Articles
-    begin
-      puts "5. Đang crawl bài viết từ magiamgia.com..."
-      ArticleCrawlerService.new.crawl_all
-      puts "   Hoàn tất crawl bài viết!"
-    rescue => e
-      Rails.logger.error "Lỗi khi ArticleCrawlerService: #{e.message}"
-    end
+    run_step("Crawl bài viết từ magiamgia.com") { ArticleCrawlerService.new.crawl_all }
 
     # 6. Scrape Platform Coupons (Lazada, Sendo, FPT Shop, Nguyenkim, Fahasa...)
-    begin
-      puts "6. Đang scrape coupon từ các sàn thương mại điện tử..."
-      PlatformCouponScraperService.new.run
-    rescue => e
-      Rails.logger.error "Lỗi khi PlatformCouponScraperService: #{e.message}"
-    end
+    run_step("Scrape coupon từ các sàn TMĐT") { PlatformCouponScraperService.new.run }
 
     msg_end = "--- [#{Time.current}] Hoàn tất quy trình Crawl định kỳ ---"
     Rails.logger.info msg_end
     puts msg_end
+  end
+
+  private
+
+  def run_step(name)
+    puts "🚀 Đang thực hiện: #{name}..."
+    Rails.logger.info ">>> START STEP: #{name}"
+    yield
+    Rails.logger.info "<<< END STEP: #{name}"
+  rescue StandardError => e
+    error_msg = "❌ LỖI tại bước [#{name}]: #{e.message}"
+    Rails.logger.error error_msg
+    puts error_msg
   end
 end

@@ -1,9 +1,9 @@
 class SyncCouponsJob < ApplicationJob
   queue_as :default
 
-  def perform(*args)
-    Rails.logger.info "Bắt đầu đồng bộ Coupon từ AccessTrade..."
+  def perform
+    Rails.logger.info "[SyncCouponsJob] Bắt đầu đồng bộ Coupon từ AccessTrade..."
     AccesstradeService.new.sync_coupons
-    Rails.logger.info "Đồng bộ hoàn tất!"
+    Rails.logger.info "[SyncCouponsJob] Hoàn tất!"
   end
 end
