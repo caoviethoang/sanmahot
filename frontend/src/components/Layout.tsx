@@ -4,6 +4,19 @@ import { useState } from 'react';
 
 import logo from '../assets/sanmahot.png';
 
+const NAV_LINKS = [
+  { to: '/', label: 'Trang Chủ' },
+  { to: '/deals', label: 'Deal Ngon', isHot: true },
+  { to: '/tin-khuyen-mai', label: 'Tin Khuyến Mãi' },
+  { to: '/huong-dan', label: 'Hướng Dẫn' },
+];
+
+const QUICK_PLATFORMS = [
+  { to: '?platform=shopee', name: 'Shopee', color: 'bg-orange-500' },
+  { to: '?platform=lazada', name: 'Lazada', color: 'bg-blue-600' },
+  { to: '?platform=tiki', name: 'Tiki', color: 'bg-sky-500' },
+];
+
 export default function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -49,20 +62,22 @@ export default function Layout() {
 
               {/* Nav Menu (Desktop) */}
               <nav className="hidden lg:flex items-center gap-1.5 bg-white/5 p-1.5 rounded-full shadow-inner backdrop-blur-md shrink-0">
-                <Link
-                  to="/"
-                  className="px-4 xl:px-6 py-2 rounded-full font-bold text-sm text-gray-300 hover:text-white hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-all flex items-center gap-2 whitespace-nowrap"
-                >
-                  Trang Chủ
-                </Link>
-
-                <Link
-                  to="/deals"
-                  className="px-4 xl:px-6 py-2 rounded-full font-bold text-sm text-orange-200 hover:text-white hover:bg-orange-500/20 hover:shadow-[0_0_15px_rgba(249,115,22,0.3)] transition-all flex items-center gap-2 group whitespace-nowrap"
-                >
-                  Deal Ngon
-                  <Flame className="w-4 h-4 text-orange-500 group-hover:scale-125 transition-transform duration-300" />
-                </Link>
+                {NAV_LINKS.slice(0, 2).map((link) => (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    className={`px-4 xl:px-6 py-2 rounded-full font-bold text-sm transition-all flex items-center gap-2 whitespace-nowrap ${
+                      link.isHot
+                        ? 'text-orange-200 hover:text-white hover:bg-orange-500/20 hover:shadow-[0_0_15px_rgba(249,115,22,0.3)]'
+                        : 'text-gray-300 hover:text-white hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]'
+                    } group`}
+                  >
+                    {link.label}
+                    {link.isHot && (
+                      <Flame className="w-4 h-4 text-orange-500 group-hover:scale-125 transition-transform duration-300" />
+                    )}
+                  </Link>
+                ))}
 
                 {/* Dropdown Menu */}
                 <div className="relative group">
@@ -74,11 +89,7 @@ export default function Layout() {
                   {/* Dropdown Panel */}
                   <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-[260px] opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 ease-out z-50">
                     <div className="bg-[#0B1120]/95 backdrop-blur-3xl border border-white/10 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.8)] rounded-2xl p-2 relative overflow-hidden">
-                      {[
-                        { to: '?platform=shopee', name: 'Shopee', color: 'bg-orange-500' },
-                        { to: '?platform=lazada', name: 'Lazada', color: 'bg-blue-600' },
-                        { to: '?platform=tiki', name: 'Tiki', color: 'bg-sky-500' },
-                      ].map((item, idx) => (
+                      {QUICK_PLATFORMS.map((item, idx) => (
                         <Link
                           key={idx}
                           to={`/coupons${item.to}`}
@@ -101,19 +112,15 @@ export default function Layout() {
                   </div>
                 </div>
 
-                <Link
-                  to="/tin-khuyen-mai"
-                  className="px-4 xl:px-6 py-2 rounded-full font-bold text-sm text-gray-300 hover:text-white hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-all flex items-center gap-2 whitespace-nowrap"
-                >
-                  Tin Khuyến Mãi
-                </Link>
-
-                <Link
-                  to="/huong-dan"
-                  className="px-4 xl:px-6 py-2 rounded-full font-bold text-sm text-gray-300 hover:text-white hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-all flex items-center gap-2 whitespace-nowrap"
-                >
-                  Hướng Dẫn
-                </Link>
+                {NAV_LINKS.slice(2).map((link) => (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    className="px-4 xl:px-6 py-2 rounded-full font-bold text-sm text-gray-300 hover:text-white hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-all flex items-center gap-2 whitespace-nowrap"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
               </nav>
 
               {/* Search & Mobile Menu Toggle */}
@@ -190,47 +197,37 @@ export default function Layout() {
 
           {/* Mobile Links */}
           <div className="space-y-2">
-            <Link
-              to="/"
-              className="flex items-center gap-3 p-4 rounded-2xl text-gray-700 font-bold hover:bg-orange-50 hover:text-orange-600 transition-all active:scale-95"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <Home className="w-5 h-5" /> Trang Chủ
-            </Link>
-            <Link
-              to="/deals"
-              className="flex items-center gap-3 p-4 rounded-2xl text-gray-700 font-bold hover:bg-orange-50 hover:text-orange-600 transition-all active:scale-95"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <Flame className="w-5 h-5 text-orange-500" /> Deal Ngon
-            </Link>
+            {NAV_LINKS.slice(0, 2).map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className="flex items-center gap-3 p-4 rounded-2xl text-gray-700 font-bold hover:bg-orange-50 hover:text-orange-600 transition-all active:scale-95"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {link.to === '/' ? <Home className="w-5 h-5" /> : <Flame className="w-5 h-5 text-orange-500" />}
+                {link.label}
+              </Link>
+            ))}
 
             <div className="pt-4 pb-2">
               <div className="flex items-center gap-3 px-4 py-2 font-bold text-gray-400 uppercase text-xs tracking-wider">
                 Mã Giảm Giá
               </div>
               <div className="grid grid-cols-2 gap-2 mt-2">
-                <Link
-                  to="/coupons?platform=shopee"
-                  className="bg-gray-50 p-3 rounded-xl font-semibold text-sm text-center border border-gray-100 hover:border-orange-300 hover:text-orange-600 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Shopee
-                </Link>
-                <Link
-                  to="/coupons?platform=lazada"
-                  className="bg-gray-50 p-3 rounded-xl font-semibold text-sm text-center border border-gray-100 hover:border-blue-400 hover:text-blue-600 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Lazada
-                </Link>
-                <Link
-                  to="/coupons?platform=tiki"
-                  className="bg-gray-50 p-3 rounded-xl font-semibold text-sm text-center border border-gray-100 hover:border-sky-400 hover:text-sky-600 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Tiki
-                </Link>
+                {QUICK_PLATFORMS.map((item, idx) => (
+                  <Link
+                    key={idx}
+                    to={`/coupons${item.to}`}
+                    className={`p-3 rounded-xl font-semibold text-sm text-center border transition-colors ${
+                      item.name === 'Shopee' ? 'bg-orange-50 border-orange-100 text-orange-600' : 
+                      item.name === 'Lazada' ? 'bg-blue-50 border-blue-100 text-blue-600' :
+                      'bg-sky-50 border-sky-100 text-sky-600'
+                    }`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
                 <Link
                   to="/coupons"
                   className="bg-orange-50 p-3 rounded-xl font-semibold text-sm text-center border border-orange-200 text-orange-600 transition-colors"
@@ -241,20 +238,17 @@ export default function Layout() {
               </div>
             </div>
 
-            <Link
-              to="/tin-khuyen-mai"
-              className="flex items-center gap-3 p-4 rounded-2xl text-gray-700 font-bold hover:bg-orange-50 hover:text-orange-600 transition-all active:scale-95 mt-4"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <ShoppingCart className="w-5 h-5" /> Tin Khuyến Mãi
-            </Link>
-            <Link
-              to="/huong-dan"
-              className="flex items-center gap-3 p-4 rounded-2xl text-gray-700 font-bold hover:bg-orange-50 hover:text-orange-600 transition-all active:scale-95"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <FileText className="w-5 h-5" /> Hướng Dẫn
-            </Link>
+            {NAV_LINKS.slice(2).map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className="flex items-center gap-3 p-4 rounded-2xl text-gray-700 font-bold hover:bg-orange-50 hover:text-orange-600 transition-all active:scale-95 mt-4"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {link.to === '/tin-khuyen-mai' ? <ShoppingCart className="w-5 h-5" /> : <FileText className="w-5 h-5" />}
+                {link.label}
+              </Link>
+            ))}
           </div>
         </div>
       </div>
@@ -265,8 +259,7 @@ export default function Layout() {
       </main>
 
       <footer
-        className="bg-white border-t border-gray-100 mt-auto py-12"
-        style={{ backgroundColor: '#001c38' }}
+        className="bg-zinc-950 border-t border-white/5 mt-auto py-12"
       >
         <div className="container max-w-7xl mx-auto px-4 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10 text-center md:text-left">
@@ -323,7 +316,7 @@ export default function Layout() {
               </ul>
             </div>
           </div>
-          <div className="pt-8 border-t border-gray-50 text-center text-xs font-medium text-gray-400">
+          <div className="pt-8 border-t border-white/5 text-center text-xs font-medium text-gray-500">
             © 2026 SanMaHot. All rights reserved. Built with premium aesthetics.
           </div>
         </div>

@@ -1,16 +1,4 @@
-import {
-  ShopeeLogo,
-  LazadaLogo,
-  TikiLogo,
-  SendoLogo,
-  NguyenKimLogo,
-  ShopeeFoodLogo,
-  DienMayXanhLogo,
-  GrabLogo,
-  FptShopLogo,
-  XanhsmLogo,
-  VnpayLogo,
-} from './BrandLogos';
+import { BRANDS } from '../lib/brand-config';
 
 interface FilterSidebarProps {
   type: 'deals' | 'coupons';
@@ -21,34 +9,6 @@ interface FilterSidebarProps {
   onCategoryChange: (value: string) => void;
   onSortChange: (value: string) => void;
 }
-
-const DEAL_MERCHANTS = [
-  { id: 'shopee', name: 'Shopee', Logo: ShopeeLogo },
-  { id: 'lazada', name: 'Lazada', Logo: LazadaLogo },
-  { id: 'tiki', name: 'Tiki', Logo: TikiLogo },
-  { id: 'shopeefood', name: 'ShopeeFood', Logo: ShopeeFoodLogo },
-  { id: 'sendo', name: 'Sendo', Logo: SendoLogo },
-  { id: 'nguyenkim', name: 'Nguyenkim', Logo: NguyenKimLogo },
-  { id: 'dienmayxanh', name: 'Điện Máy Xanh', Logo: DienMayXanhLogo },
-  { id: 'grab', name: 'Grab', Logo: GrabLogo },
-  { id: 'fptshop', name: 'FPT Shop', Logo: FptShopLogo },
-  { id: 'xanhsm', name: 'XanhSM', Logo: XanhsmLogo },
-  { id: 'vnpay', name: 'VNPAY', Logo: VnpayLogo },
-];
-
-const COUPON_MERCHANTS = [
-  { id: 'shopee', name: 'Shopee', Logo: ShopeeLogo },
-  { id: 'lazada', name: 'Lazada', Logo: LazadaLogo },
-  { id: 'tiki', name: 'Tiki', Logo: TikiLogo },
-  { id: 'shopeefood', name: 'ShopeeFood', Logo: ShopeeFoodLogo },
-  { id: 'sendo', name: 'Sendo', Logo: SendoLogo },
-  { id: 'nguyenkim', name: 'Nguyenkim', Logo: NguyenKimLogo },
-  { id: 'dienmayxanh', name: 'Điện Máy Xanh', Logo: DienMayXanhLogo },
-  { id: 'grab', name: 'Grab', Logo: GrabLogo },
-  { id: 'fptshop', name: 'FPT Shop', Logo: FptShopLogo },
-  { id: 'xanhsm', name: 'XanhSM', Logo: XanhsmLogo },
-  { id: 'vnpay', name: 'VNPAY', Logo: VnpayLogo },
-];
 
 const DEAL_CATEGORIES = [
   'Điện tử',
@@ -80,7 +40,7 @@ export default function FilterSidebar({
   onCategoryChange,
   onSortChange,
 }: FilterSidebarProps) {
-  const merchants = type === 'deals' ? DEAL_MERCHANTS : COUPON_MERCHANTS;
+  const merchants = Object.values(BRANDS);
   const sorts = type === 'deals' ? DEAL_SORTS : COUPON_SORTS;
 
   return (
