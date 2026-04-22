@@ -13,7 +13,7 @@ class Api::V1::CouponsController < Api::V1::BaseController
 
     @coupons = paginate(@coupons)
     render json: {
-      coupons: ActiveModelSerializers::SerializableResource.new(@coupons, each_serializer: CouponSerializer),
+      coupons:    ActiveModelSerializers::SerializableResource.new(@coupons, each_serializer: CouponSerializer),
       pagination: pagination_dict(@coupons)
     }
   end
@@ -21,17 +21,5 @@ class Api::V1::CouponsController < Api::V1::BaseController
   def categories
     cats = Coupon.active.distinct.pluck(:category).compact.sort
     render json: cats
-  end
-
-  private
-
-  def pagination_dict(object)
-    {
-      current_page: object.current_page,
-      next_page: object.next_page,
-      prev_page: object.prev_page,
-      total_pages: object.total_pages,
-      total_count: object.total_count
-    }
   end
 end
