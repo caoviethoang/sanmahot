@@ -1,4 +1,16 @@
-import { ShopeeLogo, LazadaLogo, TikiLogo, SendoLogo, NguyenKimLogo } from './BrandLogos';
+import {
+  ShopeeLogo,
+  LazadaLogo,
+  TikiLogo,
+  SendoLogo,
+  NguyenKimLogo,
+  ShopeeFoodLogo,
+  DienMayXanhLogo,
+  GrabLogo,
+  FptShopLogo,
+  XanhsmLogo,
+  VnpayLogo,
+} from './BrandLogos';
 
 interface FilterSidebarProps {
   type: 'deals' | 'coupons';
@@ -14,16 +26,28 @@ const DEAL_MERCHANTS = [
   { id: 'shopee', name: 'Shopee', Logo: ShopeeLogo },
   { id: 'lazada', name: 'Lazada', Logo: LazadaLogo },
   { id: 'tiki', name: 'Tiki', Logo: TikiLogo },
+  { id: 'shopeefood', name: 'ShopeeFood', Logo: ShopeeFoodLogo },
   { id: 'sendo', name: 'Sendo', Logo: SendoLogo },
   { id: 'nguyenkim', name: 'Nguyenkim', Logo: NguyenKimLogo },
+  { id: 'dienmayxanh', name: 'Điện Máy Xanh', Logo: DienMayXanhLogo },
+  { id: 'grab', name: 'Grab', Logo: GrabLogo },
+  { id: 'fptshop', name: 'FPT Shop', Logo: FptShopLogo },
+  { id: 'xanhsm', name: 'XanhSM', Logo: XanhsmLogo },
+  { id: 'vnpay', name: 'VNPAY', Logo: VnpayLogo },
 ];
 
 const COUPON_MERCHANTS = [
   { id: 'shopee', name: 'Shopee', Logo: ShopeeLogo },
   { id: 'lazada', name: 'Lazada', Logo: LazadaLogo },
   { id: 'tiki', name: 'Tiki', Logo: TikiLogo },
+  { id: 'shopeefood', name: 'ShopeeFood', Logo: ShopeeFoodLogo },
   { id: 'sendo', name: 'Sendo', Logo: SendoLogo },
   { id: 'nguyenkim', name: 'Nguyenkim', Logo: NguyenKimLogo },
+  { id: 'dienmayxanh', name: 'Điện Máy Xanh', Logo: DienMayXanhLogo },
+  { id: 'grab', name: 'Grab', Logo: GrabLogo },
+  { id: 'fptshop', name: 'FPT Shop', Logo: FptShopLogo },
+  { id: 'xanhsm', name: 'XanhSM', Logo: XanhsmLogo },
+  { id: 'vnpay', name: 'VNPAY', Logo: VnpayLogo },
 ];
 
 const DEAL_CATEGORIES = [

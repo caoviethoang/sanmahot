@@ -81,22 +81,26 @@ export default function CouponCard({
 
   const { logo, color, bg, lightBg } = getPlatformDetails();
 
-  const handleCopyCode = (e: React.MouseEvent) => {
+  const handleOnlyCopyCode = (e: React.MouseEvent) => {
     e.stopPropagation();
     navigator.clipboard.writeText(code);
-
-    // Open affiliate link in new tab
-    window.open(`/api/go/coupon/${id}`, '_blank');
 
     const toast = document.createElement('div');
     toast.className =
       'fixed bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full font-bold text-sm shadow-2xl z-[200] animate-in fade-in slide-in-from-bottom-4 duration-300';
-    toast.innerText = '🚀 Đã copy mã & Đang chuyển đến cửa hàng';
+    toast.innerText = 'Đã copy mã';
     document.body.appendChild(toast);
     setTimeout(() => {
       toast.classList.add('animate-out', 'fade-out', 'slide-out-to-bottom-4');
       setTimeout(() => toast.remove(), 300);
     }, 2000);
+  };
+
+  const handleCopyCode = (e: React.MouseEvent) => {
+    handleOnlyCopyCode(e);
+
+    // Open affiliate link in new tab
+    window.open(`/api/go/coupon/${id}`, '_blank');
   };
 
   return (
@@ -128,8 +132,8 @@ export default function CouponCard({
           </div>
 
           {/* Notches (Ticket Cutouts) */}
-          <div className="absolute -top-3 -right-3 w-6 h-6 rounded-full bg-gray-50 border border-gray-100 z-20"></div>
-          <div className="absolute -bottom-3 -right-3 w-6 h-6 rounded-full bg-gray-50 border border-gray-100 z-20"></div>
+          {/* <div className="absolute -top-3 -right-3 w-6 h-6 rounded-full bg-gray-50 border border-gray-100 z-20"></div> */}
+          {/* <div className="absolute -bottom-3 -right-3 w-6 h-6 rounded-full bg-gray-50 border border-gray-100 z-20"></div> */}
         </div>
 
         {/* Main Content (Right Side) */}
@@ -157,7 +161,7 @@ export default function CouponCard({
             <Button
               size="sm"
               className="bg-green-600 hover:bg-green-700 text-white font-black px-4 h-9 text-xs rounded-xl active:scale-95 transition-transform shadow-md w-full sm:w-auto"
-              onClick={handleCopyCode}
+              onClick={handleOnlyCopyCode}
             >
               Copy mã
             </Button>
