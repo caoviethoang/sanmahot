@@ -307,4 +307,37 @@ class AccesstradeService
 
     prices.uniq
   end
+
+  public
+
+  def generate_deeplink(url)
+    return url if url.blank?
+
+    uri = URI("https://api.accesstrade.vn/v1/product_links")
+    req = Net::HTTP::Post.new(uri)
+    req["Authorization"] = "Token #{@api_key}"
+    req["Content-Type"] = "application/json"
+    req.body = { urls: [url] }.to_json
+
+    res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+      http.request(req)
+    end
+
+    if res.is_a?(Net::HTTPSuccess)
+      data = JSON.parse(res.body)
+
+      # Dữ liệu trả về thường nằm ở `success_link`, `short_link`, `product_link`
+      items = data["data"] || data["success_link"] || []
+      first_item = items.is_a?(Array) ? items.first : items
+
+      if first_item.is_a?(Hash)
+        return first_item["short_link"] || first_item["success_link"] || first_item["product_link"] || url
+      end
+    end
+
+    url
+  rescue StandardError => e
+    Rails.logger.error("Error generating deeplink for #{url}: #{e.message}")
+    url
+  end
 end
