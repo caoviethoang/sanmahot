@@ -6,13 +6,9 @@ import DealCard from '../components/DealCard';
 import CouponCard from '../components/CouponCard';
 import { Button } from '../components/ui/button';
 import { Search as SearchIcon } from 'lucide-react';
-
-const formatPrice = (price: number) =>
-  new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-    maximumFractionDigits: 0,
-  }).format(price);
+import { formatPrice, formatDate } from '../lib/utils';
+import { Pagination } from '../components/ui/Pagination';
+import { ListSkeleton } from '../components/ui/LoadingSkeleton';
 
 export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -62,26 +58,26 @@ export default function Search() {
   return (
     <div className="space-y-8">
       {/* Search Bar */}
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight mb-4">
-          {query ? `Kết quả cho: "${query}"` : 'Tìm kiếm'}
+      <div className="animate-in fade-in slide-in-from-top-4 duration-500">
+        <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-6 text-gray-900 uppercase">
+          {query ? `KẾT QUẢ CHO: "${query}"` : 'TÌM KIẾM'}
         </h1>
-        <form onSubmit={handleSearch} className="flex gap-3">
-          <div className="flex-1 flex items-center bg-white border border-gray-200 rounded-2xl px-4 py-3 shadow-sm focus-within:border-red-400 focus-within:ring-2 focus-within:ring-red-100 transition-all">
+        <form onSubmit={handleSearch} className="flex gap-4">
+          <div className="flex-1 flex items-center bg-white border border-gray-100 rounded-[2rem] px-6 py-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-within:border-red-400 focus-within:ring-4 focus-within:ring-red-100 transition-all duration-300">
             <SearchIcon className="w-5 h-5 text-gray-400 shrink-0" />
             <input
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="Tìm deal, mã giảm giá, thương hiệu..."
-              className="flex-1 ml-3 bg-transparent outline-none text-gray-700 font-medium"
+              className="flex-1 ml-4 bg-transparent outline-none text-gray-700 font-bold placeholder:text-gray-300"
             />
           </div>
           <Button
             type="submit"
-            className="bg-red-600 hover:bg-red-700 text-white rounded-2xl px-6 font-bold"
+            className="bg-red-600 hover:bg-red-700 text-white rounded-[2rem] px-10 font-black text-lg h-16 shadow-xl shadow-red-200 transition-all hover:scale-105 active:scale-95"
           >
-            Tìm kiếm
+            TÌM KIẾM
           </Button>
         </form>
       </div>
@@ -89,19 +85,19 @@ export default function Search() {
       {query && (
         <>
           {/* Tab Switcher */}
-          <div className="flex gap-2 border-b border-gray-100 pb-1">
+          <div className="flex gap-4 border-b border-gray-100 pb-4 animate-in fade-in duration-700">
             <button
               onClick={() => {
                 setActiveTab('deals');
                 setPage(1);
               }}
-              className={`px-5 py-2 rounded-full font-bold text-sm transition-all ${
+              className={`px-8 py-3 rounded-full font-black text-sm transition-all duration-300 ${
                 activeTab === 'deals'
-                  ? 'bg-red-600 text-white shadow-sm'
-                  : 'text-gray-500 hover:bg-gray-50'
+                  ? 'bg-red-600 text-white shadow-lg shadow-red-200'
+                  : 'text-gray-400 hover:bg-gray-50'
               }`}
             >
-              Deal{' '}
+              DEAL{' '}
               {dealsPagination?.total_count !== undefined && `(${dealsPagination.total_count})`}
             </button>
             <button
@@ -109,30 +105,29 @@ export default function Search() {
                 setActiveTab('coupons');
                 setPage(1);
               }}
-              className={`px-5 py-2 rounded-full font-bold text-sm transition-all ${
+              className={`px-8 py-3 rounded-full font-black text-sm transition-all duration-300 ${
                 activeTab === 'coupons'
-                  ? 'bg-red-600 text-white shadow-sm'
-                  : 'text-gray-500 hover:bg-gray-50'
+                  ? 'bg-red-600 text-white shadow-lg shadow-red-200'
+                  : 'text-gray-400 hover:bg-gray-50'
               }`}
             >
-              Mã giảm giá{' '}
+              MÃ GIẢM GIÁ{' '}
               {couponsPagination?.total_count !== undefined && `(${couponsPagination.total_count})`}
             </button>
           </div>
 
           {/* Results */}
           {isLoading ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {[...Array(8)].map((_, i) => (
-                <div key={i} className="h-64 bg-muted animate-pulse rounded-xl" />
-              ))}
-            </div>
+            <ListSkeleton count={8} type={activeTab === 'deals' ? 'deal' : 'coupon'} />
           ) : activeTab === 'deals' ? (
             <>
               {!deals?.length ? (
-                <p className="text-center py-16 text-gray-400 font-medium">
-                  Không tìm thấy deal nào cho "{query}"
-                </p>
+                <div className="text-center py-20 text-gray-400 animate-in fade-in zoom-in duration-500">
+                  <p className="text-6xl mb-6">🔍</p>
+                  <p className="font-black text-xl text-gray-400 uppercase tracking-tight">
+                    Không tìm thấy deal nào cho "{query}"
+                  </p>
+                </div>
               ) : (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                   {deals.map((deal: any) => (
@@ -144,32 +139,26 @@ export default function Search() {
           ) : (
             <>
               {!coupons?.length ? (
-                <p className="text-center py-16 text-gray-400 font-medium">
-                  Không tìm thấy mã giảm giá nào cho "{query}"
-                </p>
+                <div className="text-center py-20 text-gray-400 animate-in fade-in zoom-in duration-500">
+                  <p className="text-6xl mb-6">🔍</p>
+                  <p className="font-black text-xl text-gray-400 uppercase tracking-tight">
+                    Không tìm thấy mã nào cho "{query}"
+                  </p>
+                </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {coupons.map((coupon: any) => (
                     <CouponCard
                       key={coupon.id}
                       id={coupon.id}
-                      platform={coupon.platform?.toLowerCase() || 'shopee'}
+                      platform={coupon.platform?.toLowerCase()}
                       title={coupon.title}
                       description={coupon.description}
                       code={coupon.code}
                       minSpend={
-                        coupon.min_order_value
-                          ? formatPrice(parseFloat(coupon.min_order_value))
-                          : undefined
+                        coupon.min_order_value ? formatPrice(coupon.min_order_value) : undefined
                       }
-                      expiryText={
-                        coupon.end_at
-                          ? new Date(coupon.end_at).toLocaleDateString('vi-VN', {
-                              day: '2-digit',
-                              month: '2-digit',
-                            })
-                          : '30/04'
-                      }
+                      expiryText={formatDate(coupon.end_at)}
                     />
                   ))}
                 </div>
@@ -177,38 +166,28 @@ export default function Search() {
             </>
           )}
 
-          {pagination && pagination.total_pages > 1 && (
-            <div className="flex justify-center items-center gap-4 mt-8 pb-8">
-              <Button
-                variant="outline"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="border-gray-200 hover:bg-gray-50 text-gray-700"
-              >
-                Trang trước
-              </Button>
-              <span className="text-sm font-medium text-gray-500 bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
-                Trang <span className="text-gray-900 font-bold">{page}</span> /{' '}
-                {pagination.total_pages}
-              </span>
-              <Button
-                variant="outline"
-                onClick={() => setPage((p) => Math.min(pagination.total_pages, p + 1))}
-                disabled={page === pagination.total_pages}
-                className="border-gray-200 hover:bg-gray-50 text-gray-700"
-              >
-                Trang sau
-              </Button>
-            </div>
+          {pagination && (
+            <Pagination
+              currentPage={page}
+              totalPages={pagination.total_pages}
+              onPageChange={setPage}
+              accentColor="red"
+            />
           )}
         </>
       )}
 
       {!query && (
-        <div className="text-center py-20 text-gray-400">
-          <p className="text-6xl mb-6">🔍</p>
-          <p className="text-xl font-bold text-gray-500">Nhập từ khóa để tìm kiếm</p>
-          <p className="text-sm mt-2">Tìm deal, mã giảm giá, thương hiệu...</p>
+        <div className="text-center py-32 text-gray-300 animate-in fade-in zoom-in duration-1000">
+          <div className="w-32 h-32 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-8 border border-gray-100 shadow-inner">
+            <SearchIcon className="w-12 h-12 text-gray-200" />
+          </div>
+          <p className="text-2xl font-black text-gray-400 uppercase tracking-tighter">
+            Nhập từ khóa để tìm kiếm
+          </p>
+          <p className="text-sm mt-3 font-medium text-gray-400 italic">
+            Tìm deal hời, mã giảm giá khủng, thương hiệu yêu thích...
+          </p>
         </div>
       )}
     </div>

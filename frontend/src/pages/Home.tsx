@@ -3,55 +3,9 @@ import { Helmet } from 'react-helmet-async';
 import { useQuery } from '@tanstack/react-query';
 import api from '../services/api';
 import CouponCard from '../components/CouponCard';
-import {
-  ShopeeLogo,
-  LazadaLogo,
-  TikiLogo,
-  ShopeeFoodLogo,
-  SendoLogo,
-  NguyenKimLogo,
-  DienMayXanhLogo,
-  FahasaLogo,
-  GrabLogo,
-  FptShopLogo,
-  XanhsmLogo,
-  VnpayLogo,
-} from '../components/BrandLogos';
-
-const BRANDS = [
-  { id: 'shopee', name: 'Shopee', path: '/coupons?platform=shopee', Logo: ShopeeLogo },
-  { id: 'lazada', name: 'Lazada', path: '/coupons?platform=lazada', Logo: LazadaLogo },
-  { id: 'tiki', name: 'Tiki', path: '/coupons?platform=tiki', Logo: TikiLogo },
-  {
-    id: 'shopeefood',
-    name: 'ShopeeFood',
-    path: '/coupons?platform=shopeefood',
-    Logo: ShopeeFoodLogo,
-  },
-  { id: 'sendo', name: 'Sendo.vn', path: '/coupons?platform=sendo', Logo: SendoLogo },
-  { id: 'nguyenkim', name: 'Nguyễn Kim', path: '/coupons?platform=nguyenkim', Logo: NguyenKimLogo },
-  {
-    id: 'dienmayxanh',
-    name: 'Điện Máy Xanh',
-    path: '/coupons?platform=dienmayxanh',
-    Logo: DienMayXanhLogo,
-  },
-  { id: 'fahasa', name: 'Fahasa', path: '/coupons?platform=fahasa', Logo: FahasaLogo },
-  { id: 'grab', name: 'Grab', path: '/coupons?platform=grab', Logo: GrabLogo },
-  { id: 'fptshop', name: 'FPT Shop', path: '/coupons?platform=fptshop', Logo: FptShopLogo },
-  { id: 'xanhsm', name: 'XanhSM', path: '/coupons?platform=xanhsm', Logo: XanhsmLogo },
-  { id: 'vnpay', name: 'VNPAY', path: '/coupons?platform=vnpay', Logo: VnpayLogo },
-];
-
-// Xóa PROMOTIONS cứng, sẽ gọi API từ backend
-
-const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-    maximumFractionDigits: 0,
-  }).format(price);
-};
+import { BRANDS } from '../lib/brand-config';
+import { formatPrice } from '../lib/utils';
+import { ListSkeleton } from '../components/ui/LoadingSkeleton';
 
 export default function Home() {
   const { data: couponsData, isLoading: couponsLoading } = useQuery({
@@ -72,6 +26,12 @@ export default function Home() {
 
   const coupons = couponsData?.coupons;
   const articles = articlesData?.articles;
+
+  // Convert BRANDS object to array for mapping
+  const brandList = Object.values(BRANDS).map((brand) => ({
+    ...brand,
+    path: `/coupons?platform=${brand.id}`,
+  }));
 
   return (
     <div className="space-y-20">
@@ -118,7 +78,7 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {BRANDS.map(({ id, path, name, Logo }) => (
+          {brandList.map(({ id, path, name, Logo }) => (
             <Link
               key={id}
               to={path}
@@ -161,11 +121,7 @@ export default function Home() {
         </div>
 
         {couponsLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-40 bg-gray-50 animate-pulse rounded-3xl" />
-            ))}
-          </div>
+          <ListSkeleton count={6} />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {coupons?.map((coupon: any) => (
@@ -173,13 +129,9 @@ export default function Home() {
                 title={coupon.title}
                 key={coupon.id}
                 id={coupon.id}
-                platform={coupon.platform?.toLowerCase() as any}
+                platform={coupon.platform?.toLowerCase()}
                 description={coupon.description || coupon.title}
-                minSpend={
-                  coupon.min_order_value
-                    ? formatPrice(parseFloat(coupon.min_order_value))
-                    : undefined
-                }
+                minSpend={coupon.min_order_value ? formatPrice(coupon.min_order_value) : undefined}
                 code={coupon.code}
                 expiryText={
                   coupon.end_at

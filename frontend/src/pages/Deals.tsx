@@ -6,6 +6,8 @@ import DealCard from '../components/DealCard';
 import FilterSidebar from '../components/FilterSidebar';
 import { Button } from '../components/ui/button';
 import { SlidersHorizontal } from 'lucide-react';
+import { Pagination } from '../components/ui/Pagination';
+import { ListSkeleton } from '../components/ui/LoadingSkeleton';
 
 export default function Deals() {
   const [page, setPage] = useState(1);
@@ -50,19 +52,19 @@ export default function Deals() {
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-red-600">Tất cả Deal Ngon</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl font-bold tracking-tight text-red-600 uppercase">
+            Tất cả Deal Ngon
+          </h1>
+          <p className="text-muted-foreground font-medium">
             Tổng hợp deal hot từ các sàn TMĐT hôm nay.
             {pagination && (
-              <span className="ml-2 font-semibold text-red-500">
-                ({pagination.total_count} deal)
-              </span>
+              <span className="ml-2 font-bold text-red-500">({pagination.total_count} deal)</span>
             )}
           </p>
         </div>
         <Button
           variant="outline"
-          className="lg:hidden rounded-full hover:bg-red-50 hover:text-red-600 transition-colors"
+          className="lg:hidden rounded-full hover:bg-red-50 hover:text-red-600 border-red-200 transition-colors"
           onClick={() => setShowMobileFilter(!showMobileFilter)}
         >
           <SlidersHorizontal className="w-4 h-4 mr-2" />
@@ -102,11 +104,7 @@ export default function Deals() {
         {/* Main Content */}
         <div className="lg:col-span-9">
           {isLoading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              {[...Array(12)].map((_, i) => (
-                <div key={i} className="h-64 bg-muted animate-pulse rounded-2xl" />
-              ))}
-            </div>
+            <ListSkeleton count={12} type="deal" />
           ) : deals?.length === 0 ? (
             <div className="text-center py-20 text-gray-400">
               <p className="text-5xl mb-4">🔍</p>
@@ -114,7 +112,7 @@ export default function Deals() {
               <p className="text-sm mt-2">Thử thay đổi bộ lọc hoặc tìm kiếm từ khóa khác</p>
               <Button
                 variant="outline"
-                className="mt-6 border-red-200 text-red-600 hover:bg-red-50"
+                className="mt-6 border-red-200 text-red-600 hover:bg-red-50 font-bold px-8 py-6 rounded-2xl"
                 onClick={() => {
                   setMerchant('');
                   setCategory('');
@@ -126,35 +124,20 @@ export default function Deals() {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
               {deals?.map((deal: any) => (
                 <DealCard key={deal.id} deal={deal} />
               ))}
             </div>
           )}
 
-          {pagination && pagination.total_pages > 1 && (
-            <div className="flex justify-center items-center gap-4 mt-12 pb-8">
-              <Button
-                variant="outline"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="border-red-200 hover:bg-red-50 text-red-600"
-              >
-                Trang trước
-              </Button>
-              <div className="text-sm font-medium text-muted-foreground bg-red-50 px-4 py-2 rounded-full border border-red-100">
-                Trang <span className="text-red-600">{page}</span> / {pagination.total_pages}
-              </div>
-              <Button
-                variant="outline"
-                onClick={() => setPage((p) => Math.min(pagination.total_pages, p + 1))}
-                disabled={page === pagination.total_pages}
-                className="border-red-200 hover:bg-red-50 text-red-600"
-              >
-                Trang sau
-              </Button>
-            </div>
+          {pagination && (
+            <Pagination
+              currentPage={page}
+              totalPages={pagination.total_pages}
+              onPageChange={setPage}
+              accentColor="red"
+            />
           )}
         </div>
       </div>
