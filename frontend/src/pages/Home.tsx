@@ -1,28 +1,15 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { useQuery } from '@tanstack/react-query';
-import api from '../services/api';
-import CouponCard from '../components/CouponCard';
+import { useCoupons } from '../hooks/useCoupons';
+import { useArticles } from '../hooks/useArticles';
+import { Coupon, Article } from '../types';
 import { BRANDS } from '../lib/brand-config';
 import { formatPrice } from '../lib/utils';
 import { ListSkeleton } from '../components/ui/LoadingSkeleton';
 
 export default function Home() {
-  const { data: couponsData, isLoading: couponsLoading } = useQuery({
-    queryKey: ['latest-coupons'],
-    queryFn: async () => {
-      const response = await api.get('/coupons?per_page=9');
-      return response.data;
-    },
-  });
-
-  const { data: articlesData, isLoading: articlesLoading } = useQuery({
-    queryKey: ['latest-articles'],
-    queryFn: async () => {
-      const response = await api.get('/articles?per_page=6');
-      return response.data;
-    },
-  });
+  const { data: couponsData, isLoading: couponsLoading } = useCoupons({ per_page: 9 });
+  const { data: articlesData, isLoading: articlesLoading } = useArticles({ per_page: 6 });
 
   const coupons = couponsData?.coupons;
   const articles = articlesData?.articles;
@@ -124,7 +111,7 @@ export default function Home() {
           <ListSkeleton count={6} />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {coupons?.map((coupon: any) => (
+            {coupons?.map((coupon: Coupon) => (
               <CouponCard
                 title={coupon.title}
                 key={coupon.id}
@@ -181,7 +168,7 @@ export default function Home() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8">
-            {articles?.map((article: any) => (
+            {articles?.map((article: Article) => (
               <Link
                 key={article.id}
                 to={`/tin-khuyen-mai/${article.slug}`}

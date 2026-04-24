@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import api from '../services/api';
+import { useArticles } from '../hooks/useArticles';
+import { Article } from '../types';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Link } from 'react-router-dom';
@@ -10,13 +10,7 @@ import { Pagination } from '../components/ui/Pagination';
 
 export default function Articles() {
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useQuery({
-    queryKey: ['public_articles', page],
-    queryFn: async () => {
-      const response = await api.get(`/articles?page=${page}&per_page=12`);
-      return response.data;
-    },
-  });
+  const { data, isLoading } = useArticles({ page, per_page: 12 });
 
   const articles = data?.articles;
   const pagination = data?.pagination;
@@ -48,7 +42,7 @@ export default function Articles() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {articles?.map((article: any) => (
+        {articles?.map((article: Article) => (
           <Link key={article.id} to={`/tin-khuyen-mai/${article.slug}`}>
             <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden group border-gray-100">
               <div className="relative h-56 w-full overflow-hidden bg-gray-100">

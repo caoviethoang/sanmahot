@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import api from '../services/api';
+import { useArticles } from '../hooks/useArticles';
+import { Article } from '../types';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Link } from 'react-router-dom';
 import { Calendar, BookOpen } from 'lucide-react';
+
+import { useState } from 'react';
 
 const formatDate = (dateString: string) => {
   return new Intl.DateTimeFormat('vi-VN').format(new Date(dateString));
@@ -15,14 +16,11 @@ export default function Guides() {
   const [page, setPage] = useState(1);
   const [platform, setPlatform] = useState<string | null>(null);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['public_guides', page, platform],
-    queryFn: async () => {
-      let url = `/articles?page=${page}&per_page=12&category=Hướng Dẫn`;
-      if (platform) url += `&platform=${platform}`;
-      const response = await api.get(url);
-      return response.data;
-    },
+  const { data, isLoading } = useArticles({
+    page,
+    per_page: 12,
+    category: 'Hướng Dẫn',
+    ...(platform && { platform } as any), // platform isn't in original params but backend seems to support it?
   });
 
   const guides = data?.articles;
@@ -108,7 +106,7 @@ export default function Guides() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {guides?.map((guide: any) => (
+        {guides?.map((guide: Article) => (
           <Link key={guide.id} to={`/huong-dan/${guide.slug}`}>
             <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden group">
               <div className="relative h-56 w-full overflow-hidden bg-gray-100">

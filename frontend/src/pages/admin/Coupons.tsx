@@ -1,5 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '../../services/api';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { couponService } from '../../services/couponService';
+import { useAdminCoupons } from '../../hooks/useCoupons';
+import { Coupon } from '../../types';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Plus, Edit, Trash2 } from 'lucide-react';
@@ -7,26 +9,13 @@ import { useState } from 'react';
 
 export default function AdminCoupons() {
   const queryClient = useQueryClient();
-  const token = localStorage.getItem('admin_token');
   const [isEditing, setIsEditing] = useState(false);
-  const [editingCoupon, setEditingCoupon] = useState<any>(null);
+  const [editingCoupon, setEditingCoupon] = useState<Partial<Coupon> | null>(null);
 
-  const { data: coupons, isLoading } = useQuery({
-    queryKey: ['admin_coupons'],
-    queryFn: async () => {
-      const response = await api.get('/admin/coupons', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      return response.data;
-    },
-  });
+  const { data: coupons, isLoading } = useAdminCoupons();
 
   const deleteMutation = useMutation({
-    mutationFn: async (id: number) => {
-      await api.delete(`/admin/coupons/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-    },
+    mutationFn: couponService.deleteCoupon,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin_coupons'] });
     },
@@ -71,7 +60,7 @@ export default function AdminCoupons() {
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {coupons?.map((coupon: any) => (
+                {coupons?.map((coupon: Coupon) => (
                   <tr key={coupon.id} className="hover:bg-muted/30 transition-colors">
                     <td className="px-4 py-3 font-mono">{coupon.id}</td>
                     <td className="px-4 py-3 font-medium line-clamp-1">{coupon.title}</td>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useDeals } from '../hooks/useDeals';
+import { Deal } from '../services/dealService';
 import { Helmet } from 'react-helmet-async';
-import api from '../services/api';
 import DealCard from '../components/DealCard';
 import FilterSidebar from '../components/FilterSidebar';
 import { Button } from '../components/ui/button';
@@ -21,20 +21,12 @@ export default function Deals() {
     setPage(1); // Reset to page 1 when filters change
   };
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['deals', page, merchant, category, sort],
-    queryFn: async () => {
-      const response = await api.get('/deals', {
-        params: {
-          page,
-          per_page: 12,
-          ...(merchant && { merchant }),
-          ...(category && { category }),
-          ...(sort && { sort }),
-        },
-      });
-      return response.data;
-    },
+  const { data, isLoading } = useDeals({
+    page,
+    per_page: 12,
+    merchant,
+    category,
+    sort,
   });
 
   const deals = data?.deals;
@@ -125,7 +117,7 @@ export default function Deals() {
             </div>
           ) : (
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
-              {deals?.map((deal: any) => (
+              {deals?.map((deal: Deal) => (
                 <DealCard key={deal.id} deal={deal} />
               ))}
             </div>

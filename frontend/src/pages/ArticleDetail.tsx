@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+import { useArticle } from '../hooks/useArticles';
+import { Article } from '../types';
 import { useParams, Link } from 'react-router-dom';
-import api from '../services/api';
 import { Helmet } from 'react-helmet-async';
 import { Badge } from '../components/ui/badge';
 import { Calendar, ChevronLeft } from 'lucide-react';
@@ -16,13 +16,7 @@ export default function ArticleDetail() {
     data: article,
     isLoading,
     isError,
-  } = useQuery({
-    queryKey: ['public_article', slug],
-    queryFn: async () => {
-      const response = await api.get(`/articles/${slug}`);
-      return response.data;
-    },
-  });
+  } = useArticle(slug || '');
 
   if (isLoading) {
     return (
