@@ -1,19 +1,10 @@
-import { Card, CardContent } from './ui/card';
 import { ArrowUpRight } from 'lucide-react';
+import { Card, CardContent } from './ui/card';
+
+import type { Deal } from '../types';
 
 interface DealProps {
-  deal: {
-    id: number;
-    title: string;
-    description: string;
-    original_price: number | null;
-    sale_price: number | null;
-    discount_percent: number | null;
-    affiliate_url: string;
-    image_url: string;
-    merchant_name: string;
-    expired_at: string | null;
-  };
+  deal: Deal;
 }
 
 const formatPrice = (price: number) => {

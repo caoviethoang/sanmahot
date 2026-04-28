@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react';
-import { Button } from './ui/button';
+import { useEffect, useState } from 'react';
 import { getBrandConfig } from '../lib/brand-config';
 import CouponCardDetail from './CouponCardDetail';
+import { Button } from './ui/button';
 
 interface CouponProps {
   id: number;
   platform: string;
   title: string;
-  description?: string;
-  category?: string;
-  terms?: string;
-  targetUsers?: string;
-  minSpend?: string;
+  description?: string | null;
+  category?: string | null;
+  terms?: string | null;
+  targetUsers?: string | null;
+  minSpend?: string | null;
   code: string;
   expiryText: string;
 }

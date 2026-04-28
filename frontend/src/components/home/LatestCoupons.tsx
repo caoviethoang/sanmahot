@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
+import { formatPrice } from '../../lib/utils';
 import CouponCard from '../CouponCard';
 import { ListSkeleton } from '../ui/LoadingSkeleton';
-import { formatPrice } from '../../lib/utils';
+
+import type { Coupon } from '../../types';
 
 interface LatestCouponsProps {
-  coupons: any[];
+  coupons: Coupon[];
   isLoading: boolean;
 }
 

@@ -1,116 +1,108 @@
+import { ArrowRight, Calendar, User } from 'lucide-react';
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import api from '../services/api';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { Calendar } from 'lucide-react';
-import { formatDate } from '../lib/utils';
+import { Card, CardContent } from '../components/ui/card';
+import { ListSkeleton } from '../components/ui/LoadingSkeleton';
 import { Pagination } from '../components/ui/Pagination';
+import { useArticles } from '../hooks/useArticles';
+import { formatDate } from '../lib/utils';
+import type { Article } from '../types';
 
 export default function Articles() {
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useQuery({
-    queryKey: ['public_articles', page],
-    queryFn: async () => {
-      const response = await api.get(`/articles?page=${page}&per_page=12`);
-      return response.data;
-    },
+
+  const { data, isLoading } = useArticles({
+    page,
+    per_page: 10,
   });
 
   const articles = data?.articles;
   const pagination = data?.pagination;
 
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-muted rounded w-1/4"></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-64 bg-muted rounded-xl"></div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-extrabold tracking-tight mb-2 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent uppercase">
-          Tin Khuyến Mãi
+    <div className="max-w-7xl mx-auto px-4 py-8 space-y-10">
+      <Helmet>
+        <title>Tin hot & Mẹo săn Deal mới nhất | SanMaHot</title>
+        <meta
+          name="description"
+          content="Tổng hợp tin tức khuyến mãi sớm nhất, mẹo săn mã giảm giá, hướng dẫn mua sắm cực hời tại Shopee, Lazada, Tiki."
+        />
+      </Helmet>
+
+      <div>
+        <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-4 text-gray-900 uppercase">
+          TIN HOT <span className="text-orange-600 block sm:inline">& MẸO SĂN DEAL</span>
         </h1>
-        <p className="text-muted-foreground text-lg font-medium">
-          Cập nhật nhanh nhất các chương trình sale, mã giảm giá và kinh nghiệm mua sắm từ SanMaHot.
+        <p className="text-gray-400 font-medium text-lg max-w-2xl">
+          Đừng bỏ lỡ bất kỳ chương trình khuyến mãi nào. Chúng tôi mang đến cho bạn những thông tin
+          mới nhất và mẹo mua sắm hữu ích nhất.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {articles?.map((article: any) => (
-          <Link key={article.id} to={`/tin-khuyen-mai/${article.slug}`}>
-            <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden group border-gray-100">
-              <div className="relative h-56 w-full overflow-hidden bg-gray-100">
-                {article.image_url ? (
-                  <img
-                    src={article.image_url}
-                    alt={article.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=2070&auto=format&fit=crop';
-                    }}
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center">
-                    <span className="text-purple-300 font-bold text-lg opacity-50">
-                      SanMaHot News
-                    </span>
+      {isLoading ? (
+        <ListSkeleton count={10} />
+      ) : (
+        <div className="grid grid-cols-1 gap-8">
+          {articles?.map((article: Article) => (
+            <Link key={article.id} to={`/tin-khuyen-mai/${article.slug}`} className="block group">
+              <Card className="overflow-hidden border border-gray-100 hover:border-orange-200 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-500 rounded-3xl bg-white shadow-sm">
+                <div className="flex flex-col md:flex-row">
+                  <div className="md:w-1/3 aspect-[16/9] md:aspect-auto overflow-hidden bg-gray-50 flex items-center justify-center p-4">
+                    {article.image_url ? (
+                      <img
+                        src={article.image_url}
+                        alt={article.title}
+                        className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 ease-out"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 rounded-full bg-orange-50 flex items-center justify-center">
+                        <span className="text-orange-200 text-xs font-black uppercase">
+                          Article
+                        </span>
+                      </div>
+                    )}
                   </div>
-                )}
-                <div className="absolute top-4 left-4 flex flex-col gap-2">
-                  <Badge className="bg-purple-600/90 text-white backdrop-blur-sm border-none shadow-lg px-3 py-1 text-[10px] font-black uppercase tracking-wider">
-                    {article.category || 'Cập nhật'}
-                  </Badge>
+                  <CardContent className="md:w-2/3 p-6 sm:p-8 flex flex-col justify-between">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
+                        <span className="flex items-center gap-1.5 text-orange-600 bg-orange-50 px-3 py-1.5 rounded-full">
+                          {article.category || 'Mẹo săn deal'}
+                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <Calendar className="w-3.5 h-3.5" />
+                          {formatDate(article.published_at)}
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <User className="w-3.5 h-3.5" />
+                          Admin
+                        </div>
+                      </div>
+                      <h2 className="text-xl sm:text-2xl font-black text-gray-900 group-hover:text-orange-600 transition-colors duration-300 leading-tight mb-4">
+                        {article.title}
+                      </h2>
+                      <p className="text-gray-500 text-sm sm:text-base leading-relaxed line-clamp-2 md:line-clamp-3">
+                        {article.description}
+                      </p>
+                    </div>
+                    <div className="mt-6 flex items-center gap-2 text-orange-600 font-extrabold text-sm uppercase group-hover:gap-4 transition-all">
+                      Đọc tiếp <ArrowRight className="w-4 h-4" />
+                    </div>
+                  </CardContent>
                 </div>
-              </div>
-              <CardHeader className="pb-3 border-b bg-muted/5">
-                <div className="flex items-center text-xs text-muted-foreground mb-2 font-bold">
-                  <Calendar className="w-3 h-3 mr-1 text-purple-500" />
-                  {article.published_at
-                    ? formatDate(article.published_at, { month: 'long', year: 'numeric' })
-                    : 'Mới đây'}
-                </div>
-                <CardTitle className="text-xl group-hover:text-purple-600 transition-colors line-clamp-2 font-extrabold uppercase">
-                  {article.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-4">
-                <p className="text-muted-foreground line-clamp-3 text-sm leading-relaxed">
-                  {article.excerpt ||
-                    article.meta_description ||
-                    'Nhấn để xem chi tiết bài đăng và các ưu đãi mới nhất!'}
-                </p>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-      </div>
-
-      {pagination && (
-        <Pagination
-          currentPage={page}
-          totalPages={pagination.total_pages}
-          onPageChange={setPage}
-          accentColor="blue"
-        />
+              </Card>
+            </Link>
+          ))}
+          {articles?.length === 0 && (
+            <div className="text-center py-20 text-gray-400">
+              Chưa có tin khuyến mãi nào được đăng tải.
+            </div>
+          )}
+        </div>
       )}
 
-      {articles?.length === 0 && (
-        <div className="text-center py-20 text-muted-foreground">
-          Chưa có tin khuyến mãi nào được đăng tải.
-        </div>
+      {pagination && (
+        <Pagination currentPage={page} totalPages={pagination.total_pages} onPageChange={setPage} />
       )}
     </div>
   );

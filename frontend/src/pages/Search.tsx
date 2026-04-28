@@ -1,14 +1,15 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'react-router-dom';
-import api from '../services/api';
-import DealCard from '../components/DealCard';
-import CouponCard from '../components/CouponCard';
-import { Button } from '../components/ui/button';
 import { Search as SearchIcon } from 'lucide-react';
-import { formatPrice, formatDate } from '../lib/utils';
-import { Pagination } from '../components/ui/Pagination';
+import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import CouponCard from '../components/CouponCard';
+import DealCard from '../components/DealCard';
+import { Button } from '../components/ui/button';
 import { ListSkeleton } from '../components/ui/LoadingSkeleton';
+import { Pagination } from '../components/ui/Pagination';
+import { useCoupons } from '../hooks/useCoupons';
+import { useDeals } from '../hooks/useDeals';
+import { formatDate, formatPrice } from '../lib/utils';
+import type { Coupon, Deal } from '../types';
 
 export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -17,28 +18,16 @@ export default function Search() {
   const [activeTab, setActiveTab] = useState<'deals' | 'coupons'>('deals');
   const [page, setPage] = useState(1);
 
-  const { data: dealsData, isLoading: dealsLoading } = useQuery({
-    queryKey: ['search-deals', query, page],
-    queryFn: async () => {
-      if (!query) return null;
-      const response = await api.get('/deals', {
-        params: { q: query, page, per_page: 12 },
-      });
-      return response.data;
-    },
-    enabled: !!query,
+  const { data: dealsData, isLoading: dealsLoading } = useDeals({
+    q: query || undefined,
+    page,
+    per_page: 12,
   });
 
-  const { data: couponsData, isLoading: couponsLoading } = useQuery({
-    queryKey: ['search-coupons', query, page],
-    queryFn: async () => {
-      if (!query) return null;
-      const response = await api.get('/coupons', {
-        params: { q: query, page, per_page: 12 },
-      });
-      return response.data;
-    },
-    enabled: !!query,
+  const { data: couponsData, isLoading: couponsLoading } = useCoupons({
+    q: query || undefined,
+    page,
+    per_page: 12,
   });
 
   const deals = dealsData?.deals;
@@ -130,7 +119,7 @@ export default function Search() {
                 </div>
               ) : (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                  {deals.map((deal: any) => (
+                  {deals.map((deal: Deal) => (
                     <DealCard key={deal.id} deal={deal} />
                   ))}
                 </div>
@@ -147,7 +136,7 @@ export default function Search() {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {coupons.map((coupon: any) => (
+                  {coupons.map((coupon: Coupon) => (
                     <CouponCard
                       key={coupon.id}
                       id={coupon.id}

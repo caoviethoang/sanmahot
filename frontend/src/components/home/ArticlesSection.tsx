@@ -1,12 +1,6 @@
 import { Link } from 'react-router-dom';
 
-interface Article {
-  id: string;
-  slug: string;
-  title: string;
-  image_url?: string;
-  category?: string;
-}
+import type { Article } from '../../types';
 
 interface ArticlesSectionProps {
   articles: Article[];

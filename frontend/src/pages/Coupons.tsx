@@ -1,18 +1,18 @@
-import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { SlidersHorizontal } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import api from '../services/api';
+import { useSearchParams } from 'react-router-dom';
+import { BrandHeader } from '../components/BrandHeader';
+import { CategoryTabs } from '../components/CategoryTabs';
 import CouponCard from '../components/CouponCard';
 import FilterSidebar from '../components/FilterSidebar';
 import { Button } from '../components/ui/button';
-import { SlidersHorizontal } from 'lucide-react';
-import { getBrandConfig } from '../lib/brand-config';
-import { formatPrice, formatDate } from '../lib/utils';
-import { Pagination } from '../components/ui/Pagination';
 import { ListSkeleton } from '../components/ui/LoadingSkeleton';
-import { CategoryTabs } from '../components/CategoryTabs';
-import { BrandHeader } from '../components/BrandHeader';
+import { Pagination } from '../components/ui/Pagination';
+import { useCouponCategories, useCoupons } from '../hooks/useCoupons';
+import { getBrandConfig } from '../lib/brand-config';
+import { formatDate, formatPrice } from '../lib/utils';
+import type { Coupon } from '../types';
 
 export default function Coupons() {
   const [searchParams] = useSearchParams();
@@ -24,45 +24,40 @@ export default function Coupons() {
   const [sort, setSort] = useState('newest');
   const [showMobileFilter, setShowMobileFilter] = useState(false);
 
-  const handleFilterChange = (fn: () => void) => {
-    fn();
-    setPage(1);
-  };
+  const { data: categoriesData } = useCouponCategories();
 
-  const { data: categoriesData } = useQuery({
-    queryKey: ['coupon-categories'],
-    queryFn: async () => {
-      const response = await api.get('/coupons/categories');
-      return response.data as string[];
-    },
-  });
-
-  const { data, isLoading } = useQuery({
-    queryKey: ['coupons', merchant, category, sort, page],
-    queryFn: async () => {
-      const response = await api.get('/coupons', {
-        params: {
-          platform: merchant || undefined,
-          category: category || undefined,
-          sort: sort || undefined,
-          page,
-          per_page: 20,
-        },
-      });
-      return response.data;
-    },
+  const { data, isLoading } = useCoupons({
+    platform: merchant || undefined,
+    category: category || undefined,
+    sort: sort || undefined,
+    page,
+    per_page: 20,
   });
 
   const coupons = data?.coupons;
   const pagination = data?.pagination;
 
   const brand = getBrandConfig(merchant);
-  const now = new Date();
-  const timeNow = `${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
 
-  const headerDescription = merchant
-    ? `Mã giảm giá ${brand.name} mới nhất tháng ${timeNow}, coupon ${brand.name} App để mua hàng trên ứng dụng, các deal khuyến mãi, ${brand.name} Flash Sale được cập nhật liên tục mỗi ngày.`
-    : `Tổng hợp mã giảm giá từ Shopee, Lazada, Tiki... mới nhất tháng ${timeNow}. Giúp bạn tiết kiệm tối đa khi mua sắm online.`;
+  const timeInfo = useMemo(() => {
+    const now = new Date();
+    return `${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
+  }, []);
+
+  const headerDescription = useMemo(() => {
+    return merchant
+      ? `Mã giảm giá ${brand.name} mới nhất tháng ${timeInfo}, coupon ${brand.name} App để mua hàng trên ứng dụng, các deal khuyến mãi, ${brand.name} Flash Sale được cập nhật liên tục mỗi ngày.`
+      : `Tổng hợp mã giảm giá từ Shopee, Lazada, Tiki... mới nhất tháng ${timeInfo}. Giúp bạn tiết kiệm tối đa khi mua sắm online.`;
+  }, [merchant, brand.name, timeInfo]);
+
+  const handleFilterChange = (fn: () => void) => {
+    fn();
+    setPage(1);
+  };
+
+  const allCategories = useMemo(() => {
+    return Array.from(new Set([...(categoriesData || []), 'Freeship']));
+  }, [categoriesData]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-10">
@@ -78,19 +73,17 @@ export default function Coupons() {
         />
       </Helmet>
 
-      {/* Brand Header */}
       <BrandHeader
         logo={<brand.Logo />}
         name={merchant ? brand.name : 'Các Sàn'}
         description={headerDescription}
         totalCount={pagination?.total_count}
-        timeNow={timeNow}
+        timeNow={timeInfo}
         accentColor={brand.color}
       />
 
-      {/* Category Tabs */}
       <CategoryTabs
-        categories={Array.from(new Set([...(categoriesData || []), 'Freeship']))}
+        categories={allCategories}
         activeCategory={category}
         onCategoryChange={(cat) => handleFilterChange(() => setCategory(cat))}
       />
@@ -114,14 +107,13 @@ export default function Coupons() {
             category={category}
             sort={sort}
             onMerchantChange={(v) => handleFilterChange(() => setMerchant(v))}
-            onCategoryChange={(v) => handleFilterChange(() => setCategory(v))}
+            onCategoryChange={(v) => handleFilterChange(() => setCategory(String(v)))}
             onSortChange={(v) => handleFilterChange(() => setSort(v))}
           />
         </div>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-        {/* Main Content */}
         <div className="lg:col-span-8 space-y-8">
           {isLoading ? (
             <ListSkeleton count={6} />
@@ -144,7 +136,7 @@ export default function Coupons() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {coupons?.map((coupon: any) => (
+              {coupons?.map((coupon: Coupon) => (
                 <CouponCard
                   key={coupon.id}
                   id={coupon.id}
@@ -173,7 +165,6 @@ export default function Coupons() {
           )}
         </div>
 
-        {/* Desktop Sidebar */}
         <aside className="hidden lg:block lg:col-span-4 sticky top-24 self-start">
           <FilterSidebar
             type="coupons"
@@ -181,7 +172,7 @@ export default function Coupons() {
             category={category}
             sort={sort}
             onMerchantChange={(v) => handleFilterChange(() => setMerchant(v))}
-            onCategoryChange={(v) => handleFilterChange(() => setCategory(v))}
+            onCategoryChange={(v) => handleFilterChange(() => setCategory(String(v)))}
             onSortChange={(v) => handleFilterChange(() => setSort(v))}
           />
         </aside>

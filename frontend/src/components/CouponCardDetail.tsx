@@ -1,16 +1,16 @@
-import { X, Info, CheckCircle2 } from 'lucide-react';
-import { Button } from './ui/button';
+import { CheckCircle2, Info, X } from 'lucide-react';
 import type { BrandConfig } from '../lib/brand-config';
+import { Button } from './ui/button';
 
 interface CouponCardDetailProps {
   brand: BrandConfig;
   title: string;
   code: string;
   expiryText: string;
-  minSpend?: string;
-  targetUsers?: string;
-  terms?: string;
-  description?: string;
+  minSpend?: string | null;
+  targetUsers?: string | null;
+  terms?: string | null;
+  description?: string | null;
   onClose: () => void;
   onCopyAndGo: (e: React.MouseEvent) => void;
 }

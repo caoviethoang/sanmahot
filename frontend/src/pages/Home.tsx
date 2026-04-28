@@ -1,11 +1,11 @@
 import { Helmet } from 'react-helmet-async';
-import { BRANDS } from '../lib/brand-config';
-import Hero from '../components/home/Hero';
-import BrandGrid from '../components/home/BrandGrid';
-import LatestCoupons from '../components/home/LatestCoupons';
 import ArticlesSection from '../components/home/ArticlesSection';
-import { useLatestCoupons } from '../services/couponService';
-import { useLatestArticles } from '../services/articleService';
+import BrandGrid from '../components/home/BrandGrid';
+import Hero from '../components/home/Hero';
+import LatestCoupons from '../components/home/LatestCoupons';
+import { useLatestArticles } from '../hooks/useArticles';
+import { useLatestCoupons } from '../hooks/useCoupons';
+import { BRANDS } from '../lib/brand-config';
 
 export default function Home() {
   const { data: couponsData, isLoading: couponsLoading } = useLatestCoupons(9);
@@ -34,9 +34,9 @@ export default function Home() {
 
       <BrandGrid brands={brandList} />
 
-      <LatestCoupons coupons={coupons} isLoading={couponsLoading} />
+      <LatestCoupons coupons={coupons || []} isLoading={couponsLoading} />
 
-      <ArticlesSection articles={articles} isLoading={articlesLoading} />
+      <ArticlesSection articles={articles || []} isLoading={articlesLoading} />
     </div>
   );
 }

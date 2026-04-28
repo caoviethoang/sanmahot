@@ -3,10 +3,10 @@ import { BRANDS } from '../lib/brand-config';
 interface FilterSidebarProps {
   type: 'deals' | 'coupons';
   merchant?: string;
-  category?: string;
+  category?: string | number;
   sort?: string;
   onMerchantChange: (value: string) => void;
-  onCategoryChange: (value: string) => void;
+  onCategoryChange: (value: string | number) => void;
   onSortChange: (value: string) => void;
 }
 
