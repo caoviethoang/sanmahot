@@ -14,8 +14,8 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-gray-500 text-sm leading-relaxed max-w-xs mx-auto md:mx-0">
-              Săn mã giảm giá, voucher và deal hot nhất từ Shopee, Lazada, Tiki,... Tiết kiệm tối
-              đa cho mỗi đơn hàng của bạn.
+              Săn mã giảm giá, voucher và deal hot nhất từ Shopee, Lazada, Tiki,... Tiết kiệm tối đa
+              cho mỗi đơn hàng của bạn.
             </p>
           </div>
           <div>

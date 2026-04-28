@@ -42,9 +42,7 @@ export default function LatestCoupons({ coupons, isLoading }: LatestCouponsProps
               minSpend={coupon.min_order_value ? formatPrice(coupon.min_order_value) : undefined}
               code={coupon.code}
               expiryText={
-                coupon.end_at
-                  ? new Date(coupon.end_at).toLocaleDateString('vi-VN')
-                  : 'Hết hạn sau'
+                coupon.end_at ? new Date(coupon.end_at).toLocaleDateString('vi-VN') : 'Hết hạn sau'
               }
             />
           ))}

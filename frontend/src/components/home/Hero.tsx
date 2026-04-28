@@ -6,8 +6,7 @@ export default function Hero() {
 
       <div className="relative z-10 max-w-3xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
         <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 text-white text-xs font-bold tracking-widest uppercase mb-4">
-          <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> CẬP NHẬT TRONG
-          NGÀY
+          <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> CẬP NHẬT TRONG NGÀY
         </div>
         <h1 className="text-4xl md:text-7xl font-black text-white tracking-tighter leading-none mb-6">
           MÃ GIẢM GIÁ <br />
