@@ -1,6 +1,7 @@
 import { SlidersHorizontal } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useSearchParams } from 'react-router-dom';
 import DealCard from '../components/DealCard';
 import FilterSidebar from '../components/FilterSidebar';
 import { Button } from '../components/ui/button';
@@ -10,15 +11,18 @@ import { useDeals } from '../hooks/useDeals';
 import type { Deal } from '../types';
 
 export default function Deals() {
-  const [page, setPage] = useState(1);
-  const [merchant, setMerchant] = useState('');
-  const [category, setCategory] = useState<number | ''>('');
-  const [sort, setSort] = useState('newest');
-  const [showMobileFilter, setShowMobileFilter] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // URL-driven state
+  const page = Number(searchParams.get('page')) || 1;
+  const merchant = searchParams.get('platform') || '';
+  const category = searchParams.get('category') || '';
+  const sort = searchParams.get('sort') || 'newest';
+  const showMobileFilter = searchParams.get('mobileFilter') === 'true';
 
   const { data, isLoading } = useDeals({
     platform: merchant || undefined,
-    category_id: category || undefined,
+    category_id: category ? Number(category) : undefined,
     sort: sort || undefined,
     page,
     per_page: 20,
@@ -27,10 +31,25 @@ export default function Deals() {
   const deals = data?.deals;
   const pagination = data?.pagination;
 
-  const handleFilterChange = (fn: () => void) => {
-    fn();
-    setPage(1);
-  };
+  const updateFilters = useCallback(
+    (updates: Record<string, string | number | undefined | null>) => {
+      const newParams = new URLSearchParams(searchParams);
+      Object.entries(updates).forEach(([key, value]) => {
+        if (value === undefined || value === null || value === '') {
+          newParams.delete(key);
+        } else {
+          newParams.set(key, String(value));
+        }
+      });
+
+      if (!('page' in updates)) {
+        newParams.delete('page');
+      }
+
+      setSearchParams(newParams);
+    },
+    [searchParams, setSearchParams],
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-10">
@@ -56,7 +75,7 @@ export default function Deals() {
         <Button
           variant="outline"
           className="rounded-full hover:bg-red-50 hover:text-red-600 border-red-200 transition-colors"
-          onClick={() => setShowMobileFilter(!showMobileFilter)}
+          onClick={() => updateFilters({ mobileFilter: !showMobileFilter ? 'true' : null })}
         >
           <SlidersHorizontal className="w-4 h-4 mr-2" />
           Bộ lọc {(merchant || category || sort !== 'newest') && '•'}
@@ -70,9 +89,9 @@ export default function Deals() {
             merchant={merchant}
             category={category}
             sort={sort}
-            onMerchantChange={(v) => handleFilterChange(() => setMerchant(v))}
-            onCategoryChange={(v) => handleFilterChange(() => setCategory(Number(v)))}
-            onSortChange={(v) => handleFilterChange(() => setSort(v))}
+            onMerchantChange={(v) => updateFilters({ platform: v })}
+            onCategoryChange={(v) => updateFilters({ category: String(v) })}
+            onSortChange={(v) => updateFilters({ sort: v })}
           />
         </div>
       )}
@@ -89,10 +108,7 @@ export default function Deals() {
                 variant="outline"
                 className="mt-6 border-red-200 text-red-600 hover:bg-red-50"
                 onClick={() => {
-                  setMerchant('');
-                  setCategory('');
-                  setSort('newest');
-                  setPage(1);
+                  setSearchParams({});
                 }}
               >
                 Xóa bộ lọc
@@ -110,7 +126,7 @@ export default function Deals() {
             <Pagination
               currentPage={page}
               totalPages={pagination.total_pages}
-              onPageChange={setPage}
+              onPageChange={(p) => updateFilters({ page: p })}
             />
           )}
         </div>
@@ -121,9 +137,9 @@ export default function Deals() {
             merchant={merchant}
             category={category}
             sort={sort}
-            onMerchantChange={(v) => handleFilterChange(() => setMerchant(v))}
-            onCategoryChange={(v) => handleFilterChange(() => setCategory(Number(v)))}
-            onSortChange={(v) => handleFilterChange(() => setSort(v))}
+            onMerchantChange={(v) => updateFilters({ platform: v })}
+            onCategoryChange={(v) => updateFilters({ category: String(v) })}
+            onSortChange={(v) => updateFilters({ sort: v })}
           />
         </aside>
       </div>

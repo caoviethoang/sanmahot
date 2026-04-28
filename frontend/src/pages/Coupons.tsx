@@ -1,5 +1,5 @@
 import { SlidersHorizontal } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
 import { BrandHeader } from '../components/BrandHeader';
@@ -15,14 +15,14 @@ import { formatDate, formatPrice } from '../lib/utils';
 import type { Coupon } from '../types';
 
 export default function Coupons() {
-  const [searchParams] = useSearchParams();
-  const initialPlatform = searchParams.get('platform') || '';
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [page, setPage] = useState(1);
-  const [merchant, setMerchant] = useState(initialPlatform);
-  const [category, setCategory] = useState('');
-  const [sort, setSort] = useState('newest');
-  const [showMobileFilter, setShowMobileFilter] = useState(false);
+  // URL-driven state
+  const page = Number(searchParams.get('page')) || 1;
+  const merchant = searchParams.get('platform') || '';
+  const category = searchParams.get('category') || '';
+  const sort = searchParams.get('sort') || 'newest';
+  const showMobileFilter = searchParams.get('mobileFilter') === 'true';
 
   const { data: categoriesData } = useCouponCategories();
 
@@ -50,10 +50,26 @@ export default function Coupons() {
       : `Tổng hợp mã giảm giá từ Shopee, Lazada, Tiki... mới nhất tháng ${timeInfo}. Giúp bạn tiết kiệm tối đa khi mua sắm online.`;
   }, [merchant, brand.name, timeInfo]);
 
-  const handleFilterChange = (fn: () => void) => {
-    fn();
-    setPage(1);
-  };
+  const updateFilters = useCallback(
+    (updates: Record<string, string | number | undefined | null>) => {
+      const newParams = new URLSearchParams(searchParams);
+      Object.entries(updates).forEach(([key, value]) => {
+        if (value === undefined || value === null || value === '') {
+          newParams.delete(key);
+        } else {
+          newParams.set(key, String(value));
+        }
+      });
+
+      // Always reset page to 1 when changing filters, unless page itself is the update
+      if (!('page' in updates)) {
+        newParams.delete('page');
+      }
+
+      setSearchParams(newParams);
+    },
+    [searchParams, setSearchParams],
+  );
 
   const allCategories = useMemo(() => {
     return Array.from(new Set([...(categoriesData || []), 'Freeship']));
@@ -85,14 +101,14 @@ export default function Coupons() {
       <CategoryTabs
         categories={allCategories}
         activeCategory={category}
-        onCategoryChange={(cat) => handleFilterChange(() => setCategory(cat))}
+        onCategoryChange={(cat) => updateFilters({ category: cat })}
       />
 
       <div className="lg:hidden flex justify-end">
         <Button
           variant="outline"
           className="rounded-full hover:bg-orange-50 hover:text-orange-600 border-orange-200 transition-colors"
-          onClick={() => setShowMobileFilter(!showMobileFilter)}
+          onClick={() => updateFilters({ mobileFilter: !showMobileFilter ? 'true' : null })}
         >
           <SlidersHorizontal className="w-4 h-4 mr-2" />
           Bộ lọc {(merchant || category || sort !== 'newest') && '•'}
@@ -106,9 +122,9 @@ export default function Coupons() {
             merchant={merchant}
             category={category}
             sort={sort}
-            onMerchantChange={(v) => handleFilterChange(() => setMerchant(v))}
-            onCategoryChange={(v) => handleFilterChange(() => setCategory(String(v)))}
-            onSortChange={(v) => handleFilterChange(() => setSort(v))}
+            onMerchantChange={(v) => updateFilters({ platform: v })}
+            onCategoryChange={(v) => updateFilters({ category: String(v) })}
+            onSortChange={(v) => updateFilters({ sort: v })}
           />
         </div>
       )}
@@ -125,10 +141,7 @@ export default function Coupons() {
                 variant="outline"
                 className="mt-6 border-orange-200 text-orange-600 hover:bg-orange-50"
                 onClick={() => {
-                  setMerchant('');
-                  setCategory('');
-                  setSort('newest');
-                  setPage(1);
+                  setSearchParams({});
                 }}
               >
                 Xóa bộ lọc
@@ -160,7 +173,7 @@ export default function Coupons() {
             <Pagination
               currentPage={page}
               totalPages={pagination.total_pages}
-              onPageChange={setPage}
+              onPageChange={(p) => updateFilters({ page: p })}
             />
           )}
         </div>
@@ -171,9 +184,9 @@ export default function Coupons() {
             merchant={merchant}
             category={category}
             sort={sort}
-            onMerchantChange={(v) => handleFilterChange(() => setMerchant(v))}
-            onCategoryChange={(v) => handleFilterChange(() => setCategory(String(v)))}
-            onSortChange={(v) => handleFilterChange(() => setSort(v))}
+            onMerchantChange={(v) => updateFilters({ platform: v })}
+            onCategoryChange={(v) => updateFilters({ category: String(v) })}
+            onSortChange={(v) => updateFilters({ sort: v })}
           />
         </aside>
       </div>

@@ -1,5 +1,5 @@
 import { Search as SearchIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import CouponCard from '../components/CouponCard';
 import DealCard from '../components/DealCard';
@@ -13,20 +13,23 @@ import type { Coupon, Deal } from '../types';
 
 export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
+
+  // URL-driven state
   const query = searchParams.get('q') || '';
+  const page = Number(searchParams.get('page')) || 1;
+  const activeTab = (searchParams.get('tab') as 'deals' | 'coupons') || 'deals';
+
   const [inputValue, setInputValue] = useState(query);
-  const [activeTab, setActiveTab] = useState<'deals' | 'coupons'>('deals');
-  const [page, setPage] = useState(1);
 
   const { data: dealsData, isLoading: dealsLoading } = useDeals({
     q: query || undefined,
-    page,
+    page: activeTab === 'deals' ? page : 1,
     per_page: 12,
   });
 
   const { data: couponsData, isLoading: couponsLoading } = useCoupons({
     q: query || undefined,
-    page,
+    page: activeTab === 'coupons' ? page : 1,
     per_page: 12,
   });
 
@@ -35,10 +38,35 @@ export default function Search() {
   const dealsPagination = dealsData?.pagination;
   const couponsPagination = couponsData?.pagination;
 
+  // Sync state with URL search param
+  useEffect(() => {
+    setInputValue(query);
+  }, [query]);
+
+  const updateFilters = useCallback(
+    (updates: Record<string, string | number | undefined | null>) => {
+      const newParams = new URLSearchParams(searchParams);
+      Object.entries(updates).forEach(([key, value]) => {
+        if (value === undefined || value === null || value === '') {
+          newParams.delete(key);
+        } else {
+          newParams.set(key, String(value));
+        }
+      });
+
+      // Always reset page to 1 when changing query or tab
+      if (!('page' in updates)) {
+        newParams.delete('page');
+      }
+
+      setSearchParams(newParams);
+    },
+    [searchParams, setSearchParams],
+  );
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setSearchParams({ q: inputValue });
-    setPage(1);
+    updateFilters({ q: inputValue });
   };
 
   const isLoading = activeTab === 'deals' ? dealsLoading : couponsLoading;
@@ -76,10 +104,7 @@ export default function Search() {
           {/* Tab Switcher */}
           <div className="flex gap-4 border-b border-gray-100 pb-4 animate-in fade-in duration-700">
             <button
-              onClick={() => {
-                setActiveTab('deals');
-                setPage(1);
-              }}
+              onClick={() => updateFilters({ tab: 'deals' })}
               className={`px-8 py-3 rounded-full font-black text-sm transition-all duration-300 ${
                 activeTab === 'deals'
                   ? 'bg-red-600 text-white shadow-lg shadow-red-200'
@@ -90,10 +115,7 @@ export default function Search() {
               {dealsPagination?.total_count !== undefined && `(${dealsPagination.total_count})`}
             </button>
             <button
-              onClick={() => {
-                setActiveTab('coupons');
-                setPage(1);
-              }}
+              onClick={() => updateFilters({ tab: 'coupons' })}
               className={`px-8 py-3 rounded-full font-black text-sm transition-all duration-300 ${
                 activeTab === 'coupons'
                   ? 'bg-red-600 text-white shadow-lg shadow-red-200'
@@ -159,7 +181,7 @@ export default function Search() {
             <Pagination
               currentPage={page}
               totalPages={pagination.total_pages}
-              onPageChange={setPage}
+              onPageChange={(p) => updateFilters({ page: p })}
               accentColor="red"
             />
           )}
