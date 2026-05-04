@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "ferrum"
 require "nokogiri"
 
@@ -7,6 +9,8 @@ require "nokogiri"
 # Uses Ferrum (Headless Browser) to bypass bot protection and render JavaScript.
 #
 class PlatformCouponScraperService
+  include BrowserConfig
+
   PLATFORM_URLS = {
     "lazada"       => "https://lazada.vn",
     "sendo"        => "https://sendo.vn",
@@ -32,36 +36,19 @@ class PlatformCouponScraperService
     { platform: "xanhsm",      label: "XanhSM",        url: "https://www.xanhsm.com/khuyen-mai/",        scraper_class: Scrapers::GenericScraper }
   ].freeze
 
-  def initialize
-    @options = {
-      window_size: [ 1366, 768 ],
-      browser_options: {
-        "no-sandbox": nil,
-        "disable-dev-shm-usage": nil,
-        "disable-gpu": nil
-      },
-      timeout: 60
-    }
-    @options[:browser_path] = "/usr/bin/chromium" if File.exist?("/usr/bin/chromium")
-  end
-
   def run
-    total = 0
-    browser = Ferrum::Browser.new(@options)
+    total   = 0
+    browser = Ferrum::Browser.new(browser_options)
 
     begin
       SCRAPE_TARGETS.each do |target|
-        begin
-          browser.goto(target[:url])
-          sleep 5 # Allow for JS rendering
+        browser.goto(target[:url])
+        sleep 5 # Allow for JS rendering
 
-          scraper = target[:scraper_class].new(browser, target[:platform], target[:label])
-          saved = scraper.run
-
-          total += saved
-        rescue => e
-          Rails.logger.error "❌ Scraper Error: #{target[:label]} - #{e.message}"
-        end
+        scraper = target[:scraper_class].new(browser, target[:platform], target[:label])
+        total  += scraper.run
+      rescue => e
+        Rails.logger.error "❌ Scraper Error: #{target[:label]} - #{e.message}"
       end
     ensure
       browser.quit
