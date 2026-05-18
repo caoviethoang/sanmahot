@@ -1,7 +1,6 @@
 import { SlidersHorizontal } from 'lucide-react';
-import { useMemo, useCallback } from 'react';
+import { useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useSearchParams } from 'react-router-dom';
 import { BrandHeader } from '../components/BrandHeader';
 import { CategoryTabs } from '../components/CategoryTabs';
 import CouponCard from '../components/CouponCard';
@@ -10,12 +9,13 @@ import { Button } from '../components/ui/button';
 import { ListSkeleton } from '../components/ui/LoadingSkeleton';
 import { Pagination } from '../components/ui/Pagination';
 import { useCouponCategories, useCoupons } from '../hooks/useCoupons';
+import { useUrlFilters } from '../hooks/useUrlFilters';
 import { getBrandConfig } from '../lib/brand-config';
 import { formatDate, formatPrice } from '../lib/utils';
 import type { Coupon } from '../types';
 
 export default function Coupons() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { searchParams, setSearchParams, updateFilters } = useUrlFilters();
 
   // URL-driven state
   const page = Number(searchParams.get('page')) || 1;
@@ -49,27 +49,6 @@ export default function Coupons() {
       ? `Mã giảm giá ${brand.name} mới nhất tháng ${timeInfo}, coupon ${brand.name} App để mua hàng trên ứng dụng, các deal khuyến mãi, ${brand.name} Flash Sale được cập nhật liên tục mỗi ngày.`
       : `Tổng hợp mã giảm giá từ Shopee, Lazada, Tiki... mới nhất tháng ${timeInfo}. Giúp bạn tiết kiệm tối đa khi mua sắm online.`;
   }, [merchant, brand.name, timeInfo]);
-
-  const updateFilters = useCallback(
-    (updates: Record<string, string | number | undefined | null>) => {
-      const newParams = new URLSearchParams(searchParams);
-      Object.entries(updates).forEach(([key, value]) => {
-        if (value === undefined || value === null || value === '') {
-          newParams.delete(key);
-        } else {
-          newParams.set(key, String(value));
-        }
-      });
-
-      // Always reset page to 1 when changing filters, unless page itself is the update
-      if (!('page' in updates)) {
-        newParams.delete('page');
-      }
-
-      setSearchParams(newParams);
-    },
-    [searchParams, setSearchParams],
-  );
 
   const allCategories = useMemo(() => {
     return Array.from(new Set([...(categoriesData || []), 'Freeship']));
@@ -140,9 +119,7 @@ export default function Coupons() {
               <Button
                 variant="outline"
                 className="mt-6 border-orange-200 text-orange-600 hover:bg-orange-50"
-                onClick={() => {
-                  setSearchParams({});
-                }}
+                onClick={() => setSearchParams({})}
               >
                 Xóa bộ lọc
               </Button>

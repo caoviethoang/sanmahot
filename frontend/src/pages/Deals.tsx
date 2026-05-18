@@ -1,17 +1,16 @@
 import { SlidersHorizontal } from 'lucide-react';
-import { useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useSearchParams } from 'react-router-dom';
 import DealCard from '../components/DealCard';
 import FilterSidebar from '../components/FilterSidebar';
 import { Button } from '../components/ui/button';
 import { ListSkeleton } from '../components/ui/LoadingSkeleton';
 import { Pagination } from '../components/ui/Pagination';
 import { useDeals } from '../hooks/useDeals';
+import { useUrlFilters } from '../hooks/useUrlFilters';
 import type { Deal } from '../types';
 
 export default function Deals() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { searchParams, setSearchParams, updateFilters } = useUrlFilters();
 
   // URL-driven state
   const page = Number(searchParams.get('page')) || 1;
@@ -30,26 +29,6 @@ export default function Deals() {
 
   const deals = data?.deals;
   const pagination = data?.pagination;
-
-  const updateFilters = useCallback(
-    (updates: Record<string, string | number | undefined | null>) => {
-      const newParams = new URLSearchParams(searchParams);
-      Object.entries(updates).forEach(([key, value]) => {
-        if (value === undefined || value === null || value === '') {
-          newParams.delete(key);
-        } else {
-          newParams.set(key, String(value));
-        }
-      });
-
-      if (!('page' in updates)) {
-        newParams.delete('page');
-      }
-
-      setSearchParams(newParams);
-    },
-    [searchParams, setSearchParams],
-  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-10">
@@ -107,9 +86,7 @@ export default function Deals() {
               <Button
                 variant="outline"
                 className="mt-6 border-red-200 text-red-600 hover:bg-red-50"
-                onClick={() => {
-                  setSearchParams({});
-                }}
+                onClick={() => setSearchParams({})}
               >
                 Xóa bộ lọc
               </Button>

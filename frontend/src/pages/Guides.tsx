@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/card';
@@ -8,12 +7,14 @@ import { Calendar, BookOpen } from 'lucide-react';
 import { ListSkeleton } from '../components/ui/LoadingSkeleton';
 import { Pagination } from '../components/ui/Pagination';
 import { useArticles } from '../hooks/useArticles';
+import { useUrlFilters } from '../hooks/useUrlFilters';
 import { formatDate } from '../lib/utils';
 import type { Article } from '../types';
 
 export default function Guides() {
-  const [page, setPage] = useState(1);
-  const [platform, setPlatform] = useState<string | undefined>(undefined);
+  const { searchParams, updateFilters } = useUrlFilters();
+  const page = Number(searchParams.get('page')) || 1;
+  const platform = searchParams.get('platform') ?? undefined;
 
   const { data, isLoading } = useArticles({
     page,
@@ -24,11 +25,6 @@ export default function Guides() {
 
   const guides = data?.articles;
   const pagination = data?.pagination;
-
-  const handlePlatformChange = (newPlatform: string | undefined) => {
-    setPlatform(newPlatform);
-    setPage(1);
-  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-12">
@@ -59,7 +55,7 @@ export default function Guides() {
             <Button
               key={item.id || 'all'}
               variant={platform === item.id ? 'default' : 'outline'}
-              onClick={() => handlePlatformChange(item.id)}
+              onClick={() => updateFilters({ platform: item.id ?? null })}
               className={`rounded-full px-8 font-black text-xs uppercase tracking-widest h-12 transition-all ${
                 platform === item.id
                   ? 'bg-orange-600 hover:bg-orange-700 shadow-lg shadow-orange-200 border-none'
@@ -121,7 +117,11 @@ export default function Guides() {
       )}
 
       {pagination && (
-        <Pagination currentPage={page} totalPages={pagination.total_pages} onPageChange={setPage} />
+        <Pagination
+          currentPage={page}
+          totalPages={pagination.total_pages}
+          onPageChange={(p) => updateFilters({ page: p })}
+        />
       )}
 
       {guides?.length === 0 && !isLoading && (

@@ -1,4 +1,4 @@
-import type { Coupon, PagedApiResponse } from '../types';
+import type { CouponsResponse } from '../types';
 import api from './api';
 
 export interface CouponParams {
@@ -11,8 +11,8 @@ export interface CouponParams {
 }
 
 export const couponService = {
-  getCoupons: async (params: CouponParams = {}): Promise<PagedApiResponse<Coupon>> => {
-    const response = await api.get<PagedApiResponse<Coupon>>('/coupons', { params });
+  getCoupons: async (params: CouponParams = {}): Promise<CouponsResponse> => {
+    const response = await api.get<CouponsResponse>('/coupons', { params });
     return response.data;
   },
 
@@ -21,8 +21,8 @@ export const couponService = {
     return response.data;
   },
 
-  getLatestCoupons: async (perPage = 9): Promise<PagedApiResponse<Coupon>> => {
-    const response = await api.get<PagedApiResponse<Coupon>>('/coupons', {
+  getLatestCoupons: async (perPage = 9): Promise<CouponsResponse> => {
+    const response = await api.get<CouponsResponse>('/coupons', {
       params: { per_page: perPage },
     });
     return response.data;

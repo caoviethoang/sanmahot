@@ -1,6 +1,5 @@
 import { Search as SearchIcon } from 'lucide-react';
-import { useState, useEffect, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import CouponCard from '../components/CouponCard';
 import DealCard from '../components/DealCard';
 import { Button } from '../components/ui/button';
@@ -8,11 +7,12 @@ import { ListSkeleton } from '../components/ui/LoadingSkeleton';
 import { Pagination } from '../components/ui/Pagination';
 import { useCoupons } from '../hooks/useCoupons';
 import { useDeals } from '../hooks/useDeals';
+import { useUrlFilters } from '../hooks/useUrlFilters';
 import { formatDate, formatPrice } from '../lib/utils';
 import type { Coupon, Deal } from '../types';
 
 export default function Search() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { searchParams, updateFilters } = useUrlFilters();
 
   // URL-driven state
   const query = searchParams.get('q') || '';
@@ -38,31 +38,10 @@ export default function Search() {
   const dealsPagination = dealsData?.pagination;
   const couponsPagination = couponsData?.pagination;
 
-  // Sync state with URL search param
+  // Sync input with URL query param (e.g. when navigating back/forward)
   useEffect(() => {
     setInputValue(query);
   }, [query]);
-
-  const updateFilters = useCallback(
-    (updates: Record<string, string | number | undefined | null>) => {
-      const newParams = new URLSearchParams(searchParams);
-      Object.entries(updates).forEach(([key, value]) => {
-        if (value === undefined || value === null || value === '') {
-          newParams.delete(key);
-        } else {
-          newParams.set(key, String(value));
-        }
-      });
-
-      // Always reset page to 1 when changing query or tab
-      if (!('page' in updates)) {
-        newParams.delete('page');
-      }
-
-      setSearchParams(newParams);
-    },
-    [searchParams, setSearchParams],
-  );
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

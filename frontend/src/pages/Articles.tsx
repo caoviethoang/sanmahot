@@ -1,16 +1,17 @@
 import { ArrowRight, Calendar, User } from 'lucide-react';
-import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '../components/ui/card';
 import { ListSkeleton } from '../components/ui/LoadingSkeleton';
 import { Pagination } from '../components/ui/Pagination';
 import { useArticles } from '../hooks/useArticles';
+import { useUrlFilters } from '../hooks/useUrlFilters';
 import { formatDate } from '../lib/utils';
 import type { Article } from '../types';
 
 export default function Articles() {
-  const [page, setPage] = useState(1);
+  const { searchParams, updateFilters } = useUrlFilters();
+  const page = Number(searchParams.get('page')) || 1;
 
   const { data, isLoading } = useArticles({
     page,
@@ -102,7 +103,11 @@ export default function Articles() {
       )}
 
       {pagination && (
-        <Pagination currentPage={page} totalPages={pagination.total_pages} onPageChange={setPage} />
+        <Pagination
+          currentPage={page}
+          totalPages={pagination.total_pages}
+          onPageChange={(p) => updateFilters({ page: p })}
+        />
       )}
     </div>
   );

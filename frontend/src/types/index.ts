@@ -64,9 +64,28 @@ export interface ApiResponse<T> {
   data: T;
 }
 
-export interface PagedApiResponse<T> {
-  coupons?: T[];
-  deals?: T[];
-  articles?: T[];
+/** Strongly-typed paged responses — each resource has its own interface. */
+export interface CouponsResponse {
+  coupons: Coupon[];
   pagination: Pagination;
 }
+
+export interface DealsResponse {
+  deals: Deal[];
+  pagination: Pagination;
+}
+
+export interface ArticlesResponse {
+  articles: Article[];
+  pagination: Pagination;
+}
+
+/**
+ * @deprecated Use CouponsResponse, DealsResponse, or ArticlesResponse instead.
+ * Kept for any remaining generic usages during migration.
+ */
+export type PagedApiResponse<T> =
+  T extends Coupon ? CouponsResponse :
+  T extends Deal ? DealsResponse :
+  T extends Article ? ArticlesResponse :
+  never;

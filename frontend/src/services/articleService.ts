@@ -1,4 +1,4 @@
-import type { Article, PagedApiResponse } from '../types';
+import type { Article, ArticlesResponse } from '../types';
 import api from './api';
 
 export interface ArticleParams {
@@ -9,8 +9,8 @@ export interface ArticleParams {
 }
 
 export const articleService = {
-  getArticles: async (params: ArticleParams = {}): Promise<PagedApiResponse<Article>> => {
-    const response = await api.get<PagedApiResponse<Article>>('/articles', { params });
+  getArticles: async (params: ArticleParams = {}): Promise<ArticlesResponse> => {
+    const response = await api.get<ArticlesResponse>('/articles', { params });
     return response.data;
   },
 
@@ -19,8 +19,8 @@ export const articleService = {
     return response.data;
   },
 
-  getLatestArticles: async (limit = 5): Promise<PagedApiResponse<Article>> => {
-    const response = await api.get<PagedApiResponse<Article>>('/articles', {
+  getLatestArticles: async (limit = 5): Promise<ArticlesResponse> => {
+    const response = await api.get<ArticlesResponse>('/articles', {
       params: { per_page: limit },
     });
     return response.data;

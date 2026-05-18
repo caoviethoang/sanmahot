@@ -1,27 +1,11 @@
 import { ArrowUpRight } from 'lucide-react';
 import { Card, CardContent } from './ui/card';
-
+import { formatPrice, formatTimeRemaining } from '../lib/utils';
 import type { Deal } from '../types';
 
 interface DealProps {
   deal: Deal;
 }
-
-const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('vi-VN').format(price) + ' đ';
-};
-
-const formatTimeRemaining = (dateString: string | null) => {
-  if (!dateString) return null;
-  const now = new Date();
-  const end = new Date(dateString);
-  const diffTime = end.getTime() - now.getTime();
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-  if (diffDays < 0) return 'Đã hết hạn';
-  if (diffDays === 0) return 'Hết hạn hôm nay';
-  return `Còn ${diffDays} ngày`;
-};
 
 export default function DealCard({ deal }: DealProps) {
   return (

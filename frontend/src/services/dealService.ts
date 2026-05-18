@@ -1,4 +1,4 @@
-import type { Deal, PagedApiResponse } from '../types';
+import type { Deal, DealsResponse } from '../types';
 import api from './api';
 
 export interface DealParams {
@@ -11,8 +11,8 @@ export interface DealParams {
 }
 
 export const dealService = {
-  getDeals: async (params: DealParams = {}): Promise<PagedApiResponse<Deal>> => {
-    const response = await api.get<PagedApiResponse<Deal>>('/deals', { params });
+  getDeals: async (params: DealParams = {}): Promise<DealsResponse> => {
+    const response = await api.get<DealsResponse>('/deals', { params });
     return response.data;
   },
 
@@ -21,8 +21,8 @@ export const dealService = {
     return response.data;
   },
 
-  getLatestDeals: async (perPage = 8): Promise<PagedApiResponse<Deal>> => {
-    const response = await api.get<PagedApiResponse<Deal>>('/deals', {
+  getLatestDeals: async (perPage = 8): Promise<DealsResponse> => {
+    const response = await api.get<DealsResponse>('/deals', {
       params: { per_page: perPage },
     });
     return response.data;

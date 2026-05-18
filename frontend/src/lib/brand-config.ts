@@ -12,6 +12,7 @@ import {
   VnpayLogo,
   FahasaLogo,
 } from '../components/BrandLogos';
+import { DefaultLogo } from '../components/DefaultLogo';
 
 export interface BrandConfig {
   id: string;
@@ -153,7 +154,7 @@ export const getBrandConfig = (platform?: string): BrandConfig => {
     BRANDS[normalized] || {
       id: normalized || 'default',
       name: platform || 'Săn Mã Hot',
-      Logo: ShopeeLogo, // Fallback logo
+      Logo: DefaultLogo,
       color: 'text-primary',
       bg: 'bg-primary',
       lightBg: 'bg-primary/5',
